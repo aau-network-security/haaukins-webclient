@@ -1,1 +1,1 @@
-The following file are not used in this folder: `proto_pb.js` and `proto_grpc_web_pb.js`. They are used in the node_modules folder that will be created after `npm run serve`
+The files  `proto_pb.js` and `proto_grpc_web_pb.js` are not used in this folder. They are used in the node_modules folder that will be created after `npm run serve`. After that copy those file inside that folder.

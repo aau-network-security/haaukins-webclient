@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <span>{{resp}}</span>
   </div>
 </template>
@@ -15,7 +15,7 @@ export default {
   data: function() {
     return {
       inputField: "",
-      resp: "first"
+      resp: "None"
     };
   },
   created: function() {
@@ -29,7 +29,7 @@ export default {
       let getRequest = new HelloRequest();
 
       //Set the name defined in the proto file (Name with capital letter)
-      getRequest.setName('test');
+      getRequest.setName('World');
 
       //sayHello is the function declared in the `proto_grpc_web_pb.js` file. It is the function declared in the proto.proto file
       // it is not clear why it is not capital letter.
