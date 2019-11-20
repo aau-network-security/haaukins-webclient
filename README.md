@@ -42,8 +42,10 @@ $ cp proto_grpc_web_pb.js proto_pb.js node_modules
 ```
 ### Server
 ```bash
-$ cd server
-$ go run server.go
+$ cd Desktop/github-repos/sec0x
+$ vagrant up && vagrant ssh
+$ cd /scratch/go/src/haaukins
+$ go run app/daemon/main.go --config=/scratch/configs/config.yml
 ```
 
 ### Proxy
@@ -52,14 +54,16 @@ $ docker build -t envoy .
 $ docker run -d -p 8080:8080 --network=host envoy:latest
 ```
 
-Run the client `npm run serve` and browse `http://localhost:8081/`
+Run the client `npm run serve` and browse `http://localhost:8082/`
 
 #### Developer Notes
 Below the list of useful command i have used:
-- ``vue create hello-world`` Create a Vue.js base project (It create a folder containing the project)
-- ``protoc -I proto/ proto/proto.proto --go_out=plugins=grpc:proto`` Create the proto compiled code for Go (Run in the main folder)
-- ``protoc proto.proto --js_out=import_style=commonjs,binary:../client --grpc-web_out=import_style=commonjs,mode=grpcwebtext:../client`` (Run in the proto folder)
+```bash
+protoc -I proto/ proto/deamon.proto --go_out=plugins=grpc:proto
+```
+Create the proto compiled code for Go (Run in the main folder)
 
-The following links were useful to create this project:
-- `https://medium.com/@aravindhanjay/a-todo-app-using-grpc-web-and-vue-js-4e0c18461a3e`
-- `https://medium.com/swlh/ditching-rest-with-grpc-web-and-envoy-bfaa89a39b32`
+```bash
+protoc daemon.proto --js_out=import_style=commonjs,binary:../client --grpc-web_out=import_style=commonjs,mode=grpcwebtext:../client
+```
+(Run in the proto folder)
