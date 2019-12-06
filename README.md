@@ -30,6 +30,12 @@ $ go get -u github.com/golang/protobuf/protoc-gen-go
 $ git clone https://github.com/grpc/grpc-web /tmp/grpc-web
 $ cd /tmp/grpc-web && sudo make install-plugin
 ```
+Errors founds:
+fatal error: google/protobuf/compiler/code_generator.h: No such file or directory
+```bash
+apt-get install -y make g++ autoconf libtool
+sudo apt-get install libprotoc-dev 
+```
 
 ## How to run it
 Open three terminal, one for the server, one for the client and the other one for the Proxy
