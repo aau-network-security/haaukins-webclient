@@ -27,45 +27,25 @@
                 </button>
             </div>
             <hr>
-            <ul class="list-group list-group-flush">
-
-                <li class="list-group-item px-0">
-                    <div class="row">
-                        <div class="col-4">
-                            <a class="btn btn-nobox collapsed" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="true" aria-controls="collapseExample1">
-                            aadawad
-                            </a>
-                        </div>
-                        <div class="col-3">
-                            aa
-                        </div>
-                        <div class="col-5">
-                            aa
-                        </div>
-                    </div>
-
-                        <span class="mr-3"></span>
-                    <div class="collapse" id="collapseExample1">
-                        <div class="card card-body mt-2">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                        </div>
-                    </div>
-                </li>
-                <li class="list-group-item px-0">
-                    <a class="btn btn-nobox collapsed" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="true" aria-controls="collapseExample2">
-                        Link with href<span class="mr-3"></span>
-                    </a>
-                    <div class="collapse" id="collapseExample2">
-                        <div class="card card-body mt-2">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                        </div>
-                    </div>
-                </li>
-
-            </ul>
-            <div>{{teams}}</div>
-            <button v-on:click="restartTeamLab">reset lab</button>
-            <button v-on:click="resetExercise">reset challenge</button>
+            <div class="table-responsive">
+                <table class="table mx-auto table-hover table-striped" id="teamsEventTable" cellspacing="0" style="table-layout: auto; width: 100%">
+                    <thead>
+                        <tr>
+                            <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td>
+                        </tr>
+                    </thead>
+                    <tbody v-if="teams">
+                        <tr v-for="(team,count) in teams.teamsList" v-bind:key="team.id">
+                            <td>{{count + 1}}</td>
+                            <td><strong><router-link :to="{name: 'team', params: {id: team.id}}" class="text-haaukins" >{{team.id}}</router-link></strong></td>
+                            <td>{{team.name}}</td>
+                            <td>{{team.email}}</td>
+                            <td><button class="btn btn-secondary btn-sm" v-on:click="resetFrontend(team.id)">Frontend</button></td>
+                            <td><button class="btn btn-secondary btn-sm" v-on:click="restartTeamLab(team.id)">Lab</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <Footer/>
     </div>
@@ -75,7 +55,7 @@
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
     import { daemonclient } from "../App";
-    import { ListEventTeamsRequest, RestartTeamLabRequest, ResetExerciseRequest, Team } from "daemon_pb"
+    import { ListEventTeamsRequest, RestartTeamLabRequest, ResetFrontendsRequest, Team } from "daemon_pb"
 
     export default {
         name: "Teams",
@@ -94,7 +74,6 @@
         },
         created() {
             this.listTeams();
-            //this.restartTeamLab();
         },
         methods: {
             listTeams () {
@@ -108,10 +87,13 @@
                     }
                 });
             },
-            restartTeamLab () {
+            restartTeamLab (teamID) {
+                const that = this
+                this.loaderIsActive = true
+
                 let getRequest = new RestartTeamLabRequest();
-                getRequest.setEventtag("dec4");
-                getRequest.setTeamid("88a0dc5f")
+                getRequest.setEventtag(this.$route.params.tag);
+                getRequest.setTeamid(teamID)
 
                 const call = daemonclient.restartTeamLab(getRequest, {Token: localStorage.getItem("user")});
 
@@ -123,30 +105,30 @@
                     window.console.log("enddd")
                 });
                 call.on('error', function(e) {
-                    window.console.log(e)
+                    that.error = e
                 });
                 call.on('status', function(status) {
-                    window.console.log(status)
+                    that.loaderIsActive = false
+                    if (status['metadata']['grpc-message'] == "") {
+                        that.success = "Team Lab Successfully Restarted!"
+                        that.listEvent()
+                    }else{
+                        that.error = status['metadata']['grpc-message']
+                    }
                 });
             },
-            resetExercise () {
+            resetFrontend(teamID){
                 const that = this
-
                 this.loaderIsActive = true
 
-                let getRequest = new ResetExerciseRequest();
+                let getRequest = new ResetFrontendsRequest();
                 let getTeam = new Team();
 
-                getTeam.setId("50f810ce");
+                getTeam.setId(teamID);
+                getRequest.setEventtag(this.$route.params.tag);
+                getRequest.addTeams(getTeam);
 
-                getRequest.setEventtag("boot");
-                getRequest.setExercisetag("csrf");
-                getRequest.setExercisetag("sql");
-
-                //if we do not set any teams, the challenge will be resetted for every team
-                //getRequest.addTeams(getTeam);
-
-                const call = daemonclient.resetExercise(getRequest, {Token: localStorage.getItem("user")});
+                const call = daemonclient.resetFrontends(getRequest, {Token: localStorage.getItem("user")});
 
                 call.on('data', function(response) {
                     //this.status = response.getErrormessage();
@@ -162,7 +144,7 @@
                 call.on('status', function() {
                     setTimeout(function(){
                         that.loaderIsActive = false
-                        that.success = "Exercises successfully reset!"
+                        that.success = "Frontend successfully restarted!"
                     }, 1000);
                 });
             }

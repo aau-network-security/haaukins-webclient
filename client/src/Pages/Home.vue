@@ -5,7 +5,7 @@
                 <div class="d-inline mr-2">
                     <img class="loading-logo" src="../assets/bluelogo.png" width="60" height="60">
                 </div>
-                <div class="d-inline mr-2">Creating Event...</div>
+                <div class="d-inline mr-2">{{loader_status}}</div>
             </div>
         </div>
         <Navbar/>
@@ -27,14 +27,14 @@
             <div class="table-responsive mt-1">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event Tag</th><th>Name</th><th>Team</th><th>Exercises</th><th>Capacity</th><th>Creation Date</th><th>Action</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Action</th>
                     </thead>
                     <tbody v-if="events">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
                             <td><strong><router-link :to="{name: 'event', params: {tag: event.tag}}" class="text-haaukins" >{{event.tag}}</router-link></strong></td>
                             <td>{{event.name}}</td>
                             <td>{{event.teamcount}}</td>
-                            <td>{{event.exercisecount}}</td>
+                            <td>{{challenges_count(event.exercises)}}</td>
                             <td>{{event.capacity}}</td>
                             <td>{{event.creationtime}}</td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
@@ -47,9 +47,7 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
-        {{status}}
         <Footer/>
         <modal-event @createEvent="createEvent"/>
     </div>
@@ -152,6 +150,10 @@
                         that.listEvent()
                     }
                 });
+            },
+            challenges_count (challenges_string) {
+                const challenges = challenges_string.split(",");
+                return challenges.length
             }
         }
     }
