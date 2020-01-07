@@ -11,7 +11,7 @@
         <Navbar/>
         <div class="container" style="margin-top: 100px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
-            <button data-toggle="modal" data-target="#eventModal" type="button" id="create-event" class="btn btn-haaukins float-right">Create Event</button>
+            <b-button id="show-btn" @click="$bvModal.show('create-event-modal')" class="btn-haaukins float-right">Create Event</b-button>
             <div class="clearfix"></div>
             <hr>
             <div v-if="error" class="alert alert-danger alert-dismissible">{{error}}
@@ -49,7 +49,8 @@
             </div>
         </div>
         <Footer/>
-        <modal-event @createEvent="createEvent"/>
+        <EventModal @createEvent="createEvent"/>
+
     </div>
 </template>
 
@@ -58,11 +59,11 @@
     import Footer from "../components/Footer";
     import { ListEventsRequest, StopEventRequest } from "daemon_pb";
     import { daemonclient } from "../App";
-    import ModalEvent from "../components/Modal-Event";
+    import EventModal from "../components/EventModal";
 
     export default {
         name: "Home",
-        components: {ModalEvent, Footer, Navbar},
+        components: {EventModal, Footer, Navbar},
         data: function () {
             return {
                 events: null,
@@ -100,24 +101,17 @@
                     //TODO nothign receive because cause the deamon dosen't send anything
                     window.console.log(response)
                 });
-                call.on('end', function() {
-                    //TODO to decide if keep it or not
-                    window.console.log("enddd")
-                });
                 call.on('error', function(e) {
                     that.error = e
                 });
                 call.on('status', function(status) {
                     that.loaderIsActive = false
-
-                    //todo Modify it, its just needed to dismiss the modal (i still dont know how)
-                    window.location.reload()
-                    //CHECK HOW TO HIDE MODAL WITHOUT JQUERY
+                    that.$bvModal.hide('create-event-modal')
                     if (status['metadata']['grpc-message'] == "") {
                         that.success = "Event Successfully Created!"
                         that.listEvent()
                     }else{
-                        that.error = "adaaadadada"
+                        that.error = "Error! Try again.."
                     }
                 });
             },
@@ -136,10 +130,6 @@
                     //TODO nothign receive because cause the deamon dosen't send anything
                     window.console.log(response)
                 });
-                call.on('end', function() {
-                    //TODO to decide if keep it or not
-                    window.console.log("enddd")
-                });
                 call.on('error', function(e) {
                     that.error = e
                 });
@@ -148,10 +138,12 @@
                     if (status['metadata']['grpc-message'] == "") {
                         that.success = "Event Successfully Stop!"
                         that.listEvent()
+                    }else{
+                        that.error = "Error! Try again.."
                     }
                 });
             },
-            challenges_count (challenges_string) {
+            challenges_count: function (challenges_string){
                 const challenges = challenges_string.split(",");
                 return challenges.length
             }
