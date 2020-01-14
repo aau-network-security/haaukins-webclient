@@ -55,8 +55,8 @@
                 }else{
                     this.loading = true;
                     let getRequest = new LoginUserRequest();
-                    getRequest.setUsername("gian");
-                    getRequest.setPassword("bomber1");
+                    getRequest.setUsername(username);
+                    getRequest.setPassword(password);
                     //sayHello is the function declared in the `proto_grpc_web_pb.js` file. It is the function declared in the proto.proto file
                     // it is not clear why it is not capital letter.
 

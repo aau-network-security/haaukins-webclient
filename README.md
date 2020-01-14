@@ -47,17 +47,17 @@ $ go run app/daemon/main.go --config=/home/gian/Documents/haaukins_files/configs
 ### Proxy
 ```bash
 $ docker build -t envoy . 
-$ docker run -d -p 8080:8080 --network=host envoy:latest
+$ docker run -d -p 8000:8000 --network=host envoy:latest
 ```
 
 ### Client
 ```bash
 $ cd client
 $ docker build -t webclient .
-$ docker run -d -p 8081:8080 webclient:latest
+$ docker run -d -p 8001:8000 webclient:latest
 ```
 
-browse ```http://localhost:8081/```
+browse ```http://localhost:8001/```
 
 #### Developer Notes
 Below the list of useful command i have used:

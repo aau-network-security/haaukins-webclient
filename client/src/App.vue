@@ -7,5 +7,5 @@
     export default {
         name: 'app'
     };
-    export const daemonclient = new DaemonClient("http://localhost:8080", null, null);
+    export const daemonclient = new DaemonClient("http://localhost:8000", null, null);
 </script>

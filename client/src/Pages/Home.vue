@@ -12,6 +12,7 @@
         <div class="container" style="margin-top: 100px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
             <b-button id="show-btn" @click="$bvModal.show('create-event-modal')" class="btn-haaukins float-right">Create Event</b-button>
+            <b-button v-on:click="update_exercises_file" class="btn-secondary float-right">Update Exercise file</b-button>
             <div class="clearfix"></div>
             <hr>
             <div v-if="error" class="alert alert-danger alert-dismissible">{{error}}
@@ -57,7 +58,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { ListEventsRequest, StopEventRequest } from "daemon_pb";
+    import { ListEventsRequest, StopEventRequest, Empty } from "daemon_pb";
     import { daemonclient } from "../App";
     import EventModal from "../components/EventModal";
 
@@ -146,6 +147,13 @@
             challenges_count: function (challenges_string){
                 const challenges = challenges_string.split(",");
                 return challenges.length
+            },
+            update_exercises_file: function () {
+                let getRequest = new Empty();
+                daemonclient.updateExercisesFile(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+                    this.error = err;
+                    this.success = response.getMsg()
+                });
             }
         }
     }
