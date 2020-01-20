@@ -50,7 +50,7 @@ $ docker build -t envoy .
 $ docker run -d -p 8000:8000 --network=host envoy:latest
 ```
 
-Note: `--network=host` is NOT required for MacOS and Windows machines. `socket_address` IP address on [envoy.yaml](envoy.yaml) should be `docker0` on linux host machines and `host.docker.internal` for MacOS machine. 
+Note: `--network=host` is NOT required for MacOS and Windows machines. `socket_address` IP address on [envoy.yaml](envoy.yaml) should be `docker0` on linux host machines and `docker.for.mac.localhost` for MacOS machine. 
 
 ### Client
 ```bash
