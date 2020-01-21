@@ -47,15 +47,19 @@ $ go run app/daemon/main.go --config=/home/gian/Documents/haaukins_files/configs
 ### Proxy
 ```bash
 $ docker build -t envoy . 
-$ docker run -d -p 8000:8000 --network=host envoy:latest
+$ docker run -d -p 8000:8000 envoy:latest
+
 ```
+Note: No need to specify `--network=host` while running the docker container, the ip address of `docker0`  used. 
+
 
 ### Client
 ```bash
 $ cd client
 $ docker build -t webclient .
-$ docker run -d -p 8001:8000 webclient:latest
+$ docker run -d -p 8003:8003 webclient:latest
 ```
+Note : Webclient will work only with HTTPS !! 
 
 browse ```http://localhost:8001/```
 
