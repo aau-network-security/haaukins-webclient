@@ -1,6 +1,5 @@
 # gRPC - Vue.js - Go - Envoy
-It is a basic gRPC Hello Word example. It is implemented in go and Vue.js, respectively server and client side.
-To enable the communication between them there is a proxy (Envoy), implemented in the Dockerfile.
+This repository contains the Web Client (used to interact with Haaukins) and the Envoy proxy (used to enable the communication between client and server).
 
 ## Prerequisites
 - Go v1.11 and Golang
@@ -30,36 +29,49 @@ $ go get -u github.com/golang/protobuf/protoc-gen-go
 $ git clone https://github.com/grpc/grpc-web /tmp/grpc-web
 $ cd /tmp/grpc-web && sudo make install-plugin
 ```
+Errors founds:
+fatal error: google/protobuf/compiler/code_generator.h: No such file or directory
+```bash
+apt-get install -y make g++ autoconf libtool
+sudo apt-get install libprotoc-dev 
+```
 
 ## How to run it
-Open three terminal, one for the server, one for the client and the other one for the Proxy
 
-### Client
-```bash
-$ cd client
-$ npm install
-$ cp proto_grpc_web_pb.js proto_pb.js node_modules 
-```
 ### Server
+To run Haaukins in local
 ```bash
-$ cd server
-$ go run server.go
+$ go run app/daemon/main.go --config=/home/gian/Documents/haaukins_files/configs/config.yml
 ```
 
 ### Proxy
 ```bash
 $ docker build -t envoy . 
-$ docker run -d -p 8080:8080 --network=host envoy:latest
+$ docker run -d -p 8000:8000 --network=host envoy:latest
 ```
 
-Run the client `npm run serve` and browse `http://localhost:8081/`
+Note: `--network=host` is NOT required for MacOS and Windows machines. `socket_address` IP address on [envoy.yaml](envoy.yaml) should be `docker0` on linux host machines and `docker.for.mac.localhost` for MacOS machine. 
+
+### Client
+```bash
+$ cd client
+$ docker build -t webclient .
+$ docker run -d -p 8001:8000 webclient:latest
+```
+
+browse ```http://localhost:8001/```
 
 #### Developer Notes
 Below the list of useful command i have used:
-- ``vue create hello-world`` Create a Vue.js base project (It create a folder containing the project)
-- ``protoc -I proto/ proto/proto.proto --go_out=plugins=grpc:proto`` Create the proto compiled code for Go (Run in the main folder)
-- ``protoc proto.proto --js_out=import_style=commonjs,binary:../client --grpc-web_out=import_style=commonjs,mode=grpcwebtext:../client`` (Run in the proto folder)
-
-The following links were useful to create this project:
-- `https://medium.com/@aravindhanjay/a-todo-app-using-grpc-web-and-vue-js-4e0c18461a3e`
-- `https://medium.com/swlh/ditching-rest-with-grpc-web-and-envoy-bfaa89a39b32`
+- Create a Vue.js base project (It create a folder containing the project)
+```bash
+vue create hello-world
+```
+- Create the proto compiled code for GO (Run in the main folder)
+```bash
+protoc -I proto/ proto/deamon.proto --go_out=plugins=grpc:proto
+```
+- Create the proto compiled code for JS (Run in the proto folder)
+```bash
+protoc daemon.proto --js_out=import_style=commonjs,binary:../client --grpc-web_out=import_style=commonjs,mode=grpcwebtext:../client
+```

@@ -1,1 +1,9 @@
-The files  `proto_pb.js` and `proto_grpc_web_pb.js` are not used in this folder. They are used in the node_modules folder that will be created after `npm run serve`. After that copy those file inside that folder.
+### Run the client
+
+```bash
+$ cd client
+$ docker build -t webclient .
+$ docker run -d -p 8001:8000 webclient:latest
+```
+
+browse ```http://localhost:8001/```

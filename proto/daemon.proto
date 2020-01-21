@@ -1,0 +1,188 @@
+syntax = "proto3";
+
+service Daemon {
+    rpc LoginUser (LoginUserRequest) returns (LoginUserResponse) {}
+    rpc SignupUser (SignupUserRequest) returns (LoginUserResponse) {}
+    rpc InviteUser (InviteUserRequest) returns (InviteUserResponse) {}
+
+    rpc CreateEvent (CreateEventRequest) returns (stream LabStatus) {}
+    rpc StopEvent (StopEventRequest) returns (stream EventStatus) {}
+    rpc ListEvents (ListEventsRequest) returns (ListEventsResponse) {}
+    rpc ListEventTeams (ListEventTeamsRequest) returns (ListEventTeamsResponse) {}
+    rpc RestartTeamLab (RestartTeamLabRequest) returns (stream EventStatus) {}
+
+    rpc UpdateExercisesFile(Empty) returns (UpdateExercisesFileResponse){}
+    rpc ListExercises (Empty) returns (ListExercisesResponse) {}
+    rpc ResetExercise (ResetExerciseRequest) returns (stream ResetTeamStatus) {}
+
+    rpc ListFrontends (Empty) returns (ListFrontendsResponse) {}
+    rpc ResetFrontends (ResetFrontendsRequest) returns (stream ResetTeamStatus) {}
+    rpc SetFrontendMemory (SetFrontendMemoryRequest) returns (Empty) {}
+    rpc SetFrontendCpu (SetFrontendCpuRequest) returns (Empty) {}
+    rpc GetTeamInfo (GetTeamInfoRequest) returns (GetTeamInfoResponse) {}
+    rpc MonitorHost (Empty) returns (stream MonitorHostResponse) {}
+    rpc Version (Empty) returns (VersionResponse) {}
+}
+
+
+message Team {
+    string Id = 1;
+}
+
+
+message LoginUserRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginUserResponse {
+    string token = 1;
+    string error = 2;
+}
+
+message SignupUserRequest {
+    string key = 1;
+    string username = 2;
+    string password = 3;
+}
+
+message InviteUserRequest {
+    bool super_user = 1;
+}
+
+message InviteUserResponse {
+    string key = 1;
+    string error = 2;
+}
+
+message CreateEventRequest {
+    string name = 1;
+    string tag = 2;
+    repeated string frontends = 3;
+    repeated string exercises = 4;
+    int32 available = 5;
+    int32 capacity = 6;
+}
+
+message ListEventsRequest {}
+message ListEventsResponse {
+    message Events {
+        string tag = 1;
+        string name = 2;
+        int32 teamCount = 3;
+        string exercises = 4;
+        int32 capacity = 5;
+        string creationTime = 6;
+    }
+
+    repeated Events events = 1;
+}
+
+message ListEventTeamsRequest {
+    string tag = 1;
+}
+message ListEventTeamsResponse {
+    message Teams {
+        string Id = 1;
+        string Name = 2;
+        string Email = 3;
+    }
+    repeated Teams teams = 1;
+}
+
+message RestartTeamLabRequest {
+    string eventTag = 1;
+    string teamId = 2;
+}
+
+message ResetExerciseRequest {
+    string exerciseTag = 1;
+    string eventTag = 2;
+    repeated Team teams = 3;
+}
+
+message UpdateExercisesFileResponse {
+    string msg=1;
+}
+message ListExercisesResponse {
+    message Exercise {
+        repeated string tags = 1;
+        string name = 2;
+        int32 dockerImageCount = 3;
+        int32 vboxImageCount = 4;
+    }
+
+    repeated Exercise exercises = 1;
+}
+
+message ResetTeamStatus {
+    string teamId = 1;
+    string status = 2;
+}
+
+message StopEventRequest {
+    string tag = 1;
+}
+
+message EventStatus {
+    string  entity = 1;
+    string status = 2;
+}
+
+message LabStatus {
+    string errorMessage = 2;
+}
+
+message MonitorHostResponse {
+    float MemoryPercent = 1;
+    string MemoryReadError = 2;
+    float CPUPercent = 3;
+    string CPUReadError = 4;
+}
+
+message Empty {}
+
+message VersionResponse {
+    string version = 1;
+}
+
+message ListFrontendsResponse {
+    message Frontend {
+        string image = 1;
+        int64 size = 2;
+        int64 memoryMB = 3;
+        float cpu = 4;
+    }
+    repeated Frontend frontends = 1;
+}
+
+
+message ResetFrontendsRequest {
+    string eventTag = 2;
+    repeated Team teams = 3;
+}
+
+message SetFrontendMemoryRequest {
+    string image = 1;
+    int64 memoryMB =2 ;
+}
+
+message SetFrontendCpuRequest{
+    string image = 1;
+    float cpu = 2;
+}
+
+message GetTeamInfoRequest {
+    string teamId = 1;
+    string eventTag = 2;
+}
+
+message GetTeamInfoResponse {
+    message Instance {
+        string image = 1;
+        string type = 2;
+        string id = 3;
+        int32 state = 4;
+    }
+    repeated Instance instances = 1;
+}
