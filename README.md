@@ -47,8 +47,11 @@ $ go run app/daemon/main.go --config=/home/gian/Documents/haaukins_files/configs
 ### Proxy
 ```bash
 $ docker build -t envoy . 
-$ docker run -d -p 8000:8000 --network=host envoy:latest
+$ docker run -d -p 8000:8000 envoy:latest
+
 ```
+Note: No need to specify `--network=host` while running the docker container, the ip address of `docker0`  used. 
+
 
 Note: `--network=host` is NOT required for MacOS and Windows machines. `socket_address` IP address on [envoy.yaml](envoy.yaml) should be `docker0` on linux host machines and `docker.for.mac.localhost` for MacOS machine. 
 
@@ -56,8 +59,9 @@ Note: `--network=host` is NOT required for MacOS and Windows machines. `socket_a
 ```bash
 $ cd client
 $ docker build -t webclient .
-$ docker run -d -p 8001:8000 webclient:latest
+$ docker run -d -p 8003:8003 webclient:latest
 ```
+Note : Webclient will work only with HTTPS !! 
 
 browse ```http://localhost:8001/```
 
@@ -73,5 +77,4 @@ protoc -I proto/ proto/deamon.proto --go_out=plugins=grpc:proto
 ```
 - Create the proto compiled code for JS (Run in the proto folder)
 ```bash
-protoc daemon.proto --js_out=import_style=commonjs,binary:../client --grpc-web_out=import_style=commonjs,mode=grpcwebtext:../client
-```
+protoc daemon.proto --js_out=import_style=commonjs,binary:../client --grpc-web_out=import_style=commonjs,mode=grpcwebtext:../client ```
