@@ -1,0 +1,35 @@
+version: '3.4'
+services:
+  proxy:
+    build:
+      context: ./envoy
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    volumes:
+      - ${CERTIFICATES_PATH}:/etc/certs
+    networks:
+      - haaukins-webclient
+
+  webclient:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: build-stage
+    networks:
+      - haaukins-webclient
+
+  nginx:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: production-stage
+    ports:
+      - '8003:8003'
+    volumes:
+      - ${CERTIFICATES_PATH}:/etc/certs
+    networks:
+      - haaukins-webclient
+networks:
+  haaukins-webclient:
+

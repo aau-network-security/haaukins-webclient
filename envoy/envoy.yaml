@@ -40,9 +40,9 @@ static_resources:
               alpn_protocols: "h2"
               tls_certificates:
                 - certificate_chain:
-                    filename: "/etc/fullchain.pem"
+                    filename: "/etc/certs/fullchain.pem"
                   private_key:
-                    filename: "/etc/privkey.pem"
+                    filename: "/etc/certs/privkey.pem"
   clusters:
     - name: greeter_service
       connect_timeout: 0.25s
@@ -53,5 +53,5 @@ static_resources:
       tls_context:
         common_tls_context:
           tls_certificates: 
-            certificate_chain: {"filename": "/etc/fullchain.pem"}
-            private_key: {"filename": "/etc/privkey.pem"}
+            certificate_chain: {"filename": "/etc/certs/fullchain.pem"}
+            private_key: {"filename": "/etc/certs/privkey.pem"}

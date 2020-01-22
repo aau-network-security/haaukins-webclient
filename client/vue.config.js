@@ -4,8 +4,8 @@ module.exports = {
 		      host: 'admin.ntp-event.dk',
 		      port:  '8000',
 		      https: {
-		         key: fs.readFileSync('./privkey.pem'),
-		         cert: fs.readFileSync('./fullchain.pem'),
+		         key: fs.readFileSync('/certs/privkey.pem'),
+		         cert: fs.readFileSync('/certs/fullchain.pem'),
 	  		},
 		      public: 'https://localhost:8000' 
 		    }
