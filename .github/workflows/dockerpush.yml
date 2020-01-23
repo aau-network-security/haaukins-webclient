@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Build Envoy
-        run: docker build . --file Dockerfile --tag envoy:${GITHUB_REF:10}
+        run: docker build . --file ./envoy/Dockerfile --tag envoy:${GITHUB_REF:10}
       - name: Tag build image with github registery
         run: docker tag envoy:${GITHUB_REF:10} docker.pkg.github.com/aau-network-security/haaukins-webclient/envoy:${GITHUB_REF:10}
       - name: Push envoy to github docker registery
