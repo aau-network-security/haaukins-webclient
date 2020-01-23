@@ -1,0 +1,36 @@
+name: Build and  Publish Docker
+on:
+  push:
+    tags: 
+      - 'v*.*.*' ## will be the tag of docker image
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: olegtarasov/get-tag@v1
+      id: tagName
+    
+    - name: Publish Envoy to Github Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+       name: aau-network-security/haaukins-webclient/envoy
+       username: ${{ github.actor }}
+       password: ${{ secrets.DOCKER_PASSWORD }}
+       registry: docker.pkg.github.com
+       tags: ${{ steps.tagName.outputs.tag }}
+       dockerfile: ./envoy/Dockerfile
+       context: ./envoy
+   
+    - name: Publish Webclient to Github Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+       name: aau-network-security/haaukins-webclient/webclient
+       username: ${{ github.actor }}
+       password: ${{ secrets.DOCKER_PASSWORD }}
+       registry: docker.pkg.github.com
+       tags: ${{ steps.tagName.outputs.tag }}
+       dockerfile: ./client/Dockerfile
+       context: ./client
+  
