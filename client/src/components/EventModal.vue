@@ -211,8 +211,14 @@
                 let getRequest = new Empty();
                 daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     this.error = err;
+                    const that = this
                     let frontendsListObj = response.getFrontendsList()
-                    frontendsListObj.forEach(el => this.frontends.push(el.getImage()))
+                    //frontendsListObj.forEach(el => this.frontends.push(el.getImage()))
+                    frontendsListObj.forEach(function (element) {
+                        if (!element.getImage().includes("vulnerability")){
+                            that.frontends.push(element.getImage())
+                        }
+                    })
                 });
             }
         }

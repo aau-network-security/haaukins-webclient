@@ -43,7 +43,7 @@
                     </tbody>
                     <tbody v-else>
                         <tr>
-                            <td colspan="6" class="text-center">No events founds...</td>
+                            <td colspan="7" class="text-center">No events founds...</td>
                         </tr>
                     </tbody>
                 </table>
