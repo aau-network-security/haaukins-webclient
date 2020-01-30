@@ -7,6 +7,7 @@ import Teams from "./Pages/Teams";
 import Challenges from "./Pages/Challenges";
 import VMs from "./Pages/VMs";
 import TeamAction from "./Pages/TeamAction";
+import Signup from "./Pages/Signup";
 
 Vue.use(Router);
 
@@ -15,6 +16,7 @@ export const router = new Router({
     routes: [
         { name: 'home', path: '/', component: HomePage },
         { name: 'login', path: '/login', component: LoginPage },
+        { name: 'signup', path: '/signup', component: Signup },
         { name: 'event', path: '/events/:tag', component: Teams },
         { name: 'team', path: '/events/:tag/:id', component: TeamAction },
         { name: 'challenges', path: '/challenges', component: Challenges},
@@ -27,7 +29,7 @@ export const router = new Router({
 
 router.beforeEach((to, from, next) => {
     // redirect to login page if not logged in and trying to access a restricted page
-    const publicPages = ['/login'];
+    const publicPages = ['/login', '/signup'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('user');
 

@@ -15,6 +15,7 @@
                     <div class="form-group">
                         <button class="btn btn-haaukins" :disabled="loading" style="width: 100%">Login</button>
                     </div>
+                    <router-link :to="{name: 'signup'}" class="text-haaukins text-center" >Create an Account</router-link>
                     <div v-if="error" class="alert alert-danger">{{error}}</div>
                 </form>
             </div>
@@ -70,6 +71,8 @@
                             router.push(this.returnUrl)
                         }else{
                             this.error = err || response.getError();
+                            this.submitted = false;
+                            this.loading = false;
                         }
                     });
                 }
