@@ -12,7 +12,7 @@
         <div class="container" style="margin-top: 100px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
             <b-button id="show-btn" @click="$bvModal.show('create-event-modal')" class="btn-haaukins float-right">Create Event</b-button>
-            <b-button v-on:click="update_exercises_file" class="btn-secondary float-right">Update Exercise file</b-button>
+            <b-button v-on:click="update_exercises_file" class="btn-secondary float-right mr-2">Update Exercise file</b-button>
             <div class="clearfix"></div>
             <hr>
             <div v-if="error" class="alert alert-danger alert-dismissible">{{error}}
@@ -49,6 +49,34 @@
                 </table>
             </div>
         </div>
+        <div class="top-footer">
+            <div class="container pt-3">
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <div v-if="!memoryError">
+                            Memory {{memory}} %
+                            <span class="icon" v-bind:class="{'text-success': memory <= 50, 'text-warning': memory < 75 && memory >50, 'text-danger': memory >= 75}">
+                                <i class="fas fa-circle"></i>
+                            </span>
+                        </div>
+                        <div v-else>
+                            {{memoryError}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div v-if="!cpuError">
+                            CPU {{cpu}} %
+                            <span class="icon" v-bind:class="{'text-success': cpu <= 50, 'text-danger': cpu >= 75, 'text-warning': cpu < 75 && cpu >50}">
+                                <i class="fas fa-circle"></i>
+                            </span>
+                        </div>
+                        <div v-else>
+                            {{cpuError}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <Footer/>
         <EventModal @createEvent="createEvent"/>
 
@@ -74,11 +102,13 @@
                 status: null,
                 stopEventResponse: null,
                 loaderIsActive: false,
-                loader_status: ""
+                loader_status: "",
+                memory: "", cpu: "", memoryError: "", cpuError: ""
             }
         },
         created: function() {
             this.listEvent();
+            this.monitorHost()
         },
         methods: {
             listEvent: function () {
@@ -93,28 +123,36 @@
             },
             createEvent: function (request) {
                 const that = this
-                this.loaderIsActive = true
-                this.loader_status = "Creating Event..."
 
-                const call = daemonclient.createEvent(request, {Token: localStorage.getItem("user")});
+                if (this.memory <= 85){
+                    this.loaderIsActive = true
+                    this.loader_status = "Creating Event..."
 
-                call.on('data', function(response) {
-                    //TODO nothign receive because cause the deamon dosen't send anything
-                    window.console.log(response)
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function(status) {
-                    that.loaderIsActive = false
+                    const call = daemonclient.createEvent(request, {Token: localStorage.getItem("user")});
+
+                    call.on('data', function(response) {
+                        //TODO nothign receive because cause the deamon dosen't send anything
+                        window.console.log(response)
+                    });
+                    call.on('error', function(e) {
+                        that.error = e
+                    });
+                    call.on('status', function(status) {
+                        that.loaderIsActive = false
+                        that.$bvModal.hide('create-event-modal')
+                        if (status['metadata']['grpc-message'] == "") {
+                            that.success = "Event Successfully Created!"
+                            that.listEvent()
+                        }else{
+                            that.error = "Error! Try again.."
+                        }
+                    });
+                }else{
                     that.$bvModal.hide('create-event-modal')
-                    if (status['metadata']['grpc-message'] == "") {
-                        that.success = "Event Successfully Created!"
-                        that.listEvent()
-                    }else{
-                        that.error = "Error! Try again.."
-                    }
-                });
+                    this.error = "Error! Not enough memory on the Server."
+                }
+
+
             },
             stopEvent: function (tag) {
                 const that = this
@@ -154,12 +192,48 @@
                     this.error = err;
                     this.success = response.getMsg()
                 });
-            }
+            },
+            monitorHost: function () {
+                const that = this;
+                let getRequest = new Empty();
+
+                const call = daemonclient.monitorHost(getRequest, {Token: localStorage.getItem("user")});
+
+                call.on('data', function(response) {
+                    //TODO nothign receive because cause the deamon dosen't send anything
+                    let memory = response.getMemorypercent()
+                    that.memory = memory.toFixed(2)
+                    let cpu = response.getCpupercent()
+                    that.cpu = cpu.toFixed(2)
+                    that.memoryError = response.getMemoryreaderror()
+                    that.cpuError = response.getCpureaderror()
+                });
+                call.on('error', function(e) {
+                    that.error = e
+                });
+                call.on('status', function(status) {
+                    window.console.log(status)
+                });
+            },
         }
     }
 </script>
 <style>
     h3 {
         font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+    }
+    .top-footer {
+        position: absolute;
+        bottom: 60px;
+        width: 100%;
+        /* Set the fixed height of the footer here */
+        height: 60px;
+        background-color:  rgb(210,255,76)  !important;
+        color: #000!important;
+        font-weight: bold;
+    }
+    .top-footer > .container {
+        padding-right: 15px;
+        padding-left: 15px;
     }
 </style>
