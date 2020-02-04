@@ -291,7 +291,6 @@
                     exercisesListObj.forEach(function (element) {
                         let childrenChallengesObj = element.getExerciseinfoList();
                         that.childrenChallenges = "   (";
-                        window.console.log(childrenChallengesObj.length);
 
                         for (let i = 0; i < childrenChallengesObj.length; i++){
                             that.cat = childrenChallengesObj[i].getCategory();
