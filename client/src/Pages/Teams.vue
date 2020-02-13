@@ -10,7 +10,7 @@
             </div>
         </div>
         <Navbar/>
-        <div class="container" style="margin-top: 100px">
+        <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Event {{this.$route.params.tag}}</h3>
             <router-link :to="{name: 'home'}" class="btn btn-sm btn-secondary text-white float-right">Back</router-link>
             <button data-toggle="modal" data-target="#eventModal" type="button" id="create-event" class="btn btn-sm btn-haaukins float-right mr-2">Restart</button>
@@ -26,7 +26,6 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <hr>
             <div class="table-responsive">
                 <table class="table mx-auto table-hover table-striped" id="teamsEventTable" cellspacing="0" style="table-layout: auto; width: 100%">
                     <thead>
