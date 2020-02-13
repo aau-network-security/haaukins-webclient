@@ -10,7 +10,7 @@
             </div>
         </div>
         <Navbar/>
-        <div class="container" style="margin-top: 100px">
+        <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Team {{this.$route.params.id}}</h3>
             <router-link :to="{name: 'event', params: {tag: this.$route.params.tag}}" class="btn btn-sm btn-secondary text-white float-right">Back</router-link>
             <button data-toggle="modal" data-target="#eventModal" type="button" id="create-event" class="btn btn-sm btn-haaukins float-right mr-2">Restart</button>

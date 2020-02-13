@@ -8,6 +8,7 @@ import Challenges from "./Pages/Challenges";
 import VMs from "./Pages/VMs";
 import TeamAction from "./Pages/TeamAction";
 import Signup from "./Pages/Signup";
+import Graphs from "./Pages/Graphs";
 
 Vue.use(Router);
 
@@ -21,6 +22,7 @@ export const router = new Router({
         { name: 'team', path: '/events/:tag/:id', component: TeamAction },
         { name: 'challenges', path: '/challenges', component: Challenges},
         { name: 'vms', path: '/vms', component: VMs },
+        { name: 'graphs', path: '/graphs', component: Graphs},
 
         // otherwise redirect to home
         { path: '*', redirect: '/' }

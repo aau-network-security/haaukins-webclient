@@ -9,7 +9,7 @@
             </div>
         </div>
         <Navbar/>
-        <div class="container" style="margin-top: 100px">
+        <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
             <b-button id="show-btn" @click="$bvModal.show('create-event-modal')" class="btn-haaukins float-right">Create Event</b-button>
             <b-button v-on:click="update_exercises_file" class="btn-secondary float-right mr-2">Update Exercise file</b-button>
@@ -28,29 +28,30 @@
             <div class="table-responsive mt-1">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Action</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Action</th>
                     </thead>
-                    <tbody v-if="events">
+                    <tbody v-if="events!=null">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
                             <td><strong><router-link :to="{name: 'event', params: {tag: event.tag}}" class="text-haaukins" >{{event.tag}}</router-link></strong></td>
                             <td>{{event.name}}</td>
                             <td>{{event.teamcount}}</td>
                             <td>{{challenges_count(event.exercises)}}</td>
                             <td>{{event.capacity}}</td>
-                            <td>{{event.creationtime}}</td>
+                            <td>{{beaut_date(event.creationtime)}}</td>
+                            <td>{{beaut_date(event.finishtime)}}</td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
                         </tr>
                     </tbody>
                     <tbody v-else>
                         <tr>
-                            <td colspan="7" class="text-center">No events founds...</td>
+                            <td colspan="8" class="text-center">No events founds...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="top-footer">
-            <div class="container pt-3">
+            <div class="mycontainer py-2">
                 <div class="row text-center">
                     <div class="col-md-6">
                         <div v-if="!memoryError">
@@ -92,7 +93,7 @@
 
     export default {
         name: "Home",
-        components: {EventModal, Footer, Navbar},
+        components: { EventModal, Footer, Navbar},
         data: function () {
             return {
                 events: null,
@@ -144,7 +145,7 @@
                             that.success = "Event Successfully Created!"
                             that.listEvent()
                         }else{
-                            that.error = "Error! Try again.."
+                            that.error = status['metadata']['grpc-message']
                         }
                     });
                 }else{
@@ -185,6 +186,10 @@
             challenges_count: function (challenges_string){
                 const challenges = challenges_string.split(",");
                 return challenges.length
+            },
+            beaut_date: function (string_date){
+                let date = new Date(string_date);
+                return date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
             },
             update_exercises_file: function () {
                 let getRequest = new Empty();
@@ -227,12 +232,11 @@
         bottom: 60px;
         width: 100%;
         /* Set the fixed height of the footer here */
-        height: 60px;
-        background-color:  rgb(210,255,76)  !important;
         color: #000!important;
         font-weight: bold;
     }
-    .top-footer > .container {
+    .top-footer > .mycontainer {
+        background-color:  rgb(210,255,76)  !important;
         padding-right: 15px;
         padding-left: 15px;
     }

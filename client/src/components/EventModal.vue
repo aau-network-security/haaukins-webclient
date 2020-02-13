@@ -6,19 +6,26 @@
         <form ref="form" @submit.stop.prevent="handleSubmit()">
             <b-row>
                 <b-col lg="7">
-                    <b-form-group
-                            id="fieldset-eventName"
-                            label="Event Name"
-                            label-for="eventName"
-                    >
-                        <b-form-input
-                                id="eventName"
-                                v-model="eventName"
-                                type="text"
-                                required
-                        ></b-form-input>
-                    </b-form-group>
                     <b-row>
+                        <b-col md="6">
+                            <b-form-group
+                                    id="fieldset-eventName"
+                                    label="Event Name"
+                                    label-for="eventName"
+                            >
+                                <b-form-input
+                                        id="eventName"
+                                        v-model="eventName"
+                                        type="text"
+                                        required
+                                ></b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col md="6">
+                            <b-form-group id="fieldset-eventFinishTime" label="Expected Finish Date" label-for="eventFinishTime">
+                                <b-form-input :id="eventFinishTime" v-model="eventFinishTime" type="date"></b-form-input>
+                            </b-form-group>
+                        </b-col>
                         <b-col md="4">
                             <b-form-group
                                     id="fieldset-eventTag"
@@ -65,7 +72,6 @@
                                 ></b-form-input>
                             </b-form-group>
                         </b-col>
-
                     </b-row>
                 </b-col>
                 <b-col v-if="frontends" lg="5" class="myfrontends-field">
@@ -84,32 +90,6 @@
                         </b-form-group>
                     </div>
                 </b-col>
-               <!-- <b-col v-if="challengesTextValue" lg="5" class="mt-3 mt-lg-0">
-                    <b-form-group>
-                        <div class="challenges-field-modal frontends-field-modal p-3 mt-2" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
-                            <b-form-checkbox-group
-                                    id="challengesTag"
-                                    v-model="selectedChallenges"
-                                    :options="challengesTextValue"
-                                    name="challengesTag"
-                                    class="ml-4"
-                                    stacked
-                            ></b-form-checkbox-group>
-                        </div>
-
-                        <template v-slot:label>
-                            <b>Choose your Challenges:</b><br>
-                            <b-form-checkbox
-                                    v-model="selectAllChallenges"
-                                    aria-describedby="challengesTag"
-                                    aria-controls="challengesTag"
-                                    @change="toggleAllChallenges"
-                            >
-                                {{ selectAllChallenges ? 'Un-select All' : 'Select All' }}
-                            </b-form-checkbox>
-                        </template>
-                    </b-form-group>
-                </b-col> -->
                 <b-col md="12" class="mt-3 mt-lg-0 ">
                     <b-form-group>
                         <div class="challenges-field-modal frontends-field-modal p-3 mt-2" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
@@ -213,6 +193,7 @@
                 eventTag: '',
                 eventAvailability: 0,
                 eventCapacity: 0,
+                eventFinishTime: '',
                 selectedChallenges: [],
                 selectAllChallenges: false,
                 frontends: [],
@@ -255,6 +236,7 @@
                         this.eventTag = this.encodeHTML(this.eventTag)
                         this.eventAvailability = this.encodeHTML(this.eventAvailability)
                         this.eventCapacity = this.encodeHTML(this.eventCapacity)
+                        this.eventFinishTime = this.encodeHTML(this.eventFinishTime)
                         this.createEvent()
                     }
                 }
@@ -269,7 +251,9 @@
                 getRequest.setName(this.eventName);
                 getRequest.setTag(this.eventTag);
                 getRequest.setAvailable(this.eventAvailability);
-                getRequest.setCapacity(this.eventCapacity)
+                getRequest.setCapacity(this.eventCapacity);
+                getRequest.setFinishtime(this.eventFinishTime);
+                getRequest.setFinishtime(this.eventFinishTime);
 
                 this.selectedChallenges.forEach(function(challenge) {
                     getRequest.addExercises(challenge)
@@ -339,7 +323,6 @@
                     this.error = err;
                     const that = this
                     let frontendsListObj = response.getFrontendsList()
-                    //frontendsListObj.forEach(el => this.frontends.push(el.getImage()))
                     frontendsListObj.forEach(function (element) {
                         if (!element.getImage().includes("vulnerability")){
                             that.frontends.push(element.getImage())

@@ -1,7 +1,7 @@
 <template>
     <div>
         <Navbar/>
-        <div class="container" style="margin-top: 100px">
+        <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Frontends List</h3>
             <div v-if="error" class="alert alert-danger">{{error}}</div>
             <div class="table-responsive mt-1">

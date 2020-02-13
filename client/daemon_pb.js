@@ -1093,7 +1093,8 @@ proto.CreateEventRequest.toObject = function(includeInstance, msg) {
     frontendsList: jspb.Message.getRepeatedField(msg, 3),
     exercisesList: jspb.Message.getRepeatedField(msg, 4),
     available: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    capacity: jspb.Message.getFieldWithDefault(msg, 6, 0)
+    capacity: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    finishtime: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
   if (includeInstance) {
@@ -1153,6 +1154,10 @@ proto.CreateEventRequest.deserializeBinaryFromReader = function(msg, reader) {
     case 6:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setCapacity(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFinishtime(value);
       break;
     default:
       reader.skipField();
@@ -1222,6 +1227,13 @@ proto.CreateEventRequest.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt32(
       6,
+      f
+    );
+  }
+  f = message.getFinishtime();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
       f
     );
   }
@@ -1343,6 +1355,21 @@ proto.CreateEventRequest.prototype.getCapacity = function() {
 /** @param {number} value */
 proto.CreateEventRequest.prototype.setCapacity = function(value) {
   jspb.Message.setProto3IntField(this, 6, value);
+};
+
+
+/**
+ * optional string finishTime = 7;
+ * @return {string}
+ */
+proto.CreateEventRequest.prototype.getFinishtime = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/** @param {string} value */
+proto.CreateEventRequest.prototype.setFinishtime = function(value) {
+  jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
@@ -1649,9 +1676,10 @@ proto.ListEventsResponse.Events.toObject = function(includeInstance, msg) {
     tag: jspb.Message.getFieldWithDefault(msg, 1, ""),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     teamcount: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    exercisecount: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    exercises: jspb.Message.getFieldWithDefault(msg, 4, ""),
     capacity: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    creationtime: jspb.Message.getFieldWithDefault(msg, 6, "")
+    creationtime: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    finishtime: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
   if (includeInstance) {
@@ -1701,8 +1729,8 @@ proto.ListEventsResponse.Events.deserializeBinaryFromReader = function(msg, read
       msg.setTeamcount(value);
       break;
     case 4:
-      var value = /** @type {number} */ (reader.readInt32());
-      msg.setExercisecount(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setExercises(value);
       break;
     case 5:
       var value = /** @type {number} */ (reader.readInt32());
@@ -1711,6 +1739,10 @@ proto.ListEventsResponse.Events.deserializeBinaryFromReader = function(msg, read
     case 6:
       var value = /** @type {string} */ (reader.readString());
       msg.setCreationtime(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFinishtime(value);
       break;
     default:
       reader.skipField();
@@ -1762,9 +1794,9 @@ proto.ListEventsResponse.Events.serializeBinaryToWriter = function(message, writ
       f
     );
   }
-  f = message.getExercisecount();
-  if (f !== 0) {
-    writer.writeInt32(
+  f = message.getExercises();
+  if (f.length > 0) {
+    writer.writeString(
       4,
       f
     );
@@ -1780,6 +1812,13 @@ proto.ListEventsResponse.Events.serializeBinaryToWriter = function(message, writ
   if (f.length > 0) {
     writer.writeString(
       6,
+      f
+    );
+  }
+  f = message.getFinishtime();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
       f
     );
   }
@@ -1832,17 +1871,17 @@ proto.ListEventsResponse.Events.prototype.setTeamcount = function(value) {
 
 
 /**
- * optional int32 exerciseCount = 4;
- * @return {number}
+ * optional string exercises = 4;
+ * @return {string}
  */
-proto.ListEventsResponse.Events.prototype.getExercisecount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+proto.ListEventsResponse.Events.prototype.getExercises = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
-/** @param {number} value */
-proto.ListEventsResponse.Events.prototype.setExercisecount = function(value) {
-  jspb.Message.setProto3IntField(this, 4, value);
+/** @param {string} value */
+proto.ListEventsResponse.Events.prototype.setExercises = function(value) {
+  jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
@@ -1873,6 +1912,21 @@ proto.ListEventsResponse.Events.prototype.getCreationtime = function() {
 /** @param {string} value */
 proto.ListEventsResponse.Events.prototype.setCreationtime = function(value) {
   jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
+/**
+ * optional string finishTime = 7;
+ * @return {string}
+ */
+proto.ListEventsResponse.Events.prototype.getFinishtime = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/** @param {string} value */
+proto.ListEventsResponse.Events.prototype.setFinishtime = function(value) {
+  jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
@@ -4181,6 +4235,7 @@ proto.LabStatus.prototype.toObject = function(opt_includeInstance) {
  */
 proto.LabStatus.toObject = function(includeInstance, msg) {
   var f, obj = {
+    message: jspb.Message.getFieldWithDefault(msg, 1, ""),
     errormessage: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
@@ -4218,6 +4273,10 @@ proto.LabStatus.deserializeBinaryFromReader = function(msg, reader) {
     }
     var field = reader.getFieldNumber();
     switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setMessage(value);
+      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setErrormessage(value);
@@ -4251,6 +4310,13 @@ proto.LabStatus.prototype.serializeBinary = function() {
  */
 proto.LabStatus.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
+  f = message.getMessage();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
   f = message.getErrormessage();
   if (f.length > 0) {
     writer.writeString(
@@ -4258,6 +4324,21 @@ proto.LabStatus.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+};
+
+
+/**
+ * optional string Message = 1;
+ * @return {string}
+ */
+proto.LabStatus.prototype.getMessage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.LabStatus.prototype.setMessage = function(value) {
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
