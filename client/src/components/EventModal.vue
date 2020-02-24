@@ -20,13 +20,11 @@
                                         required
                                 ></b-form-input>
                             </b-form-group>
+                            <b-tooltip target="fieldset-eventName" triggers="hover">
+                                The event Name showed in the Home page
+                            </b-tooltip>
                         </b-col>
                         <b-col md="6">
-                            <b-form-group id="fieldset-eventFinishTime" label="Expected Finish Date" label-for="eventFinishTime">
-                                <b-form-input :id="eventFinishTime" v-model="eventFinishTime" type="date"></b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col md="4">
                             <b-form-group
                                     id="fieldset-eventTag"
                                     label="Event Tag"
@@ -39,8 +37,32 @@
                                         required
                                 ></b-form-input>
                             </b-form-group>
+                            <b-tooltip target="fieldset-eventTag" triggers="hover">
+                                Sub domain in which the event will be available
+                            </b-tooltip>
                         </b-col>
-                        <b-col md="4">
+                        <b-col md="6">
+<!--                            <b-form-group id="fieldset-eventFinishTime" label="Expected Finish Date" label-for="eventFinishTime">-->
+<!--                                <b-form-input :id="eventFinishTime" v-model="eventFinishTime" type="date"></b-form-input>-->
+<!--                            </b-form-group>-->
+                            <div class="form-group">
+                                <label for="eventStartTime">Expected Start Date</label>
+                                <datepicker v-model="eventStartTime" placeholder="Select Start Date" id="eventStartTime" :disabledDates="disabledDates"></datepicker>
+                                <b-tooltip target="eventStartTime" triggers="hover">
+                                    Date in which the Event should be available online
+                                </b-tooltip>
+                            </div>
+                        </b-col>
+                        <b-col md="6">
+                            <div class="form-group">
+                                <label for="eventFinishTime">Expected Finish Date</label>
+                                <datepicker v-model="eventFinishTime" placeholder="Select Finish Date" id="eventFinishTime" :disabledDates="disabledDatesFinishTime()" :class="{ 'my-is-invalid': submitted && this.eventFinishTime == '' }"></datepicker>
+                                <b-tooltip target="eventFinishTime" triggers="hover">
+                                    Date in which the Event is supposed to finish
+                                </b-tooltip>
+                            </div>
+                        </b-col>
+                        <b-col md="6">
                             <b-form-group
                                     id="fieldset-eventAvailability"
                                     label="Event Availability"
@@ -55,8 +77,11 @@
                                         required
                                 ></b-form-input>
                             </b-form-group>
+                            <b-tooltip target="fieldset-eventAvailability" triggers="hover">
+                                Amount of labs to make available initially for the event
+                            </b-tooltip>
                         </b-col>
-                        <b-col md="4">
+                        <b-col md="6">
                             <b-form-group
                                     id="fieldset-eventCapacity"
                                     label="Event Capacity"
@@ -71,6 +96,9 @@
                                         required
                                 ></b-form-input>
                             </b-form-group>
+                            <b-tooltip target="fieldset-eventCapacity" triggers="hover">
+                                Maximum amount of labs/teams
+                            </b-tooltip>
                         </b-col>
                     </b-row>
                 </b-col>
@@ -88,9 +116,12 @@
                                     stacked
                             ></b-form-checkbox-group>
                         </b-form-group>
+                        <b-tooltip target="frontends" triggers="hover">
+                            List of available Frontends
+                        </b-tooltip>
                     </div>
                 </b-col>
-                <b-col md="12" class="mt-3 mt-lg-0 ">
+                <b-col md="12" class="mt-3 mt-lg-0" style="z-index: 2">
                     <b-form-group>
                         <div class="challenges-field-modal frontends-field-modal p-3 mt-2" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
                             <div class="row">
@@ -182,9 +213,11 @@
 <script>
     import { Empty, CreateEventRequest } from "daemon_pb";
     import { daemonclient } from "../App";
+    import Datepicker from "vuejs-datepicker"
 
     export default {
         name: "EventModal",
+        components: { Datepicker},
         data: function () {
             return {
                 error: null,
@@ -193,7 +226,7 @@
                 eventTag: '',
                 eventAvailability: 0,
                 eventCapacity: 0,
-                eventFinishTime: '',
+                eventFinishTime: '', eventStartTime: Date.now(),
                 selectedChallenges: [],
                 selectAllChallenges: false,
                 frontends: [],
@@ -203,14 +236,22 @@
                 challengesF: [], challengesTextF: [],
                 challengesRE: [], challengesTextRE: [],
                 challengesC: [], challengesTextC: [],
-                cat: '', childrenChallenges: ''
+                cat: '', childrenChallenges: '',
+                disabledDates: {
+                    to: new Date(Date.now() - 8640000)
+                }
             }
         },
-        created: function(){
+        mounted: function(){
             this.getChallenges();
             this.getFrontends();
         },
         methods: {
+            disabledDatesFinishTime: function() {
+                return {
+                    to: new Date(this.eventStartTime - 8640000)
+                }
+            },
             toggleAllChallenges: function(checked) {
                 this.selectedChallenges = checked ? this.challengesWE
                     .concat(this.challengesB)
@@ -228,17 +269,15 @@
                 this.submitted = true;
                 if (!(this.eventName && this.eventTag)){
                     return;
+                }else if (this.selectedFrontends.length == 0 || this.selectedChallenges.length == 0) {
+                    return;
                 }else{
-                    if (this.selectedFrontends.length == 0 || this.selectedChallenges.length == 0){
-                        return;
-                    }else{
-                        this.eventName = this.encodeHTML(this.eventName)
-                        this.eventTag = this.encodeHTML(this.eventTag)
-                        this.eventAvailability = this.encodeHTML(this.eventAvailability)
-                        this.eventCapacity = this.encodeHTML(this.eventCapacity)
-                        this.eventFinishTime = this.encodeHTML(this.eventFinishTime)
-                        this.createEvent()
-                    }
+                    this.eventName = this.encodeHTML(this.eventName)
+                    this.eventTag = this.encodeHTML(this.eventTag)
+                    this.eventAvailability = this.encodeHTML(this.eventAvailability)
+                    this.eventCapacity = this.encodeHTML(this.eventCapacity)
+                    window.console.log(this.eventFinishTime)
+                    //this.createEvent()
                 }
                 // Hide the modal manually
                 //this.$nextTick(() => {
@@ -252,7 +291,6 @@
                 getRequest.setTag(this.eventTag);
                 getRequest.setAvailable(this.eventAvailability);
                 getRequest.setCapacity(this.eventCapacity);
-                getRequest.setFinishtime(this.eventFinishTime);
                 getRequest.setFinishtime(this.eventFinishTime);
 
                 this.selectedChallenges.forEach(function(challenge) {
@@ -345,7 +383,8 @@
     }
     .my-is-invalid{
         border: 2px solid rgba(220,53,69,0.9);
-        box-shadow: 1px 1px 2px rgba(220,53,69,0.7);    }
+        box-shadow: 1px 1px 2px rgba(220,53,69,0.7);
+    }
     .myfrontends-field fieldset{
         margin-bottom: 0px!important;
     }

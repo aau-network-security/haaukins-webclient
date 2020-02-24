@@ -11,7 +11,7 @@
         <Navbar/>
         <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
-            <b-button id="show-btn" @click="$bvModal.show('create-event-modal')" class="btn-haaukins float-right">Create Event</b-button>
+            <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
             <b-button v-on:click="update_exercises_file" class="btn-secondary float-right mr-2">Update Exercise file</b-button>
             <div class="clearfix"></div>
             <hr>
@@ -112,6 +112,15 @@
             this.monitorHost()
         },
         methods: {
+            showModal: function(){
+                this.$bvModal.show('create-event-modal')
+                setTimeout(function () {
+                    let i = document.getElementById("eventStartTime");
+                    i.className += "datepicker";
+                    let j = document.getElementById("eventFinishTime");
+                    j.className += "datepicker";
+                },100);
+            },
             listEvent: function () {
                 let getRequest = new ListEventsRequest();
                 daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
@@ -189,7 +198,7 @@
             },
             beaut_date: function (string_date){
                 let date = new Date(string_date);
-                return date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
+                return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
             },
             update_exercises_file: function () {
                 let getRequest = new Empty();
@@ -239,5 +248,21 @@
         background-color:  rgb(210,255,76)  !important;
         padding-right: 15px;
         padding-left: 15px;
+    }
+    .datepicker{
+        width: 100%;
+        height: calc(1.5em + 0.75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+    .visibility{
+        z-index: 100000;
     }
 </style>

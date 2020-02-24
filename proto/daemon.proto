@@ -48,6 +48,7 @@ message SignupUserRequest {
 
 message InviteUserRequest {
     bool super_user = 1;
+    bool member=2;
 }
 
 message InviteUserResponse {
@@ -88,6 +89,7 @@ message ListEventTeamsResponse {
         string Id = 1;
         string Name = 2;
         string Email = 3;
+        string AccessedAt = 4;
     }
     repeated Teams teams = 1;
 }
@@ -121,7 +123,6 @@ message ListExercisesResponse {
         int32 vboxImageCount = 4;
         repeated ExerciseInfo exerciseinfo = 5;
     }
-
     repeated Exercise exercises = 1;
 }
 

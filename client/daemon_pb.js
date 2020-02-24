@@ -768,7 +768,8 @@ proto.InviteUserRequest.prototype.toObject = function(opt_includeInstance) {
  */
 proto.InviteUserRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    superUser: jspb.Message.getFieldWithDefault(msg, 1, false)
+    superUser: jspb.Message.getFieldWithDefault(msg, 1, false),
+    member: jspb.Message.getFieldWithDefault(msg, 2, false)
   };
 
   if (includeInstance) {
@@ -809,6 +810,10 @@ proto.InviteUserRequest.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setSuperUser(value);
       break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setMember(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -845,6 +850,13 @@ proto.InviteUserRequest.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getMember();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -862,6 +874,23 @@ proto.InviteUserRequest.prototype.getSuperUser = function() {
 /** @param {boolean} value */
 proto.InviteUserRequest.prototype.setSuperUser = function(value) {
   jspb.Message.setProto3BooleanField(this, 1, value);
+};
+
+
+/**
+ * optional bool member = 2;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.InviteUserRequest.prototype.getMember = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
+};
+
+
+/** @param {boolean} value */
+proto.InviteUserRequest.prototype.setMember = function(value) {
+  jspb.Message.setProto3BooleanField(this, 2, value);
 };
 
 
@@ -2289,7 +2318,8 @@ proto.ListEventTeamsResponse.Teams.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    email: jspb.Message.getFieldWithDefault(msg, 3, "")
+    email: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    accessedat: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -2337,6 +2367,10 @@ proto.ListEventTeamsResponse.Teams.deserializeBinaryFromReader = function(msg, r
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setEmail(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAccessedat(value);
       break;
     default:
       reader.skipField();
@@ -2388,6 +2422,13 @@ proto.ListEventTeamsResponse.Teams.serializeBinaryToWriter = function(message, w
       f
     );
   }
+  f = message.getAccessedat();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
+    );
+  }
 };
 
 
@@ -2433,6 +2474,21 @@ proto.ListEventTeamsResponse.Teams.prototype.getEmail = function() {
 /** @param {string} value */
 proto.ListEventTeamsResponse.Teams.prototype.setEmail = function(value) {
   jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string AccessedAt = 4;
+ * @return {string}
+ */
+proto.ListEventTeamsResponse.Teams.prototype.getAccessedat = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.ListEventTeamsResponse.Teams.prototype.setAccessedat = function(value) {
+  jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
