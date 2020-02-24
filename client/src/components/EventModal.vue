@@ -277,7 +277,7 @@
                     this.eventAvailability = this.encodeHTML(this.eventAvailability)
                     this.eventCapacity = this.encodeHTML(this.eventCapacity)
                     window.console.log(this.eventFinishTime)
-                    //this.createEvent()
+                    this.createEvent()
                 }
                 // Hide the modal manually
                 //this.$nextTick(() => {
@@ -385,6 +385,7 @@
         border: 2px solid rgba(220,53,69,0.9);
         box-shadow: 1px 1px 2px rgba(220,53,69,0.7);
     }
+
     .myfrontends-field fieldset{
         margin-bottom: 0px!important;
     }
