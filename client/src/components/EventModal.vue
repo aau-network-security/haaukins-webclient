@@ -265,6 +265,11 @@
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;');
             },
+            get_date: function (date){
+                const month = date.getMonth().toString().length == 1 ? "0" + (date.getMonth() + 1) : date.getMonth();
+                const day = date.getDate().toString().length == 1 ? "0" + date.getDate() : date.getDate();
+                return date.getFullYear() + "-" + month + "-" + day
+            },
             handleSubmit() {
                 this.submitted = true;
                 if (!(this.eventName && this.eventTag)){
@@ -272,11 +277,11 @@
                 }else if (this.selectedFrontends.length == 0 || this.selectedChallenges.length == 0) {
                     return;
                 }else{
-                    this.eventName = this.encodeHTML(this.eventName)
-                    this.eventTag = this.encodeHTML(this.eventTag)
-                    this.eventAvailability = this.encodeHTML(this.eventAvailability)
-                    this.eventCapacity = this.encodeHTML(this.eventCapacity)
-                    window.console.log(this.eventFinishTime)
+                    this.eventName = this.encodeHTML(this.eventName);
+                    this.eventTag = this.encodeHTML(this.eventTag);
+                    this.eventAvailability = this.encodeHTML(this.eventAvailability);
+                    this.eventCapacity = this.encodeHTML(this.eventCapacity);
+                    this.eventFinishTime = this.get_date(this.eventFinishTime);
                     this.createEvent()
                 }
                 // Hide the modal manually

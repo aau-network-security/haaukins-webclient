@@ -25,6 +25,15 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <div v-if="createEventProgress" class="alert alert-warning alert-dismissible">
+                <div class="d-inline mr-2">
+                    <img class="loading-logo" src="../assets/bluelogo.png" width="50" height="50">
+                </div>
+                <div class="d-inline mr-2">Creation Event in progress...</div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <div class="table-responsive mt-1">
                 <table class="table table-hover table-striped">
                     <thead>
@@ -103,7 +112,7 @@
                 status: null,
                 stopEventResponse: null,
                 loaderIsActive: false,
-                loader_status: "",
+                loader_status: "", createEventProgress: false,
                 memory: "", cpu: "", memoryError: "", cpuError: ""
             }
         },
@@ -135,8 +144,8 @@
                 const that = this
 
                 if (this.memory <= 85){
-                    this.loaderIsActive = true
-                    this.loader_status = "Creating Event..."
+                    this.createEventProgress = true;
+                    this.$bvModal.hide('create-event-modal')
 
                     const call = daemonclient.createEvent(request, {Token: localStorage.getItem("user")});
 
@@ -148,8 +157,7 @@
                         that.error = e
                     });
                     call.on('status', function(status) {
-                        that.loaderIsActive = false
-                        that.$bvModal.hide('create-event-modal')
+                        that.createEventProgress = false;
                         if (status['metadata']['grpc-message'] == "") {
                             that.success = "Event Successfully Created!"
                             that.listEvent()
