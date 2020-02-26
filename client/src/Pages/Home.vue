@@ -88,7 +88,7 @@
             </div>
         </div>
         <Footer/>
-        <EventModal @createEvent="createEvent"/>
+        <EventModal @createEvent="createEvent" v-on:modalToHome="bookingValue" :memoryProp="this.memory"/>
 
     </div>
 </template>
@@ -199,6 +199,13 @@
                         that.error = "Error! Try again.."
                     }
                 });
+            },
+            bookingValue: function (value){
+                if (value.ok) {
+                    this.success = "Event" + value.event + "Successfully Booked!"
+                }else{
+                    this.error = "Error while booking the Event"
+                }
             },
             challenges_count: function (challenges_string){
                 const challenges = challenges_string.split(",");

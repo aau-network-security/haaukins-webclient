@@ -3,7 +3,7 @@
         <template v-slot:modal-title>
             Create a new Event
         </template>
-        <form ref="form" @submit.stop.prevent="handleSubmit()">
+        <form ref="form" @submit.stop.prevent="createEvent()">
             <b-row>
                 <b-col lg="7">
                     <b-row>
@@ -205,7 +205,8 @@
                 </b-col>
             </b-row>
             <b-button variant="secondary" @click="$bvModal.hide('create-event-modal')">Close</b-button>
-            <b-button type="submit" class="btn-haaukins float-right">Create</b-button>
+            <b-button type="submit" class="btn-haaukins float-right" :disabled="!isDisabled">Create</b-button>
+            <b-button type="button" variant="warning" class="float-right mr-2" :disabled="!isDisabled" @click="sendSlackNotification(true, 'haaukins-event-request')">Make Request</b-button>
         </form>
     </b-modal>
 </template>
@@ -218,6 +219,9 @@
     export default {
         name: "EventModal",
         components: { Datepicker},
+        props: {
+            memoryProp: String
+        },
         data: function () {
             return {
                 error: null,
@@ -236,7 +240,7 @@
                 challengesF: [], challengesTextF: [],
                 challengesRE: [], challengesTextRE: [],
                 challengesC: [], challengesTextC: [],
-                cat: '', childrenChallenges: '',
+                cat: '', childrenChallenges: '', isDisabled: false,
                 disabledDates: {
                     to: new Date(Date.now() - 8640000)
                 }
@@ -245,11 +249,46 @@
         mounted: function(){
             this.getChallenges();
             this.getFrontends();
+            this.handleButtons();
         },
         methods: {
+            sendSlackNotification: function(isBooked, channel) {
+
+                if (this.handleSubmit()){
+                    return;
+                }
+
+                const Slack = require('slack')
+                const bot = new Slack();
+
+                const message = isBooked ? "*"+this.eventName + "* has been BOOKED" : "*"+this.eventName + "*has been CREATED";
+                const text = message + "\n" +
+                        "User: *" + localStorage.getItem("user-email") + "*\n" +
+                        "Event Tag: *" + this.eventTag + "*\n" +
+                        "Start Time: *" + this.get_date(this.eventStartTime) + "*\n" +
+                        "Finish Time: *" + this.get_date(this.eventFinishTime) + "*\n" +
+                        "Availability: *" + this.eventAvailability + "*\n" +
+                        "Capacity: *" + this.eventCapacity + "*\n" +
+                        "Frontend: *" + this.selectedFrontends + "*\n" +
+                        "Challenges: *" + this.selectedChallenges + "*";
+
+                window.console.log(process.env.SLACK_API_KEY);
+                (async () => {
+                    const res = await bot.chat.postMessage({ token: process.env.SLACK_API_KEY , text: text, channel: channel });
+                    this.$bvModal.hide('create-event-modal')
+                    if (isBooked){
+                        this.$emit('modalToHome', {ok: res.ok, event: this.eventTag});
+                    }
+                })();
+            },
             disabledDatesFinishTime: function() {
                 return {
                     to: new Date(this.eventStartTime - 8640000)
+                }
+            },
+            handleButtons: function(){
+                if (this.memoryProp < 85) {
+                    this.isDisabled = true
                 }
             },
             toggleAllChallenges: function(checked) {
@@ -265,7 +304,8 @@
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;');
             },
-            get_date: function (date){
+            get_date: function (string_date){
+                const date = new Date(string_date);
                 const month = date.getMonth().toString().length == 1 ? "0" + (date.getMonth() + 1) : date.getMonth();
                 const day = date.getDate().toString().length == 1 ? "0" + date.getDate() : date.getDate();
                 return date.getFullYear() + "-" + month + "-" + day
@@ -273,29 +313,33 @@
             handleSubmit() {
                 this.submitted = true;
                 if (!(this.eventName && this.eventTag)){
-                    return;
+                    return true;
                 }else if (this.selectedFrontends.length == 0 || this.selectedChallenges.length == 0) {
-                    return;
+                    return true;
+                }else if (this.eventCapacity == 0 || this.eventAvailability == 0 || this.eventFinishTime == ''){
+                    return true;
                 }else{
                     this.eventName = this.encodeHTML(this.eventName);
                     this.eventTag = this.encodeHTML(this.eventTag);
                     this.eventAvailability = this.encodeHTML(this.eventAvailability);
                     this.eventCapacity = this.encodeHTML(this.eventCapacity);
                     this.eventFinishTime = this.get_date(this.eventFinishTime);
-                    this.createEvent()
+                    this.eventStartTime = this.get_date(this.eventStartTime);
+                    return false
                 }
-                // Hide the modal manually
-                //this.$nextTick(() => {
-                    //this.$refs.modal.hide()
-                //})
             },
             createEvent: function () {
+
+                if(this.handleSubmit()){
+                    return
+                }
 
                 let getRequest = new CreateEventRequest();
                 getRequest.setName(this.eventName);
                 getRequest.setTag(this.eventTag);
                 getRequest.setAvailable(this.eventAvailability);
                 getRequest.setCapacity(this.eventCapacity);
+                getRequest.setStarttime(this.eventStartTime);
                 getRequest.setFinishtime(this.eventFinishTime);
 
                 this.selectedChallenges.forEach(function(challenge) {

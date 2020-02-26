@@ -458,6 +458,86 @@ proto.DaemonPromiseClient.prototype.stopEvent =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.Empty,
+ *   !proto.StartEventResponse>}
+ */
+const methodDescriptor_Daemon_StartEvent = new grpc.web.MethodDescriptor(
+  '/Daemon/StartEvent',
+  grpc.web.MethodType.UNARY,
+  proto.Empty,
+  proto.StartEventResponse,
+  /**
+   * @param {!proto.Empty} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.StartEventResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.Empty,
+ *   !proto.StartEventResponse>}
+ */
+const methodInfo_Daemon_StartEvent = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.StartEventResponse,
+  /**
+   * @param {!proto.Empty} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.StartEventResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.Empty} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.StartEventResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.StartEventResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.DaemonClient.prototype.startEvent =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Daemon/StartEvent',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_StartEvent,
+      callback);
+};
+
+
+/**
+ * @param {!proto.Empty} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.StartEventResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.DaemonPromiseClient.prototype.startEvent =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Daemon/StartEvent',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_StartEvent);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.ListEventsRequest,
  *   !proto.ListEventsResponse>}
  */

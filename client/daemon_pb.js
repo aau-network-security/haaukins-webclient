@@ -41,6 +41,7 @@ goog.exportSymbol('proto.RestartTeamLabRequest', null, global);
 goog.exportSymbol('proto.SetFrontendCpuRequest', null, global);
 goog.exportSymbol('proto.SetFrontendMemoryRequest', null, global);
 goog.exportSymbol('proto.SignupUserRequest', null, global);
+goog.exportSymbol('proto.StartEventResponse', null, global);
 goog.exportSymbol('proto.StopEventRequest', null, global);
 goog.exportSymbol('proto.Team', null, global);
 goog.exportSymbol('proto.UpdateExercisesFileResponse', null, global);
@@ -769,7 +770,7 @@ proto.InviteUserRequest.prototype.toObject = function(opt_includeInstance) {
 proto.InviteUserRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     superUser: jspb.Message.getFieldWithDefault(msg, 1, false),
-    member: jspb.Message.getFieldWithDefault(msg, 2, false)
+    nonPrivUser: jspb.Message.getFieldWithDefault(msg, 2, false)
   };
 
   if (includeInstance) {
@@ -812,7 +813,7 @@ proto.InviteUserRequest.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 2:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setMember(value);
+      msg.setNonPrivUser(value);
       break;
     default:
       reader.skipField();
@@ -850,7 +851,7 @@ proto.InviteUserRequest.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getMember();
+  f = message.getNonPrivUser();
   if (f) {
     writer.writeBool(
       2,
@@ -878,18 +879,18 @@ proto.InviteUserRequest.prototype.setSuperUser = function(value) {
 
 
 /**
- * optional bool member = 2;
+ * optional bool non_priv_user = 2;
  * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
  * You should avoid comparisons like {@code val === true/false} in those cases.
  * @return {boolean}
  */
-proto.InviteUserRequest.prototype.getMember = function() {
+proto.InviteUserRequest.prototype.getNonPrivUser = function() {
   return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
 };
 
 
 /** @param {boolean} value */
-proto.InviteUserRequest.prototype.setMember = function(value) {
+proto.InviteUserRequest.prototype.setNonPrivUser = function(value) {
   jspb.Message.setProto3BooleanField(this, 2, value);
 };
 
@@ -1123,7 +1124,9 @@ proto.CreateEventRequest.toObject = function(includeInstance, msg) {
     exercisesList: jspb.Message.getRepeatedField(msg, 4),
     available: jspb.Message.getFieldWithDefault(msg, 5, 0),
     capacity: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    finishtime: jspb.Message.getFieldWithDefault(msg, 7, "")
+    starttime: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    finishtime: jspb.Message.getFieldWithDefault(msg, 8, ""),
+    isbooked: jspb.Message.getFieldWithDefault(msg, 9, false)
   };
 
   if (includeInstance) {
@@ -1186,7 +1189,15 @@ proto.CreateEventRequest.deserializeBinaryFromReader = function(msg, reader) {
       break;
     case 7:
       var value = /** @type {string} */ (reader.readString());
+      msg.setStarttime(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
       msg.setFinishtime(value);
+      break;
+    case 9:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsbooked(value);
       break;
     default:
       reader.skipField();
@@ -1259,10 +1270,24 @@ proto.CreateEventRequest.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-  f = message.getFinishtime();
+  f = message.getStarttime();
   if (f.length > 0) {
     writer.writeString(
       7,
+      f
+    );
+  }
+  f = message.getFinishtime();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
+    );
+  }
+  f = message.getIsbooked();
+  if (f) {
+    writer.writeBool(
+      9,
       f
     );
   }
@@ -1388,17 +1413,191 @@ proto.CreateEventRequest.prototype.setCapacity = function(value) {
 
 
 /**
- * optional string finishTime = 7;
+ * optional string startTime = 7;
  * @return {string}
  */
-proto.CreateEventRequest.prototype.getFinishtime = function() {
+proto.CreateEventRequest.prototype.getStarttime = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
 
 /** @param {string} value */
-proto.CreateEventRequest.prototype.setFinishtime = function(value) {
+proto.CreateEventRequest.prototype.setStarttime = function(value) {
   jspb.Message.setProto3StringField(this, 7, value);
+};
+
+
+/**
+ * optional string finishTime = 8;
+ * @return {string}
+ */
+proto.CreateEventRequest.prototype.getFinishtime = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/** @param {string} value */
+proto.CreateEventRequest.prototype.setFinishtime = function(value) {
+  jspb.Message.setProto3StringField(this, 8, value);
+};
+
+
+/**
+ * optional bool isBooked = 9;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.CreateEventRequest.prototype.getIsbooked = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 9, false));
+};
+
+
+/** @param {boolean} value */
+proto.CreateEventRequest.prototype.setIsbooked = function(value) {
+  jspb.Message.setProto3BooleanField(this, 9, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.StartEventResponse = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.StartEventResponse, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.StartEventResponse.displayName = 'proto.StartEventResponse';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.StartEventResponse.prototype.toObject = function(opt_includeInstance) {
+  return proto.StartEventResponse.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.StartEventResponse} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.StartEventResponse.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    status: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.StartEventResponse}
+ */
+proto.StartEventResponse.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.StartEventResponse;
+  return proto.StartEventResponse.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.StartEventResponse} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.StartEventResponse}
+ */
+proto.StartEventResponse.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStatus(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.StartEventResponse.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.StartEventResponse.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.StartEventResponse} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.StartEventResponse.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getStatus();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string status = 1;
+ * @return {string}
+ */
+proto.StartEventResponse.prototype.getStatus = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.StartEventResponse.prototype.setStatus = function(value) {
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
