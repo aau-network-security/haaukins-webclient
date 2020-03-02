@@ -1125,8 +1125,7 @@ proto.CreateEventRequest.toObject = function(includeInstance, msg) {
     available: jspb.Message.getFieldWithDefault(msg, 5, 0),
     capacity: jspb.Message.getFieldWithDefault(msg, 6, 0),
     starttime: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    finishtime: jspb.Message.getFieldWithDefault(msg, 8, ""),
-    isbooked: jspb.Message.getFieldWithDefault(msg, 9, false)
+    finishtime: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -1194,10 +1193,6 @@ proto.CreateEventRequest.deserializeBinaryFromReader = function(msg, reader) {
     case 8:
       var value = /** @type {string} */ (reader.readString());
       msg.setFinishtime(value);
-      break;
-    case 9:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setIsbooked(value);
       break;
     default:
       reader.skipField();
@@ -1281,13 +1276,6 @@ proto.CreateEventRequest.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       8,
-      f
-    );
-  }
-  f = message.getIsbooked();
-  if (f) {
-    writer.writeBool(
-      9,
       f
     );
   }
@@ -1439,23 +1427,6 @@ proto.CreateEventRequest.prototype.getFinishtime = function() {
 /** @param {string} value */
 proto.CreateEventRequest.prototype.setFinishtime = function(value) {
   jspb.Message.setProto3StringField(this, 8, value);
-};
-
-
-/**
- * optional bool isBooked = 9;
- * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
- * You should avoid comparisons like {@code val === true/false} in those cases.
- * @return {boolean}
- */
-proto.CreateEventRequest.prototype.getIsbooked = function() {
-  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 9, false));
-};
-
-
-/** @param {boolean} value */
-proto.CreateEventRequest.prototype.setIsbooked = function(value) {
-  jspb.Message.setProto3BooleanField(this, 9, value);
 };
 
 
@@ -1907,7 +1878,8 @@ proto.ListEventsResponse.Events.toObject = function(includeInstance, msg) {
     exercises: jspb.Message.getFieldWithDefault(msg, 4, ""),
     capacity: jspb.Message.getFieldWithDefault(msg, 5, 0),
     creationtime: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    finishtime: jspb.Message.getFieldWithDefault(msg, 7, "")
+    finishtime: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    isbooked: jspb.Message.getFieldWithDefault(msg, 8, false)
   };
 
   if (includeInstance) {
@@ -1971,6 +1943,10 @@ proto.ListEventsResponse.Events.deserializeBinaryFromReader = function(msg, read
     case 7:
       var value = /** @type {string} */ (reader.readString());
       msg.setFinishtime(value);
+      break;
+    case 8:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsbooked(value);
       break;
     default:
       reader.skipField();
@@ -2047,6 +2023,13 @@ proto.ListEventsResponse.Events.serializeBinaryToWriter = function(message, writ
   if (f.length > 0) {
     writer.writeString(
       7,
+      f
+    );
+  }
+  f = message.getIsbooked();
+  if (f) {
+    writer.writeBool(
+      8,
       f
     );
   }
@@ -2155,6 +2138,23 @@ proto.ListEventsResponse.Events.prototype.getFinishtime = function() {
 /** @param {string} value */
 proto.ListEventsResponse.Events.prototype.setFinishtime = function(value) {
   jspb.Message.setProto3StringField(this, 7, value);
+};
+
+
+/**
+ * optional bool isBooked = 8;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.ListEventsResponse.Events.prototype.getIsbooked = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 8, false));
+};
+
+
+/** @param {boolean} value */
+proto.ListEventsResponse.Events.prototype.setIsbooked = function(value) {
+  jspb.Message.setProto3BooleanField(this, 8, value);
 };
 
 

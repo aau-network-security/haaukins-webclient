@@ -1,13 +1,13 @@
 <template>
     <div>
-        <div id="loader" v-bind:class="{ 'show-loader': loaderIsActive }">
-            <div class="loader-content p-3 text-center">
-                <div class="d-inline mr-2">
-                    <img class="loading-logo" src="../assets/bluelogo.png" width="60" height="60">
-                </div>
-                <div class="d-inline mr-2">{{loader_status}}</div>
-            </div>
-        </div>
+<!--        <div id="loader" v-bind:class="{ 'show-loader': loaderIsActive }">-->
+<!--            <div class="loader-content p-3 text-center">-->
+<!--                <div class="d-inline mr-2">-->
+<!--                    <img class="loading-logo" src="../assets/bluelogo.png" width="60" height="60">-->
+<!--                </div>-->
+<!--                <div class="d-inline mr-2">{{loader_status}}</div>-->
+<!--            </div>-->
+<!--        </div>-->
         <Navbar/>
         <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
@@ -25,19 +25,19 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div v-if="createEventProgress" class="alert alert-warning alert-dismissible">
+            <div v-if="loaderIsActive" class="alert myalert-loading alert-dismissible">
                 <div class="d-inline mr-2">
                     <img class="loading-logo" src="../assets/bluelogo.png" width="50" height="50">
                 </div>
-                <div class="d-inline mr-2">Creation Event in progress...</div>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <div class="d-inline mr-2">{{loader_status}}</div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="top: 13px;">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="table-responsive mt-1">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Action</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Action</th>
                     </thead>
                     <tbody v-if="events!=null">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
@@ -48,6 +48,7 @@
                             <td>{{event.capacity}}</td>
                             <td>{{beaut_date(event.creationtime)}}</td>
                             <td>{{beaut_date(event.finishtime)}}</td>
+                            <td>{{check_event_status(event.tag, event.isbooked)}}</td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
                         </tr>
                     </tbody>
@@ -108,11 +109,9 @@
                 events: null,
                 error: null,
                 success: null,
-                submitted: false,
                 status: null,
-                stopEventResponse: null,
                 loaderIsActive: false,
-                loader_status: "", createEventProgress: false,
+                loader_status: "Loading...",
                 memory: "", cpu: "", memoryError: "", cpuError: ""
             }
         },
@@ -121,6 +120,12 @@
             this.monitorHost()
         },
         methods: {
+            check_event_status: function(tag, isbooked){
+                if (isbooked){
+                    return "BOOKED"
+                }
+                return "RUNNING"
+            },
             showModal: function(){
                 this.$bvModal.show('create-event-modal')
                 setTimeout(function () {
@@ -135,6 +140,9 @@
                 daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     if (err == null) {
                         this.events = response.toObject()
+                        this.events['eventsList'].sort(function (a, b) {
+                            return new Date(a.creationtime.replace(/\s/, 'T')) - new Date(b.creationtime.replace(/\s/, 'T'));
+                        })
                     }else{
                         this.error = err;
                     }
@@ -143,8 +151,9 @@
             createEvent: function (request) {
                 const that = this
 
-                if (this.memory <= 85){
-                    this.createEventProgress = true;
+                if (this.memory <= 95){
+                    this.loaderIsActive = true;
+                    this.loader_status = "Creation Event in progress..."
                     this.$bvModal.hide('create-event-modal')
 
                     const call = daemonclient.createEvent(request, {Token: localStorage.getItem("user")});
@@ -157,7 +166,7 @@
                         that.error = e
                     });
                     call.on('status', function(status) {
-                        that.createEventProgress = false;
+                        that.loaderIsActive = false;
                         if (status['metadata']['grpc-message'] == "") {
                             that.success = "Event Successfully Created!"
                             that.listEvent()
@@ -212,7 +221,7 @@
                 return challenges.length
             },
             beaut_date: function (string_date){
-                let date = new Date(string_date);
+                let date = new Date(string_date.replace(/\s/, 'T'));
                 return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
             },
             update_exercises_file: function () {
