@@ -272,9 +272,8 @@
                         "Frontend: *" + this.selectedFrontends + "*\n" +
                         "Challenges: *" + this.selectedChallenges + "*";
 
-                window.console.log(process.env.SLACK_API_KEY);
                 (async () => {
-                    const res = await bot.chat.postMessage({ token: process.env.SLACK_API_KEY , text: text, channel: channel });
+                    const res = await bot.chat.postMessage({ token: process.env.VUE_APP_SLACK_API_KEY , text: text, channel: channel });
                     this.$bvModal.hide('create-event-modal')
                     if (isBooked){
                         this.$emit('modalToHome', {ok: res.ok, event: this.eventTag});
