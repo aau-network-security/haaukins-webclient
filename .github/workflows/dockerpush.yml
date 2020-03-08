@@ -31,6 +31,6 @@ jobs:
        password: ${{ secrets.DOCKER_PASSWORD }}
        registry: docker.pkg.github.com
        tags: ${{ steps.tagName.outputs.tag }}
-       dockerfile: ./client/Dockerfile
+       dockerfile: ./client/Dockerfile.on.ci
        context: ./client
   
