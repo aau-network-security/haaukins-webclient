@@ -43,6 +43,7 @@
             // reset login status
             //userService.logout();
             localStorage.removeItem('user');
+            localStorage.removeItem('user-email');
             // get return url from route parameters or default to '/'
             this.returnUrl = this.$route.query.returnUrl || '/';
         },
@@ -58,16 +59,13 @@
                     let getRequest = new LoginUserRequest();
                     getRequest.setUsername(username);
                     getRequest.setPassword(password);
-                    //sayHello is the function declared in the `proto_grpc_web_pb.js` file. It is the function declared in the proto.proto file
-                    // it is not clear why it is not capital letter.
 
-
-                    //localStorage.setItem('user', 'test')
                     //router.push(this.returnUrl)
 
                     daemonclient.loginUser(getRequest, {}, (err, response) => {
                         if (err == null && response.getError() == '') {
                             localStorage.setItem('user', response.getToken());
+                            localStorage.setItem('user-email', username);
                             router.push(this.returnUrl)
                         }else{
                             this.error = err || response.getError();

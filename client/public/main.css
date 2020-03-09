@@ -42,6 +42,13 @@ h1, h2 {
     box-shadow: 0 0 0 0.2rem rgba(37, 30, 84, 0.5);
 }
 
+.myalert-loading{
+    background: #ffffff;
+    border-radius: 10px!important;
+    border-bottom: 3px solid #251E54!important;
+    border-top: 3px solid #251E54!important;
+}
+
 #loader{
     display: none;
     position: fixed;

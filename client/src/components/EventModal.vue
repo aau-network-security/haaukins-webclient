@@ -3,7 +3,7 @@
         <template v-slot:modal-title>
             Create a new Event
         </template>
-        <form ref="form" @submit.stop.prevent="handleSubmit()">
+        <form ref="form" @submit.stop.prevent="createEvent()">
             <b-row>
                 <b-col lg="7">
                     <b-row>
@@ -20,13 +20,11 @@
                                         required
                                 ></b-form-input>
                             </b-form-group>
+                            <b-tooltip target="fieldset-eventName" triggers="hover">
+                                The event Name showed in the Home page
+                            </b-tooltip>
                         </b-col>
                         <b-col md="6">
-                            <b-form-group id="fieldset-eventFinishTime" label="Expected Finish Date" label-for="eventFinishTime">
-                                <b-form-input :id="eventFinishTime" v-model="eventFinishTime" type="date"></b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col md="4">
                             <b-form-group
                                     id="fieldset-eventTag"
                                     label="Event Tag"
@@ -39,8 +37,32 @@
                                         required
                                 ></b-form-input>
                             </b-form-group>
+                            <b-tooltip target="fieldset-eventTag" triggers="hover">
+                                Sub domain in which the event will be available
+                            </b-tooltip>
                         </b-col>
-                        <b-col md="4">
+                        <b-col md="6">
+<!--                            <b-form-group id="fieldset-eventFinishTime" label="Expected Finish Date" label-for="eventFinishTime">-->
+<!--                                <b-form-input :id="eventFinishTime" v-model="eventFinishTime" type="date"></b-form-input>-->
+<!--                            </b-form-group>-->
+                            <div class="form-group">
+                                <label for="eventStartTime">Expected Start Date</label>
+                                <datepicker v-model="eventStartTime" placeholder="Select Start Date" id="eventStartTime" :disabledDates="disabledDates"></datepicker>
+                                <b-tooltip target="eventStartTime" triggers="hover">
+                                    Date in which the Event should be available online
+                                </b-tooltip>
+                            </div>
+                        </b-col>
+                        <b-col md="6">
+                            <div class="form-group">
+                                <label for="eventFinishTime">Expected Finish Date</label>
+                                <datepicker v-model="eventFinishTime" placeholder="Select Finish Date" id="eventFinishTime" :disabledDates="disabledDatesFinishTime()" :class="{ 'my-is-invalid': submitted && this.eventFinishTime == '' }"></datepicker>
+                                <b-tooltip target="eventFinishTime" triggers="hover">
+                                    Date in which the Event is supposed to finish
+                                </b-tooltip>
+                            </div>
+                        </b-col>
+                        <b-col md="6">
                             <b-form-group
                                     id="fieldset-eventAvailability"
                                     label="Event Availability"
@@ -55,8 +77,11 @@
                                         required
                                 ></b-form-input>
                             </b-form-group>
+                            <b-tooltip target="fieldset-eventAvailability" triggers="hover">
+                                Amount of labs to make available initially for the event
+                            </b-tooltip>
                         </b-col>
-                        <b-col md="4">
+                        <b-col md="6">
                             <b-form-group
                                     id="fieldset-eventCapacity"
                                     label="Event Capacity"
@@ -71,6 +96,9 @@
                                         required
                                 ></b-form-input>
                             </b-form-group>
+                            <b-tooltip target="fieldset-eventCapacity" triggers="hover">
+                                Maximum amount of labs/teams
+                            </b-tooltip>
                         </b-col>
                     </b-row>
                 </b-col>
@@ -88,9 +116,12 @@
                                     stacked
                             ></b-form-checkbox-group>
                         </b-form-group>
+                        <b-tooltip target="frontends" triggers="hover">
+                            List of available Frontends
+                        </b-tooltip>
                     </div>
                 </b-col>
-                <b-col md="12" class="mt-3 mt-lg-0 ">
+                <b-col md="12" class="mt-3 mt-lg-0" style="z-index: 2">
                     <b-form-group>
                         <div class="challenges-field-modal frontends-field-modal p-3 mt-2" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
                             <div class="row">
@@ -174,7 +205,8 @@
                 </b-col>
             </b-row>
             <b-button variant="secondary" @click="$bvModal.hide('create-event-modal')">Close</b-button>
-            <b-button type="submit" class="btn-haaukins float-right">Create</b-button>
+            <b-button type="submit" class="btn-haaukins float-right" :disabled="!isDisabled">Create</b-button>
+            <b-button type="button" variant="warning" class="float-right mr-2" :disabled="!isDisabled" @click="sendSlackNotification(true, 'haaukins-event-request')">Make Request</b-button>
         </form>
     </b-modal>
 </template>
@@ -182,9 +214,14 @@
 <script>
     import { Empty, CreateEventRequest } from "daemon_pb";
     import { daemonclient } from "../App";
+    import Datepicker from "vuejs-datepicker"
 
     export default {
         name: "EventModal",
+        components: { Datepicker},
+        props: {
+            memoryProp: String
+        },
         data: function () {
             return {
                 error: null,
@@ -193,7 +230,7 @@
                 eventTag: '',
                 eventAvailability: 0,
                 eventCapacity: 0,
-                eventFinishTime: '',
+                eventFinishTime: '', eventStartTime: Date.now(),
                 selectedChallenges: [],
                 selectAllChallenges: false,
                 frontends: [],
@@ -203,14 +240,56 @@
                 challengesF: [], challengesTextF: [],
                 challengesRE: [], challengesTextRE: [],
                 challengesC: [], challengesTextC: [],
-                cat: '', childrenChallenges: ''
+                cat: '', childrenChallenges: '', isDisabled: false,
+                disabledDates: {
+                    to: new Date(Date.now() - 8640000)
+                }
             }
         },
-        created: function(){
+        mounted: function(){
             this.getChallenges();
             this.getFrontends();
+            this.handleButtons();
         },
         methods: {
+            sendSlackNotification: function(isBooked, channel) {
+
+                if (this.handleSubmit()){
+                    return;
+                }
+
+                const Slack = require('slack')
+                const bot = new Slack();
+
+                const message = isBooked ? "*"+this.eventName + "* has been BOOKED" : "*"+this.eventName + "*has been CREATED";
+                const text = message + "\n" +
+                        "User: *" + localStorage.getItem("user-email") + "*\n" +
+                        "Event Tag: *" + this.eventTag + "*\n" +
+                        "Start Time: *" + this.get_date(this.eventStartTime) + "*\n" +
+                        "Finish Time: *" + this.get_date(this.eventFinishTime) + "*\n" +
+                        "Availability: *" + this.eventAvailability + "*\n" +
+                        "Capacity: *" + this.eventCapacity + "*\n" +
+                        "Frontend: *" + this.selectedFrontends + "*\n" +
+                        "Challenges: *" + this.selectedChallenges + "*";
+
+                (async () => {
+                    const res = await bot.chat.postMessage({ token: process.env.VUE_APP_SLACK_API_KEY , text: text, channel: channel });
+                    this.$bvModal.hide('create-event-modal')
+                    if (isBooked){
+                        this.$emit('modalToHome', {ok: res.ok, event: this.eventTag});
+                    }
+                })();
+            },
+            disabledDatesFinishTime: function() {
+                return {
+                    to: new Date(this.eventStartTime - 8640000)
+                }
+            },
+            handleButtons: function(){
+                if (this.memoryProp < 85) {
+                    this.isDisabled = true
+                }
+            },
             toggleAllChallenges: function(checked) {
                 this.selectedChallenges = checked ? this.challengesWE
                     .concat(this.challengesB)
@@ -224,35 +303,42 @@
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;');
             },
+            get_date: function (string_date){
+                const date = new Date(string_date);
+                const month = date.getMonth().toString().length == 1 ? "0" + (date.getMonth() + 1) : date.getMonth();
+                const day = date.getDate().toString().length == 1 ? "0" + date.getDate() : date.getDate();
+                return date.getFullYear() + "-" + month + "-" + day
+            },
             handleSubmit() {
                 this.submitted = true;
                 if (!(this.eventName && this.eventTag)){
-                    return;
+                    return true;
+                }else if (this.selectedFrontends.length == 0 || this.selectedChallenges.length == 0) {
+                    return true;
+                }else if (this.eventCapacity == 0 || this.eventAvailability == 0 || this.eventFinishTime == ''){
+                    return true;
                 }else{
-                    if (this.selectedFrontends.length == 0 || this.selectedChallenges.length == 0){
-                        return;
-                    }else{
-                        this.eventName = this.encodeHTML(this.eventName)
-                        this.eventTag = this.encodeHTML(this.eventTag)
-                        this.eventAvailability = this.encodeHTML(this.eventAvailability)
-                        this.eventCapacity = this.encodeHTML(this.eventCapacity)
-                        this.eventFinishTime = this.encodeHTML(this.eventFinishTime)
-                        this.createEvent()
-                    }
+                    this.eventName = this.encodeHTML(this.eventName);
+                    this.eventTag = this.encodeHTML(this.eventTag);
+                    this.eventAvailability = this.encodeHTML(this.eventAvailability);
+                    this.eventCapacity = this.encodeHTML(this.eventCapacity);
+                    this.eventFinishTime = this.get_date(this.eventFinishTime);
+                    this.eventStartTime = this.get_date(this.eventStartTime);
+                    return false
                 }
-                // Hide the modal manually
-                //this.$nextTick(() => {
-                    //this.$refs.modal.hide()
-                //})
             },
             createEvent: function () {
+
+                if(this.handleSubmit()){
+                    return
+                }
 
                 let getRequest = new CreateEventRequest();
                 getRequest.setName(this.eventName);
                 getRequest.setTag(this.eventTag);
                 getRequest.setAvailable(this.eventAvailability);
                 getRequest.setCapacity(this.eventCapacity);
-                getRequest.setFinishtime(this.eventFinishTime);
+                getRequest.setStarttime(this.eventStartTime);
                 getRequest.setFinishtime(this.eventFinishTime);
 
                 this.selectedChallenges.forEach(function(challenge) {
@@ -345,7 +431,9 @@
     }
     .my-is-invalid{
         border: 2px solid rgba(220,53,69,0.9);
-        box-shadow: 1px 1px 2px rgba(220,53,69,0.7);    }
+        box-shadow: 1px 1px 2px rgba(220,53,69,0.7);
+    }
+
     .myfrontends-field fieldset{
         margin-bottom: 0px!important;
     }

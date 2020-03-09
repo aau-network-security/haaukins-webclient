@@ -7,6 +7,8 @@
 .env.local
 .env.*.local
 .env
+client/.env.production
+
 
 certs
 # Log files

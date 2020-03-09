@@ -1,14 +1,5 @@
 <template>
     <div>
-        <div id="loader" v-bind:class="{ 'show-loader': loaderIsActive }">
-            <div class="loader-content p-3 ">
-                <div class="d-inline mr-2">
-                    <img class="loading-logo" src="../assets/bluelogo.png" width="60" height="60">
-                </div>
-                <div class="d-inline mr-2">{{loader_id}}</div>
-                <div class="d-inline"><strong>{{loader_msg}}</strong></div>
-            </div>
-        </div>
         <Navbar/>
         <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Event {{this.$route.params.tag}}</h3>
@@ -23,6 +14,16 @@
             </div>
             <div v-if="success" class="alert alert-success alert-dismissible">{{success}}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div v-if="loaderIsActive" class="alert myalert-loading alert-dismissible">
+                <div class="d-inline mr-2">
+                    <img class="loading-logo" src="../assets/bluelogo.png" width="50" height="50">
+                </div>
+                <div class="d-inline mr-2">{{loader_id}}</div>
+                <div class="d-inline"><strong>{{loader_msg}}</strong></div>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="top: 13px;">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -67,7 +68,7 @@
                 eventStatus: null,
                 loaderIsActive: false,
 
-                loader_msg:"null",
+                loader_msg:"Loading...",
                 loader_id:""
             }
         },
