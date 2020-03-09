@@ -2,7 +2,7 @@
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
-RUN touch .env.production && cp .env.production ./
+RUN touch .env.production ## will gonna create environment file for vuejs 
 RUN npm install
 COPY src src
 
