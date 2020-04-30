@@ -14,7 +14,7 @@
     "core-js": "^3.3.2",
     "google-protobuf": "^3.10.0",
     "grpc-web": "^1.0.7",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "popper.js": "^1.16.0",
     "slack": "^11.0.2",
     "vue": "^2.6.11",
