@@ -25,3 +25,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+## no need to push compiled js  files
+client/daemon_grpc_web_pb.js
+client/daemon_pb.js

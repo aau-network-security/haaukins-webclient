@@ -137,6 +137,8 @@
             },
             listEvent: function () {
                 let getRequest = new ListEventsRequest();
+                // not  all events  will be listed only the ones  who are in charge off will be listed
+                getRequest.setIsgraphspage(false);
                 daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     if (err == null) {
                         this.events = response.toObject()
