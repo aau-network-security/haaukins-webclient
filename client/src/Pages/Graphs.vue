@@ -121,7 +121,9 @@
             listEvent: function () {
                 let that = this;
                 let getRequest = new ListEventsRequest();
-                daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+               // if isGraphsPage set to true, all events will be listed despite of user privileges
+                getRequest.setIsgraphspage(true);
+                daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user") }, (err, response) => {
                     if (err == null) {
                         this.events = response.toObject();
                         let eventsList = response.getEventsList();

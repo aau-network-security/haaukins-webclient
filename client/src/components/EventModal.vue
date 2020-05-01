@@ -279,6 +279,8 @@
                         this.$emit('modalToHome', {ok: res.ok, event: this.eventTag});
                     }
                 })();
+                // used to create event (yaml file) after booking
+                this.createEvent();
             },
             disabledDatesFinishTime: function() {
                 return {
