@@ -206,7 +206,6 @@
             </b-row>
             <b-button variant="secondary" @click="$bvModal.hide('create-event-modal')">Close</b-button>
             <b-button type="submit" class="btn-haaukins float-right" :disabled="!isDisabled">Create</b-button>
-            <b-button type="button" variant="warning" class="float-right mr-2" :disabled="!isDisabled" @click="sendSlackNotification(true, 'haaukins-event-request')">Make Request</b-button>
         </form>
     </b-modal>
 </template>
@@ -252,34 +251,6 @@
             this.handleButtons();
         },
         methods: {
-            sendSlackNotification: function(isBooked, channel) {
-
-                if (this.handleSubmit()){
-                    return;
-                }
-
-                const Slack = require('slack')
-                const bot = new Slack();
-
-                const message = isBooked ? "*"+this.eventName + "* has been BOOKED" : "*"+this.eventName + "*has been CREATED";
-                const text = message + "\n" +
-                        "User: *" + localStorage.getItem("user-email") + "*\n" +
-                        "Event Tag: *" + this.eventTag + "*\n" +
-                        "Start Time: *" + this.get_date(this.eventStartTime) + "*\n" +
-                        "Finish Time: *" + this.get_date(this.eventFinishTime) + "*\n" +
-                        "Availability: *" + this.eventAvailability + "*\n" +
-                        "Capacity: *" + this.eventCapacity + "*\n" +
-                        "Frontend: *" + this.selectedFrontends + "*\n" +
-                        "Challenges: *" + this.selectedChallenges + "*";
-
-                (async () => {
-                    const res = await bot.chat.postMessage({ token: process.env.VUE_APP_SLACK_API_KEY , text: text, channel: channel });
-                    this.$bvModal.hide('create-event-modal')
-                    if (isBooked){
-                        this.$emit('modalToHome', {ok: res.ok, event: this.eventTag});
-                    }
-                })();
-            },
             disabledDatesFinishTime: function() {
                 return {
                     to: new Date(this.eventStartTime - 8640000)
@@ -338,7 +309,6 @@
                 getRequest.setTag(this.eventTag);
                 getRequest.setAvailable(this.eventAvailability);
                 getRequest.setCapacity(this.eventCapacity);
-                getRequest.setStarttime(this.eventStartTime);
                 getRequest.setFinishtime(this.eventFinishTime);
 
                 this.selectedChallenges.forEach(function(challenge) {

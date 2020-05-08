@@ -37,7 +37,7 @@
             <div class="table-responsive mt-1">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Action</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Action</th>
                     </thead>
                     <tbody v-if="events!=null">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
@@ -48,7 +48,6 @@
                             <td>{{event.capacity}}</td>
                             <td>{{beaut_date(event.creationtime)}}</td>
                             <td>{{beaut_date(event.finishtime)}}</td>
-                            <td>{{check_event_status(event.tag, event.isbooked)}}</td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
                         </tr>
                     </tbody>
@@ -120,12 +119,12 @@
             this.monitorHost()
         },
         methods: {
-            check_event_status: function(tag, isbooked){
-                if (isbooked){
-                    return "BOOKED"
-                }
-                return "RUNNING"
-            },
+            // check_event_status: function(tag, isbooked){
+            //     if (isbooked){
+            //         return "BOOKED"
+            //     }
+            //     return "RUNNING"
+            // },
             showModal: function(){
                 this.$bvModal.show('create-event-modal')
                 setTimeout(function () {
