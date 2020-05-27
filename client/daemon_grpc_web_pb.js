@@ -308,6 +308,246 @@ proto.DaemonPromiseClient.prototype.inviteUser =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.Empty,
+ *   !proto.ListUsersResponse>}
+ */
+const methodDescriptor_Daemon_ListUsers = new grpc.web.MethodDescriptor(
+  '/Daemon/ListUsers',
+  grpc.web.MethodType.UNARY,
+  proto.Empty,
+  proto.ListUsersResponse,
+  /**
+   * @param {!proto.Empty} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.ListUsersResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.Empty,
+ *   !proto.ListUsersResponse>}
+ */
+const methodInfo_Daemon_ListUsers = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.ListUsersResponse,
+  /**
+   * @param {!proto.Empty} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.ListUsersResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.Empty} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.ListUsersResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.ListUsersResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.DaemonClient.prototype.listUsers =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Daemon/ListUsers',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_ListUsers,
+      callback);
+};
+
+
+/**
+ * @param {!proto.Empty} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.ListUsersResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.DaemonPromiseClient.prototype.listUsers =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Daemon/ListUsers',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_ListUsers);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.UpdatePasswdRequest,
+ *   !proto.UpdatePasswdResponse>}
+ */
+const methodDescriptor_Daemon_ChangeUserPasswd = new grpc.web.MethodDescriptor(
+  '/Daemon/ChangeUserPasswd',
+  grpc.web.MethodType.UNARY,
+  proto.UpdatePasswdRequest,
+  proto.UpdatePasswdResponse,
+  /**
+   * @param {!proto.UpdatePasswdRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.UpdatePasswdResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.UpdatePasswdRequest,
+ *   !proto.UpdatePasswdResponse>}
+ */
+const methodInfo_Daemon_ChangeUserPasswd = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.UpdatePasswdResponse,
+  /**
+   * @param {!proto.UpdatePasswdRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.UpdatePasswdResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.UpdatePasswdRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.UpdatePasswdResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.UpdatePasswdResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.DaemonClient.prototype.changeUserPasswd =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Daemon/ChangeUserPasswd',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_ChangeUserPasswd,
+      callback);
+};
+
+
+/**
+ * @param {!proto.UpdatePasswdRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.UpdatePasswdResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.DaemonPromiseClient.prototype.changeUserPasswd =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Daemon/ChangeUserPasswd',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_ChangeUserPasswd);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.DestroyUserRequest,
+ *   !proto.DestroyUserResponse>}
+ */
+const methodDescriptor_Daemon_DestroyUser = new grpc.web.MethodDescriptor(
+  '/Daemon/DestroyUser',
+  grpc.web.MethodType.UNARY,
+  proto.DestroyUserRequest,
+  proto.DestroyUserResponse,
+  /**
+   * @param {!proto.DestroyUserRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.DestroyUserResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.DestroyUserRequest,
+ *   !proto.DestroyUserResponse>}
+ */
+const methodInfo_Daemon_DestroyUser = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.DestroyUserResponse,
+  /**
+   * @param {!proto.DestroyUserRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.DestroyUserResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.DestroyUserRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.DestroyUserResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.DestroyUserResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.DaemonClient.prototype.destroyUser =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Daemon/DestroyUser',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_DestroyUser,
+      callback);
+};
+
+
+/**
+ * @param {!proto.DestroyUserRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.DestroyUserResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.DaemonPromiseClient.prototype.destroyUser =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Daemon/DestroyUser',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_DestroyUser);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.CreateEventRequest,
  *   !proto.LabStatus>}
  */
