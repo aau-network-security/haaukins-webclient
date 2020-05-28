@@ -123,11 +123,14 @@
                     }
                 });
             },
-            getTeamInfoState (state) {
+            getTeamInfoState (stateS) {
+                let state = parseInt(stateS)
                 if (state == 0) {
                     return "RUNNING"
-                }else{
+                }if (state == 1){
                     return "NOT RUNNING"
+                }if (state == 2){
+                    return "SUSPENDED"
                 }
             },
             resetExercise (tag) {
