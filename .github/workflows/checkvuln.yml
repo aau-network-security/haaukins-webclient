@@ -6,7 +6,7 @@ on:
       - 'README.md'
       - 'LICENCE'
 jobs:
-  formalities:
+  vulncheck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
