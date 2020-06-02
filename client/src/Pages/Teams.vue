@@ -31,7 +31,7 @@
                 <table class="table mx-auto table-hover table-striped" id="teamsEventTable" cellspacing="0" style="table-layout: auto; width: 100%">
                     <thead>
                         <tr class="text-center">
-                            <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td><td>Suspend/Resume</td>
+                            <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td><td>Actions</td>
                         </tr>
                     </thead>
                     <tbody v-if="teams">
@@ -42,7 +42,10 @@
                             <td>{{team.email}}</td>
                             <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="resetFrontend(team.id)">Frontend</button></td>
                             <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="restartTeamLab(team.id)">Lab</button></td>
-                            <td class="text-center"><button class="btn btn-warning btn-sm" v-on:click="suspendResumeTeamLab(team.id, true)">Lab</button></td>
+                            <td class="text-center">
+                                <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team.id, true)">Suspend</button>
+                                <button class="btn btn-warning btn-sm" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
+                            </td>
                         </tr>
                     </tbody>
                     <tbody v-else>
@@ -164,13 +167,7 @@
                     if (err == null) {
                         this.success = "Action completed!"
                     }else{
-                        let error = err["message"];
-                        if (error.includes("is already paused")){
-                            this.suspendResumeTeamLab(teamID, false)
-                        }
-                        if (error.includes("Container already running")){
-                            this.suspendResumeTeamLab(teamID, true)
-                        }
+                        this.error = err["message"];
                     }
                 });
             }
@@ -200,10 +197,21 @@
         transition: .3s transform ease-in-out;
     }
 
-
     .list-group-item a.btn span {
         transform: rotate(-140deg);
         -webkit-transform: rotate(-140deg);
         transition: .3s transform ease-in-out;
     }
+
+    .m-btn-responsive{
+        margin-right: 5px;
+    }
+
+    @media (max-width: 992px) {
+        .m-btn-responsive{
+            margin-right: 0px;
+            margin-bottom: 5px;
+        }
+    }
+
 </style>

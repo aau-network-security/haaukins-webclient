@@ -11,8 +11,10 @@
         <Navbar/>
         <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
-            <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
-            <b-button v-on:click="update_exercises_file" class="btn-secondary float-right mr-2">Update Exercise file</b-button>
+            <div class="float-right">
+                <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
+                <b-button v-on:click="update_exercises_file" class="btn-secondary float-right mr-2">Update Exercise file</b-button>
+            </div>
             <div class="clearfix"></div>
             <hr>
             <div v-if="error" class="alert alert-danger alert-dismissible">{{error}}
@@ -37,7 +39,7 @@
             <div class="table-responsive mt-1">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Action</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Action</th><th>Stop</th>
                     </thead>
                     <tbody v-if="events!=null">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
@@ -48,6 +50,8 @@
                             <td>{{event.capacity}}</td>
                             <td>{{beaut_date(event.creationtime)}}</td>
                             <td>{{beaut_date(event.finishtime)}}</td>
+                            <td>{{event_status(event.status)}}</td>
+                            <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == 1 || event.status == 3">{{suspendResumeEventButton(event.status)}}</button></td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
                         </tr>
                     </tbody>
@@ -96,7 +100,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { ListEventsRequest, StopEventRequest, Empty } from "daemon_pb";
+    import { ListEventsRequest, StopEventRequest, SuspendEventRequest, Empty } from "daemon_pb";
     import { daemonclient } from "../App";
     import EventModal from "../components/EventModal";
 
@@ -119,12 +123,26 @@
             this.monitorHost()
         },
         methods: {
-            // check_event_status: function(tag, isbooked){
-            //     if (isbooked){
-            //         return "BOOKED"
-            //     }
-            //     return "RUNNING"
-            // },
+            event_status: function(status){
+                switch (status) {
+                    case 0:
+                        return "RUNNING";
+                    case 1:
+                        return "BOOKED";
+                    case 2:
+                        return "SUSPENDED";
+                }
+                return "ERROR";
+            },
+            suspendResumeEventButton: function(status) {
+                switch (status) {
+                    case 0:
+                        return "Suspend";
+                    case 2:
+                        return "Resume";
+                }
+                return "Suspend";
+            },
             showModal: function(){
                 this.$bvModal.show('create-event-modal')
                 setTimeout(function () {
@@ -178,6 +196,31 @@
                     this.error = "Error! Not enough memory on the Server."
                 }
 
+
+            },
+            suspendResumeEvent: function (tag, status) {
+                const that = this
+                this.loaderIsActive = true
+
+                let getRequest = new SuspendEventRequest();
+                getRequest.setEventtag(tag)
+                if (status == 0){
+                    getRequest.setSuspend(true)
+                }
+                const call = daemonclient.suspendEvent(getRequest, {Token: localStorage.getItem("user")});
+
+                call.on('error', function(e) {
+                    that.error = e
+                });
+                call.on('status', function(status) {
+                    that.loaderIsActive = false
+                    if (status['metadata']['grpc-message'] == "") {
+                        that.success = "Action successfully completed!"
+                        that.listEvent()
+                    }else{
+                        that.error = "Error! Try again.."
+                    }
+                });
 
             },
             stopEvent: function (tag) {

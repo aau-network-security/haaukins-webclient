@@ -778,6 +778,81 @@ proto.DaemonPromiseClient.prototype.stopEvent =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.SuspendEventRequest,
+ *   !proto.EventStatus>}
+ */
+const methodDescriptor_Daemon_SuspendEvent = new grpc.web.MethodDescriptor(
+  '/Daemon/SuspendEvent',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.SuspendEventRequest,
+  proto.EventStatus,
+  /**
+   * @param {!proto.SuspendEventRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.EventStatus.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.SuspendEventRequest,
+ *   !proto.EventStatus>}
+ */
+const methodInfo_Daemon_SuspendEvent = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.EventStatus,
+  /**
+   * @param {!proto.SuspendEventRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.EventStatus.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.SuspendEventRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.EventStatus>}
+ *     The XHR Node Readable Stream
+ */
+proto.DaemonClient.prototype.suspendEvent =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/Daemon/SuspendEvent',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_SuspendEvent);
+};
+
+
+/**
+ * @param {!proto.SuspendEventRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.EventStatus>}
+ *     The XHR Node Readable Stream
+ */
+proto.DaemonPromiseClient.prototype.suspendEvent =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/Daemon/SuspendEvent',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_SuspendEvent);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.ListEventsRequest,
  *   !proto.ListEventsResponse>}
  */
