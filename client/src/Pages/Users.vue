@@ -140,6 +140,7 @@
                 daemonclient.destroyUser(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     if (err == null) {
                         this.success = response.toObject().message
+                        this.listUsers()
                     }else{
                         this.error = err["message"];
                     }

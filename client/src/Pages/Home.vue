@@ -11,37 +11,33 @@
         <Navbar/>
         <div class="container" style="margin-top: 40px">
             <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
-            <div class="float-right">
                 <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
-                <b-button v-on:click="update_exercises_file" class="btn-secondary float-right mr-2">Update Exercise file</b-button>
-            <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle float-right mr-2" type="button" id="dropdownActionButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Actions
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownActionButton">
-                    <div class="row">
-                        <div class="col pr-0">
-                            <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle float-right mr-2" type="button" id="dropdownActionButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Actions
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownActionButton">
+                        <div class="row">
+                            <div class="col pr-0">
+                                <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
+                            </div>
+                            <div class="col pl-0">
+                                <b-form-checkbox
+                                        style="padding-top: 4px"
+                                        id="isInviteUserSuperUser"
+                                        v-model="isInviteUserSuperUser"
+                                        name="isInviteUserSuperUser"
+                                        value=true
+                                        unchecked-value=false
+                                >
+                                    SuperUser
+                                </b-form-checkbox>
+                            </div><div class="clearfix"></div>
                         </div>
-                        <div class="col pl-0">
-                            <b-form-checkbox
-                                    style="padding-top: 4px"
-                                    id="isInviteUserSuperUser"
-                                    v-model="isInviteUserSuperUser"
-                                    name="isInviteUserSuperUser"
-                                    value=true
-                                    unchecked-value=false
-                            >
-                                SuperUser
-                            </b-form-checkbox>
-                        </div><div class="clearfix"></div>
+                        <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
                     </div>
-                    <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
                 </div>
-
-            </div>
-            <div class="clearfix"></div>
+                <div class="clearfix"></div>
             <hr>
             <div v-if="error" class="alert alert-danger alert-dismissible">{{error}}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
