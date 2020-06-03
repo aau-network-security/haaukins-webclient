@@ -14,6 +14,32 @@
             <div class="float-right">
                 <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
                 <b-button v-on:click="update_exercises_file" class="btn-secondary float-right mr-2">Update Exercise file</b-button>
+            <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle float-right mr-2" type="button" id="dropdownActionButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownActionButton">
+                    <div class="row">
+                        <div class="col pr-0">
+                            <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
+                        </div>
+                        <div class="col pl-0">
+                            <b-form-checkbox
+                                    style="padding-top: 4px"
+                                    id="isInviteUserSuperUser"
+                                    v-model="isInviteUserSuperUser"
+                                    name="isInviteUserSuperUser"
+                                    value=true
+                                    unchecked-value=false
+                            >
+                                SuperUser
+                            </b-form-checkbox>
+                        </div><div class="clearfix"></div>
+                    </div>
+                    <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
+                </div>
+
             </div>
             <div class="clearfix"></div>
             <hr>
@@ -100,7 +126,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { ListEventsRequest, StopEventRequest, SuspendEventRequest, Empty } from "daemon_pb";
+    import { ListEventsRequest, StopEventRequest, SuspendEventRequest, InviteUserRequest, Empty } from "daemon_pb";
     import { daemonclient } from "../App";
     import EventModal from "../components/EventModal";
 
@@ -109,6 +135,7 @@
         components: { EventModal, Footer, Navbar},
         data: function () {
             return {
+                isInviteUserSuperUser: false,
                 events: null,
                 error: null,
                 success: null,
@@ -271,6 +298,17 @@
                 daemonclient.updateExercisesFile(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     this.error = err;
                     this.success = response.getMsg()
+                });
+            },
+            create_signup_key: function () {
+                let getRequest = new InviteUserRequest();
+                let superUser = (this.isInviteUserSuperUser == 'true');
+                getRequest.setSuperUser(superUser);
+                daemonclient.inviteUser(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+                    if (response.getError() != null) {
+                        this.error = response.getError();
+                    }
+                    this.success = response.getKey()
                 });
             },
             monitorHost: function () {

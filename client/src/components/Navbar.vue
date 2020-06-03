@@ -13,6 +13,7 @@
                 <b-collapse id="nav-collapse" class="mr-auto" is-nav>
                     <b-navbar-nav>
                         <b-nav-item href="/challenges">Challenges</b-nav-item>
+                        <b-nav-item href="/users">Users</b-nav-item>
                         <b-nav-item href="/vms">VMs</b-nav-item>
                         <b-nav-item href="/graphs">Graphs</b-nav-item>
                     </b-navbar-nav>

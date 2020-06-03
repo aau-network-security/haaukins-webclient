@@ -38,7 +38,7 @@
                     <tbody v-if="challenges">
                         <tr v-for="(challenge,count) in challenges.split(',')" v-bind:key="challenge">
                             <td>{{count + 1}}</td>
-                            <td>{{challenge}}</td>
+                            <td>{{getChallengeName(challenge)}}</td>
                             <td><button v-on:click="resetExercise(challenge)" type="button" class="btn btn-danger btn-sm">Reset</button></td>
                         </tr>
                     </tbody>
@@ -72,7 +72,7 @@
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
     import { daemonclient } from "../App";
-    import { GetTeamInfoRequest, ResetExerciseRequest, Team, ListEventsRequest } from "daemon_pb"
+    import { GetTeamInfoRequest, ResetExerciseRequest, Team, ListEventsRequest, Empty } from "daemon_pb"
 
     export default {
         name: "TeamAction",
@@ -83,7 +83,7 @@
                 success: null,
                 challenges: null,
                 infos: null,
-
+                challengesList: null,
                 loaderIsActive: false,
                 loader_msg:"Loading...",
                 loader_id:""
@@ -92,6 +92,7 @@
         created() {
             this.getTeamInfo();
             this.listEvent();
+            this.listChallenges();
         },
         methods: {
             getTeamInfo () {
@@ -123,8 +124,28 @@
                     }
                 });
             },
-            getTeamInfoState (stateS) {
-                let state = parseInt(stateS)
+
+            listChallenges: function () {
+                let getRequest = new Empty();
+                daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+                    this.error = err;
+                    this.challengesList = response.toObject()
+                });
+
+            },
+            getChallengeName: function (tag) {
+                let chalName;
+                if (this.challengesList == null) {
+                    return
+                }
+                this.challengesList.exercisesList.forEach(function(challenge) {
+                    if (challenge.tagsList[0] == tag){
+                        chalName =  challenge.name
+                    }
+                }, chalName);
+                return chalName
+            },
+            getTeamInfoState: function (state) {
                 if (state == 0) {
                     return "RUNNING"
                 }if (state == 1){
@@ -133,7 +154,8 @@
                     return "SUSPENDED"
                 }
             },
-            resetExercise (tag) {
+            resetExercise: function (tag) {
+
                 const that = this
                 this.loaderIsActive = true
 
@@ -168,7 +190,7 @@
                         that.getTeamInfo()
                     }, 1000);
                 });
-            }
+            },
         }
     }
 </script>
