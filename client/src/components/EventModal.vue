@@ -104,9 +104,9 @@
                 </b-col>
                 <b-col v-if="frontends" lg="5" class="myfrontends-field">
                     <span>Frontends</span>
-                    <div class="frontends-field-modal p-2 mt-2 vertical-center" :class="{ 'my-is-invalid': submitted && this.selectedFrontends.length == 0 }">
+                    <div class="frontends-field-modal p-2 mt-2 vertical-center" :class="{ 'my-is-invalid': submitted && this.selectedFrontends == null }">
                         <b-form-group>
-                            <b-form-checkbox-group
+                            <b-form-radio-group
                                     id="frontends"
                                     v-model="selectedFrontends"
                                     :options="frontends"
@@ -114,7 +114,7 @@
                                     class="ml-4"
                                     aria-label="Individual flavours"
                                     stacked
-                            ></b-form-checkbox-group>
+                            ></b-form-radio-group>
                         </b-form-group>
                         <b-tooltip target="frontends" triggers="hover">
                             List of available Frontends
@@ -233,7 +233,7 @@
                 selectedChallenges: [],
                 selectAllChallenges: false,
                 frontends: [],
-                selectedFrontends: [],
+                selectedFrontends: null,
                 challengesWE: [], challengesTextWE: [],
                 challengesB: [], challengesTextB: [],
                 challengesF: [], challengesTextF: [],
@@ -284,7 +284,7 @@
                 this.submitted = true;
                 if (!(this.eventName && this.eventTag)){
                     return true;
-                }else if (this.selectedFrontends.length == 0 || this.selectedChallenges.length == 0) {
+                }else if (this.selectedFrontends == null || this.selectedChallenges.length == 0) {
                     return true;
                 }else if (this.eventCapacity == 0 || this.eventAvailability == 0 || this.eventFinishTime == ''){
                     return true;
@@ -315,9 +315,7 @@
                     getRequest.addExercises(challenge)
                 });
 
-                this.selectedFrontends.forEach(function(frontend) {
-                    getRequest.addFrontends(frontend)
-                });
+                getRequest.addFrontends(this.selectedFrontends)
 
                 this.$emit('createEvent', getRequest)
 

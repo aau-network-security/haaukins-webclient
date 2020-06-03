@@ -30,18 +30,27 @@
             <div class="table-responsive">
                 <table class="table mx-auto table-hover table-striped" id="teamsEventTable" cellspacing="0" style="table-layout: auto; width: 100%">
                     <thead>
-                        <tr>
-                            <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td>
+                        <tr class="text-center">
+                            <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td><td>Actions</td>
                         </tr>
                     </thead>
                     <tbody v-if="teams">
                         <tr v-for="(team,count) in teams.teamsList" v-bind:key="team.id">
-                            <td>{{count + 1}}</td>
+                            <td class="text-center">{{count + 1}}</td>
                             <td><strong><router-link :to="{name: 'team', params: {id: team.id}}" class="text-haaukins" >{{team.id}}</router-link></strong></td>
                             <td>{{team.name}}</td>
                             <td>{{team.email}}</td>
-                            <td><button class="btn btn-secondary btn-sm" v-on:click="resetFrontend(team.id)">Frontend</button></td>
-                            <td><button class="btn btn-secondary btn-sm" v-on:click="restartTeamLab(team.id)">Lab</button></td>
+                            <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="resetFrontend(team.id)">Frontend</button></td>
+                            <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="restartTeamLab(team.id)">Lab</button></td>
+                            <td class="text-center">
+                                <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team.id, true)">Suspend</button>
+                                <button class="btn btn-warning btn-sm" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody v-else>
+                        <tr>
+                            <td colspan="7" class="text-center">No Teams founds...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -55,7 +64,7 @@
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
     import { daemonclient } from "../App";
-    import { ListEventTeamsRequest, RestartTeamLabRequest, ResetFrontendsRequest, Team } from "daemon_pb"
+    import { ListEventTeamsRequest, RestartTeamLabRequest, ResetFrontendsRequest, Team, SetTeamSuspendRequest } from "daemon_pb"
 
     export default {
         name: "Teams",
@@ -147,6 +156,20 @@
                         that.success = "Frontend successfully restarted!"
                     }, 1000);
                 });
+            },
+            suspendResumeTeamLab: function (teamID, setSuspend) {
+                let getRequest = new SetTeamSuspendRequest()
+                getRequest.setTeamid(teamID)
+                getRequest.setEventtag(this.$route.params.tag)
+                getRequest.setSuspend(setSuspend)
+
+                daemonclient.setTeamSuspend(getRequest, {Token: localStorage.getItem("user")}, (err) => {
+                    if (err == null) {
+                        this.success = "Action completed!"
+                    }else{
+                        this.error = err["message"];
+                    }
+                });
             }
         }
     }
@@ -174,10 +197,21 @@
         transition: .3s transform ease-in-out;
     }
 
-
     .list-group-item a.btn span {
         transform: rotate(-140deg);
         -webkit-transform: rotate(-140deg);
         transition: .3s transform ease-in-out;
     }
+
+    .m-btn-responsive{
+        margin-right: 5px;
+    }
+
+    @media (max-width: 992px) {
+        .m-btn-responsive{
+            margin-right: 0px;
+            margin-bottom: 5px;
+        }
+    }
+
 </style>

@@ -124,6 +124,7 @@
                     }
                 });
             },
+
             listChallenges: function () {
                 let getRequest = new Empty();
                 daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
@@ -147,8 +148,10 @@
             getTeamInfoState: function (state) {
                 if (state == 0) {
                     return "RUNNING"
-                }else{
+                }if (state == 1){
                     return "NOT RUNNING"
+                }if (state == 2){
+                    return "SUSPENDED"
                 }
             },
             resetExercise: function (tag) {
