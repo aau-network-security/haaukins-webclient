@@ -9,6 +9,18 @@
                         <input type="text" v-model="key" name="key" class="form-control" :class="{ 'is-invalid': submitted && !key }" placeholder="Sign Up Key" />
                     </div>
                     <div class="form-group">
+                        <label htmlFor="name" class="sr-only">Name</label>
+                        <input type="text" v-model="name" name="name" class="form-control" :class="{ 'is-invalid': submitted && !name }" placeholder="Name" />
+                    </div>
+                    <div class="form-group">
+                        <label htmlFor="lastname" class="sr-only">Last Name</label>
+                        <input type="text" v-model="lastname" name="lastname" class="form-control" :class="{ 'is-invalid': submitted && !lastname }" placeholder="Last Name" />
+                    </div>
+                    <div class="form-group">
+                        <label htmlFor="email" class="sr-only">Email</label>
+                        <input type="email" v-model="email" name="email" class="form-control" :class="{ 'is-invalid': submitted && !email }" placeholder="Email" />
+                    </div>
+                    <div class="form-group">
                         <label htmlFor="username" class="sr-only">Username</label>
                         <input type="text" v-model="username" name="username" class="form-control" :class="{ 'is-invalid': submitted && !username }" placeholder="Username" />
                     </div>
@@ -39,10 +51,9 @@
     export default {
         data () {
             return {
-                username: '',
-                password: '',
-                repeatpassword: '',
-                key: '',
+                username: '', name: '', lastname: '',
+                password: '', repeatpassword: '',
+                key: '', email: '',
                 returnUrl: '',
                 submitted: false,
                 error: null
@@ -58,8 +69,8 @@
         methods: {
             signup () {
                 this.submitted = true;
-                const { username, password, repeatpassword, key } = this;
-                if (!(username && password && repeatpassword && key)) {
+                const { username, password, repeatpassword, key, name, lastname, email } = this;
+                if (!(username && password && repeatpassword && key && name && lastname && email)) {
                     return;
                 }
                 if (password != repeatpassword){
@@ -68,6 +79,9 @@
                 }
                 let getRequest = new SignupUserRequest();
                 getRequest.setKey(key);
+                getRequest.setName(name);
+                getRequest.setSurname(lastname);
+                getRequest.setEmail(email);
                 getRequest.setUsername(username);
                 getRequest.setPassword(password);
 
