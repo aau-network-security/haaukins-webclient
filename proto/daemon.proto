@@ -8,7 +8,6 @@ service Daemon {
     rpc ChangeUserPasswd (UpdatePasswdRequest) returns (UpdatePasswdResponse) {}
     rpc DestroyUser (DestroyUserRequest) returns (DestroyUserResponse) {}
 
-
     rpc CreateEvent (CreateEventRequest) returns (stream LabStatus) {}
     rpc StopEvent (StopEventRequest) returns (stream EventStatus) {}
     rpc ListEvents (ListEventsRequest) returns (ListEventsResponse) {}
