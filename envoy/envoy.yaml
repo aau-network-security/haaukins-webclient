@@ -21,8 +21,12 @@ static_resources:
                     routes:
                       - match: { prefix: "/" }
                         route:
-                          cluster: greeter_service
+                          cluster: gRPC_endpoint
                           max_grpc_timeout: 0s
+                      - match:
+                          prefix: "/"
+                        route:
+                          cluster: application_frontend
                     cors:
                       allow_origin_string_match:
                         - safe_regex:
@@ -42,18 +46,39 @@ static_resources:
               alpn_protocols: "h2"
               tls_certificates:
                 - certificate_chain:
-                    filename: "/etc/certs/fullchain.pem"
+                    filename: "/etc/certs/domain.cert.pem"
                   private_key:
-                    filename: "/etc/certs/privkey.pem"
+                    filename: "/etc/certs/private.key.pem"
   clusters:
-    - name: greeter_service
+    - name: gRPC_endpoint
       connect_timeout: 0.25s
       type: strict_dns
       http2_protocol_options: {}
       lb_policy: round_robin
-      hosts: [{ socket_address: { address: 172.17.0.1, port_value: 5454 }}]
+      hosts: [{ socket_address: { address: 172.17.0.1, port_value: 5454  }}]
       tls_context:
         common_tls_context:
           tls_certificates:
-            certificate_chain: {"filename": "/etc/certs/fullchain.pem"}
-            private_key: {"filename": "/etc/certs/privkey.pem"}
+            certificate_chain: {"filename": "/etc/certs/domain.cert.pem"}
+            private_key: {"filename": "/etc/certs/private.key.pem"}
+
+    - name: application_frontend
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      dns_lookup_family: V4_ONLY
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: application_frontend
+        endpoints:
+        - lb_endpoints:
+          - endpoint:
+               address:
+                 socket_address:
+                   address: application_frontend
+                   port_value: 8003
+      tls_context:
+        common_tls_context:
+          tls_certificates:
+            certificate_chain: {"filename": "/etc/certs/domain.cert.pem"}
+            private_key: {"filename": "/etc/certs/private.key.pem"}
