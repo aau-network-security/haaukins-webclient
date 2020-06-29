@@ -11,6 +11,5 @@ COPY daemon*.js node_modules/
 COPY public public
 RUN npm run build
 RUN npm install --global http-server
-EXPOSE 80
 
 CMD ["http-server","dist", "-p", "8003"]
