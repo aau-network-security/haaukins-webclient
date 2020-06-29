@@ -20,20 +20,14 @@ services:
       target: build-stage
     networks:
       - haaukins-webclient
-
-  nginx:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-      target: production-stage
     ports:
-      - '8003:8003'
-    volumes:
-      - ${CERTIFICATES_PATH}:/etc/certs
-    networks:
-      - haaukins-webclient
+    - '8003:8003'
     env_file:
       - .env
+
+# webclient .env file should consist VUE_APP_SLACK_API_KEY value
+# in order to get notification through slack
+
 networks:
   haaukins-webclient:
 
