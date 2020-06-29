@@ -4,4 +4,5 @@
 FROM envoyproxy/envoy:v1.12.0
 COPY envoy.yaml /etc/envoy/envoy.yaml
 ## do not forget to mount certificate files into docker image
-CMD /usr/local/bin/envoy -c /etc/envoy/envoy.yaml --log-level debug
+## log-level can be provided by `--log-level debug`
+CMD /usr/local/bin/envoy -c /etc/envoy/envoy.yaml
