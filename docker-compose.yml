@@ -20,8 +20,20 @@ services:
       target: build-stage
     networks:
       - haaukins-webclient
+    env_file:
+      - .env
+
+  nginx:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: production-stage
     ports:
-    - '8003:8003'
+      - '8003:8003'
+    volumes:
+      - ${CERTIFICATES_PATH}:/etc/certs
+    networks:
+      - haaukins-webclient
     env_file:
       - .env
 
