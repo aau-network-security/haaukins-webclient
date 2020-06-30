@@ -75,7 +75,7 @@ static_resources:
           - endpoint:
                address:
                  socket_address:
-                   address: application_frontend
+                   address: 127.0.0.1
                    port_value: 8003
       tls_context:
         common_tls_context:
