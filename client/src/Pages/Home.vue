@@ -37,6 +37,11 @@
                         <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
                     </div>
                 </div>
+                <b-dropdown id="event-status" text="Event Status" class="float-right mr-2">
+                    <b-dropdown-item-button v-on:click="listEvent(Running)">Running</b-dropdown-item-button>
+                    <b-dropdown-item-button v-on:click="listEvent(Booked)">Booked</b-dropdown-item-button>
+                    <b-dropdown-item-button v-on:click="listEvent(Suspended)">Suspended</b-dropdown-item-button>
+                </b-dropdown>
                 <div class="clearfix"></div>
             <hr>
             <div v-if="error" class="alert alert-danger alert-dismissible">{{error}}
@@ -73,7 +78,7 @@
                             <td>{{beaut_date(event.creationtime)}}</td>
                             <td>{{beaut_date(event.finishtime)}}</td>
                             <td>{{event_status(event.status)}}</td>
-                            <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == 1 || event.status == 3">{{suspendResumeEventButton(event.status)}}</button></td>
+                            <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == Booked">{{suspendResumeEventButton(event.status)}}</button></td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
                         </tr>
                     </tbody>
@@ -138,30 +143,31 @@
                 status: null,
                 loaderIsActive: false,
                 loader_status: "Loading...",
-                memory: "", cpu: "", memoryError: "", cpuError: ""
+                memory: "", cpu: "", memoryError: "", cpuError: "",
+                Running: 0, Suspended: 1, Booked: 2,
             }
         },
         created: function() {
-            this.listEvent();
+            this.listEvent(this.Running);
             this.monitorHost()
         },
         methods: {
             event_status: function(status){
                 switch (status) {
-                    case 0:
+                    case this.Running:
                         return "RUNNING";
-                    case 1:
-                        return "BOOKED";
-                    case 2:
+                    case this.Suspended:
                         return "SUSPENDED";
+                    case this.Booked:
+                        return "BOOKED";
                 }
                 return "ERROR";
             },
             suspendResumeEventButton: function(status) {
                 switch (status) {
-                    case 0:
+                    case this.Running:
                         return "Suspend";
-                    case 2:
+                    case this.Suspended:
                         return "Resume";
                 }
                 return "Suspend";
@@ -175,8 +181,9 @@
                     j.className += "datepicker";
                 },100);
             },
-            listEvent: function () {
+            listEvent: function (status) {
                 let getRequest = new ListEventsRequest();
+                getRequest.setStatus(status)
                 daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     if (err == null) {
                         this.events = response.toObject()
@@ -227,7 +234,7 @@
 
                 let getRequest = new SuspendEventRequest();
                 getRequest.setEventtag(tag)
-                if (status == 0){
+                if (status == this.Running){
                     getRequest.setSuspend(true)
                 }
                 const call = daemonclient.suspendEvent(getRequest, {Token: localStorage.getItem("user")});

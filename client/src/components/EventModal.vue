@@ -278,7 +278,7 @@
                 const date = new Date(string_date);
                 const month = date.getMonth().toString().length == 1 ? "0" + (date.getMonth() + 1) : date.getMonth();
                 const day = date.getDate().toString().length == 1 ? "0" + date.getDate() : date.getDate();
-                return date.getFullYear() + "-" + month + "-" + day
+                return date.getFullYear() + "-" + month + "-" + day + " 00:00:00"
             },
             handleSubmit() {
                 this.submitted = true;
@@ -310,7 +310,7 @@
                 getRequest.setAvailable(this.eventAvailability);
                 getRequest.setCapacity(this.eventCapacity);
                 getRequest.setFinishtime(this.eventFinishTime);
-
+                getRequest.setStarttime(this.eventStartTime.toString());
                 this.selectedChallenges.forEach(function(challenge) {
                     getRequest.addExercises(challenge)
                 });
