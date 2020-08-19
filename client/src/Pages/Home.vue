@@ -17,23 +17,15 @@
                         Actions
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownActionButton">
-                        <div class="row">
-                            <div class="col pr-0">
-                                <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
-                            </div>
-                            <div class="col pl-0">
-                                <b-form-checkbox
-                                        style="padding-top: 4px"
-                                        id="isInviteUserSuperUser"
-                                        v-model="isInviteUserSuperUser"
-                                        name="isInviteUserSuperUser"
-                                        value=true
-                                        unchecked-value=false
-                                >
-                                    SuperUser
-                                </b-form-checkbox>
-                            </div><div class="clearfix"></div>
-                        </div>
+                        <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
+                        <b-dropdown-text>
+                            <b-form-radio-group
+                                v-model="userSelected"
+                                :options="userOptions"
+                                value-field="item"
+                                text-field="name"
+                            ></b-form-radio-group>
+                        </b-dropdown-text>
                         <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
                     </div>
                 </div>
@@ -66,7 +58,7 @@
             <div class="table-responsive mt-1">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Action</th><th>Stop</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Created_By</th><th>Action</th><th>Stop</th>
                     </thead>
                     <tbody v-if="events!=null">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
@@ -78,6 +70,7 @@
                             <td>{{beaut_date(event.creationtime)}}</td>
                             <td>{{beaut_date(event.finishtime)}}</td>
                             <td>{{event_status(event.status)}}</td>
+                            <td>{{event.createdby}}</td>
                             <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == Booked">{{suspendResumeEventButton(event.status)}}</button></td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
                         </tr>
@@ -136,7 +129,7 @@
         components: { EventModal, Footer, Navbar},
         data: function () {
             return {
-                isInviteUserSuperUser: false,
+                //isInviteUserSuperUser: false,
                 events: null,
                 error: null,
                 success: null,
@@ -145,6 +138,11 @@
                 loader_status: "Loading...",
                 memory: "", cpu: "", memoryError: "", cpuError: "",
                 Running: 0, Suspended: 1, Booked: 2,
+                userOptions: [
+                  { item: 'super_user', name: 'Super User' },
+                  { item: 'np_user', name: 'NP User' },
+                ],
+                userSelected: ""
             }
         },
         created: function() {
@@ -305,8 +303,13 @@
             },
             create_signup_key: function () {
                 let getRequest = new InviteUserRequest();
-                let superUser = (this.isInviteUserSuperUser == 'true');
-                getRequest.setSuperUser(superUser);
+                if (this.userSelected == 'super_user') {
+                    getRequest.setSuperUser(true)
+                }
+                if (this.userSelected == 'np_user') {
+                    getRequest.setNpUser(true)
+                }
+
                 daemonclient.inviteUser(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     if (response.getError() != null) {
                         this.error = response.getError();

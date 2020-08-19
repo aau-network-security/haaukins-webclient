@@ -1821,7 +1821,8 @@ proto.InviteUserRequest.prototype.toObject = function(opt_includeInstance) {
  */
 proto.InviteUserRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    superUser: jspb.Message.getFieldWithDefault(msg, 1, false)
+    superUser: jspb.Message.getFieldWithDefault(msg, 1, false),
+    npUser: jspb.Message.getFieldWithDefault(msg, 2, false)
   };
 
   if (includeInstance) {
@@ -1862,6 +1863,10 @@ proto.InviteUserRequest.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setSuperUser(value);
       break;
+    case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setNpUser(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1898,6 +1903,13 @@ proto.InviteUserRequest.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getNpUser();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -1915,6 +1927,23 @@ proto.InviteUserRequest.prototype.getSuperUser = function() {
 /** @param {boolean} value */
 proto.InviteUserRequest.prototype.setSuperUser = function(value) {
   jspb.Message.setProto3BooleanField(this, 1, value);
+};
+
+
+/**
+ * optional bool np_user = 2;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.InviteUserRequest.prototype.getNpUser = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
+};
+
+
+/** @param {boolean} value */
+proto.InviteUserRequest.prototype.setNpUser = function(value) {
+  jspb.Message.setProto3BooleanField(this, 2, value);
 };
 
 
@@ -3260,7 +3289,8 @@ proto.ListEventsResponse.Events.toObject = function(includeInstance, msg) {
     capacity: jspb.Message.getFieldWithDefault(msg, 5, 0),
     creationtime: jspb.Message.getFieldWithDefault(msg, 6, ""),
     finishtime: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    status: jspb.Message.getFieldWithDefault(msg, 8, 0)
+    status: jspb.Message.getFieldWithDefault(msg, 8, 0),
+    createdby: jspb.Message.getFieldWithDefault(msg, 9, "")
   };
 
   if (includeInstance) {
@@ -3328,6 +3358,10 @@ proto.ListEventsResponse.Events.deserializeBinaryFromReader = function(msg, read
     case 8:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setStatus(value);
+      break;
+    case 9:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setCreatedby(value);
       break;
     default:
       reader.skipField();
@@ -3411,6 +3445,13 @@ proto.ListEventsResponse.Events.serializeBinaryToWriter = function(message, writ
   if (f !== 0) {
     writer.writeInt32(
       8,
+      f
+    );
+  }
+  f = message.getCreatedby();
+  if (f.length > 0) {
+    writer.writeString(
+      9,
       f
     );
   }
@@ -3534,6 +3575,21 @@ proto.ListEventsResponse.Events.prototype.getStatus = function() {
 /** @param {number} value */
 proto.ListEventsResponse.Events.prototype.setStatus = function(value) {
   jspb.Message.setProto3IntField(this, 8, value);
+};
+
+
+/**
+ * optional string createdBy = 9;
+ * @return {string}
+ */
+proto.ListEventsResponse.Events.prototype.getCreatedby = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
+};
+
+
+/** @param {string} value */
+proto.ListEventsResponse.Events.prototype.setCreatedby = function(value) {
+  jspb.Message.setProto3StringField(this, 9, value);
 };
 
 

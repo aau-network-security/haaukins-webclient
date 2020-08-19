@@ -276,7 +276,11 @@
             },
             get_date: function (string_date){
                 const date = new Date(string_date);
-                const month = date.getMonth().toString().length == 1 ? "0" + (date.getMonth() + 1) : date.getMonth();
+                let month = date.getMonth() + 1
+                if (month < 10) {
+                    month = "0" + month
+                }
+                window.console.log(month)
                 const day = date.getDate().toString().length == 1 ? "0" + date.getDate() : date.getDate();
                 return date.getFullYear() + "-" + month + "-" + day + " 00:00:00"
             },

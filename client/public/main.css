@@ -49,6 +49,10 @@ h1, h2 {
     border-top: 3px solid #251E54!important;
 }
 
+.b-dropdown-text{
+    font-weight: normal!important;
+}
+
 #loader{
     display: none;
     position: fixed;
