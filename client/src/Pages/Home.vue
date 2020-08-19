@@ -17,26 +17,23 @@
                         Actions
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownActionButton">
-                        <div class="row">
-                            <div class="col pr-0">
-                                <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
-                            </div>
-                            <div class="col pl-0">
-                                <b-form-checkbox
-                                        style="padding-top: 4px"
-                                        id="isInviteUserSuperUser"
-                                        v-model="isInviteUserSuperUser"
-                                        name="isInviteUserSuperUser"
-                                        value=true
-                                        unchecked-value=false
-                                >
-                                    SuperUser
-                                </b-form-checkbox>
-                            </div><div class="clearfix"></div>
-                        </div>
+                        <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
+                        <b-dropdown-text>
+                            <b-form-radio-group
+                                v-model="userSelected"
+                                :options="userOptions"
+                                value-field="item"
+                                text-field="name"
+                            ></b-form-radio-group>
+                        </b-dropdown-text>
                         <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
                     </div>
                 </div>
+                <b-dropdown id="event-status" text="Event Status" class="float-right mr-2">
+                    <b-dropdown-item-button v-on:click="listEvent(Running)">Running</b-dropdown-item-button>
+                    <b-dropdown-item-button v-on:click="listEvent(Booked)">Booked</b-dropdown-item-button>
+                    <b-dropdown-item-button v-on:click="listEvent(Suspended)">Suspended</b-dropdown-item-button>
+                </b-dropdown>
                 <div class="clearfix"></div>
             <hr>
             <div v-if="error" class="alert alert-danger alert-dismissible">{{error}}
@@ -61,7 +58,7 @@
             <div class="table-responsive mt-1">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Action</th><th>Stop</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Created_By</th><th>Action</th><th>Stop</th>
                     </thead>
                     <tbody v-if="events!=null">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
@@ -73,7 +70,8 @@
                             <td>{{beaut_date(event.creationtime)}}</td>
                             <td>{{beaut_date(event.finishtime)}}</td>
                             <td>{{event_status(event.status)}}</td>
-                            <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == 1 || event.status == 3">{{suspendResumeEventButton(event.status)}}</button></td>
+                            <td>{{event.createdby}}</td>
+                            <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == Booked">{{suspendResumeEventButton(event.status)}}</button></td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
                         </tr>
                     </tbody>
@@ -131,37 +129,43 @@
         components: { EventModal, Footer, Navbar},
         data: function () {
             return {
-                isInviteUserSuperUser: false,
+                //isInviteUserSuperUser: false,
                 events: null,
                 error: null,
                 success: null,
                 status: null,
                 loaderIsActive: false,
                 loader_status: "Loading...",
-                memory: "", cpu: "", memoryError: "", cpuError: ""
+                memory: "", cpu: "", memoryError: "", cpuError: "",
+                Running: 0, Suspended: 1, Booked: 2,
+                userOptions: [
+                  { item: 'super_user', name: 'Super User' },
+                  { item: 'np_user', name: 'NP User' },
+                ],
+                userSelected: ""
             }
         },
         created: function() {
-            this.listEvent();
+            this.listEvent(this.Running);
             this.monitorHost()
         },
         methods: {
             event_status: function(status){
                 switch (status) {
-                    case 0:
+                    case this.Running:
                         return "RUNNING";
-                    case 1:
-                        return "BOOKED";
-                    case 2:
+                    case this.Suspended:
                         return "SUSPENDED";
+                    case this.Booked:
+                        return "BOOKED";
                 }
                 return "ERROR";
             },
             suspendResumeEventButton: function(status) {
                 switch (status) {
-                    case 0:
+                    case this.Running:
                         return "Suspend";
-                    case 2:
+                    case this.Suspended:
                         return "Resume";
                 }
                 return "Suspend";
@@ -175,8 +179,9 @@
                     j.className += "datepicker";
                 },100);
             },
-            listEvent: function () {
+            listEvent: function (status) {
                 let getRequest = new ListEventsRequest();
+                getRequest.setStatus(status)
                 daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     if (err == null) {
                         this.events = response.toObject()
@@ -227,7 +232,7 @@
 
                 let getRequest = new SuspendEventRequest();
                 getRequest.setEventtag(tag)
-                if (status == 0){
+                if (status == this.Running){
                     getRequest.setSuspend(true)
                 }
                 const call = daemonclient.suspendEvent(getRequest, {Token: localStorage.getItem("user")});
@@ -298,8 +303,13 @@
             },
             create_signup_key: function () {
                 let getRequest = new InviteUserRequest();
-                let superUser = (this.isInviteUserSuperUser == 'true');
-                getRequest.setSuperUser(superUser);
+                if (this.userSelected == 'super_user') {
+                    getRequest.setSuperUser(true)
+                }
+                if (this.userSelected == 'np_user') {
+                    getRequest.setNpUser(true)
+                }
+
                 daemonclient.inviteUser(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     if (response.getError() != null) {
                         this.error = response.getError();

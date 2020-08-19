@@ -20,6 +20,8 @@ services:
       target: build-stage
     networks:
       - haaukins-webclient
+    env_file:
+      - .env
 
   nginx:
     build:
@@ -34,6 +36,10 @@ services:
       - haaukins-webclient
     env_file:
       - .env
+
+# webclient .env file should consist VUE_APP_SLACK_API_KEY value
+# in order to get notification through slack
+
 networks:
   haaukins-webclient:
 
