@@ -2317,7 +2317,8 @@ proto.ListUsersResponse.UserInfo.toObject = function(includeInstance, msg) {
     surname: jspb.Message.getFieldWithDefault(msg, 3, ""),
     email: jspb.Message.getFieldWithDefault(msg, 4, ""),
     createdat: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    issuperuser: jspb.Message.getFieldWithDefault(msg, 6, false)
+    issuperuser: jspb.Message.getFieldWithDefault(msg, 6, false),
+    isnpuser: jspb.Message.getFieldWithDefault(msg, 7, false)
   };
 
   if (includeInstance) {
@@ -2377,6 +2378,10 @@ proto.ListUsersResponse.UserInfo.deserializeBinaryFromReader = function(msg, rea
     case 6:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIssuperuser(value);
+      break;
+    case 7:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsnpuser(value);
       break;
     default:
       reader.skipField();
@@ -2446,6 +2451,13 @@ proto.ListUsersResponse.UserInfo.serializeBinaryToWriter = function(message, wri
   if (f) {
     writer.writeBool(
       6,
+      f
+    );
+  }
+  f = message.getIsnpuser();
+  if (f) {
+    writer.writeBool(
+      7,
       f
     );
   }
@@ -2541,6 +2553,23 @@ proto.ListUsersResponse.UserInfo.prototype.getIssuperuser = function() {
 /** @param {boolean} value */
 proto.ListUsersResponse.UserInfo.prototype.setIssuperuser = function(value) {
   jspb.Message.setProto3BooleanField(this, 6, value);
+};
+
+
+/**
+ * optional bool isNPUser = 7;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.ListUsersResponse.UserInfo.prototype.getIsnpuser = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 7, false));
+};
+
+
+/** @param {boolean} value */
+proto.ListUsersResponse.UserInfo.prototype.setIsnpuser = function(value) {
+  jspb.Message.setProto3BooleanField(this, 7, value);
 };
 
 

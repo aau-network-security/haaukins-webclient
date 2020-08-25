@@ -246,7 +246,7 @@
                         that.success = "Action successfully completed!"
                         that.listEvent()
                     }else{
-                        that.error = "Error! Try again.."
+                        that.error = status['metadata']['grpc-message']
                     }
                 });
 
@@ -275,7 +275,7 @@
                         that.success = "Event Successfully Stop!"
                         that.listEvent()
                     }else{
-                        that.error = "Error! Try again.."
+                        that.error = status['metadata']['grpc-message']
                     }
                 });
             },

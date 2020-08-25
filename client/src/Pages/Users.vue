@@ -27,7 +27,7 @@
                             <td>{{user.surname}}</td>
                             <td>{{user.email}}</td>
                             <td>{{beaut_date(user.createdat)}}</td>
-                            <td v-bind:class="{ 'text-success': user.issuperuser }">{{isSuperUser(user.issuperuser)}}</td>
+                            <td v-bind:class="{ 'text-success': user.issuperuser }">{{userType(user.issuperuser, user.isnpuser)}}</td>
                             <td><button class="btn btn-secondary btn-sm" v-on:click="openModal(user.username)">Update</button></td>
                             <td><button class="btn btn-danger btn-sm" v-on:click="deleteUser(user.username)">Delete</button></td>
                         </tr>
@@ -151,9 +151,12 @@
                 let date = new Date(string_date.replace(/\s/, 'T'));
                 return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
             },
-            isSuperUser: function (isSuperUser) {
+            userType: function (isSuperUser, isNPUser) {
                 if (isSuperUser){
-                    return "SUPER"
+                    return "SUPER_USER"
+                }
+                if (isNPUser){
+                    return "NP_USER"
                 }
                 return "USER"
             }
