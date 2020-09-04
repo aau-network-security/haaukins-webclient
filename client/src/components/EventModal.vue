@@ -90,6 +90,7 @@
                                 <b-form-input
                                         id="eventCapacity"
                                         v-model="eventCapacity"
+                                        @keyup="getAvailability"
                                         type="number"
                                         min="2"
                                         step="1"
@@ -260,6 +261,17 @@
                 if (this.memoryProp < 85) {
                     this.isDisabled = true
                 }
+            },
+            getAvailability: function () {
+              if (this.eventCapacity >= 70) {
+                this.eventAvailability = Math.round(this.eventCapacity / 4) - 3
+                return
+              }
+              if (this.eventCapacity < 15) {
+                this.eventAvailability = Math.round(this.eventCapacity / 3)
+                return
+              }
+              this.eventAvailability = Math.round(this.eventCapacity / 4)
             },
             toggleAllChallenges: function(checked) {
                 this.selectedChallenges = checked ? this.challengesWE
