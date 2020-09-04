@@ -106,9 +106,6 @@
         created: function() {
             this.listEvent();
         },
-        mounted() {
-            this.showEventGraph();
-        },
         methods: {
             showEventGraph: function () {
                 const eventChart = new ApexCharts(this.$refs.eventChart, this.eventGraphOption);
@@ -152,6 +149,7 @@
                     }else{
                         this.error = err;
                     }
+                    this.showEventGraph();
                     this.createCapacityGraph()
                 });
             },
