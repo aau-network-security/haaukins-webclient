@@ -3315,11 +3315,12 @@ proto.ListEventsResponse.Events.toObject = function(includeInstance, msg) {
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     teamcount: jspb.Message.getFieldWithDefault(msg, 3, 0),
     exercises: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    capacity: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    creationtime: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    finishtime: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    status: jspb.Message.getFieldWithDefault(msg, 8, 0),
-    createdby: jspb.Message.getFieldWithDefault(msg, 9, "")
+    availability: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    capacity: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    creationtime: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    finishtime: jspb.Message.getFieldWithDefault(msg, 8, ""),
+    status: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    createdby: jspb.Message.getFieldWithDefault(msg, 10, "")
   };
 
   if (includeInstance) {
@@ -3374,21 +3375,25 @@ proto.ListEventsResponse.Events.deserializeBinaryFromReader = function(msg, read
       break;
     case 5:
       var value = /** @type {number} */ (reader.readInt32());
-      msg.setCapacity(value);
+      msg.setAvailability(value);
       break;
     case 6:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setCreationtime(value);
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setCapacity(value);
       break;
     case 7:
       var value = /** @type {string} */ (reader.readString());
-      msg.setFinishtime(value);
+      msg.setCreationtime(value);
       break;
     case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFinishtime(value);
+      break;
+    case 9:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setStatus(value);
       break;
-    case 9:
+    case 10:
       var value = /** @type {string} */ (reader.readString());
       msg.setCreatedby(value);
       break;
@@ -3449,38 +3454,45 @@ proto.ListEventsResponse.Events.serializeBinaryToWriter = function(message, writ
       f
     );
   }
-  f = message.getCapacity();
+  f = message.getAvailability();
   if (f !== 0) {
     writer.writeInt32(
       5,
       f
     );
   }
-  f = message.getCreationtime();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getCapacity();
+  if (f !== 0) {
+    writer.writeInt32(
       6,
       f
     );
   }
-  f = message.getFinishtime();
+  f = message.getCreationtime();
   if (f.length > 0) {
     writer.writeString(
       7,
       f
     );
   }
+  f = message.getFinishtime();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
+    );
+  }
   f = message.getStatus();
   if (f !== 0) {
     writer.writeInt32(
-      8,
+      9,
       f
     );
   }
   f = message.getCreatedby();
   if (f.length > 0) {
     writer.writeString(
-      9,
+      10,
       f
     );
   }
@@ -3548,77 +3560,92 @@ proto.ListEventsResponse.Events.prototype.setExercises = function(value) {
 
 
 /**
- * optional int32 capacity = 5;
+ * optional int32 availability = 5;
  * @return {number}
  */
-proto.ListEventsResponse.Events.prototype.getCapacity = function() {
+proto.ListEventsResponse.Events.prototype.getAvailability = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
 };
 
 
 /** @param {number} value */
-proto.ListEventsResponse.Events.prototype.setCapacity = function(value) {
+proto.ListEventsResponse.Events.prototype.setAvailability = function(value) {
   jspb.Message.setProto3IntField(this, 5, value);
 };
 
 
 /**
- * optional string creationTime = 6;
- * @return {string}
+ * optional int32 capacity = 6;
+ * @return {number}
  */
-proto.ListEventsResponse.Events.prototype.getCreationtime = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+proto.ListEventsResponse.Events.prototype.getCapacity = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
 };
 
 
-/** @param {string} value */
-proto.ListEventsResponse.Events.prototype.setCreationtime = function(value) {
-  jspb.Message.setProto3StringField(this, 6, value);
+/** @param {number} value */
+proto.ListEventsResponse.Events.prototype.setCapacity = function(value) {
+  jspb.Message.setProto3IntField(this, 6, value);
 };
 
 
 /**
- * optional string finishTime = 7;
+ * optional string creationTime = 7;
  * @return {string}
  */
-proto.ListEventsResponse.Events.prototype.getFinishtime = function() {
+proto.ListEventsResponse.Events.prototype.getCreationtime = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
 
 /** @param {string} value */
-proto.ListEventsResponse.Events.prototype.setFinishtime = function(value) {
+proto.ListEventsResponse.Events.prototype.setCreationtime = function(value) {
   jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
 /**
- * optional int32 status = 8;
+ * optional string finishTime = 8;
+ * @return {string}
+ */
+proto.ListEventsResponse.Events.prototype.getFinishtime = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/** @param {string} value */
+proto.ListEventsResponse.Events.prototype.setFinishtime = function(value) {
+  jspb.Message.setProto3StringField(this, 8, value);
+};
+
+
+/**
+ * optional int32 status = 9;
  * @return {number}
  */
 proto.ListEventsResponse.Events.prototype.getStatus = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 8, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
 };
 
 
 /** @param {number} value */
 proto.ListEventsResponse.Events.prototype.setStatus = function(value) {
-  jspb.Message.setProto3IntField(this, 8, value);
+  jspb.Message.setProto3IntField(this, 9, value);
 };
 
 
 /**
- * optional string createdBy = 9;
+ * optional string createdBy = 10;
  * @return {string}
  */
 proto.ListEventsResponse.Events.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 10, ""));
 };
 
 
 /** @param {string} value */
 proto.ListEventsResponse.Events.prototype.setCreatedby = function(value) {
-  jspb.Message.setProto3StringField(this, 9, value);
+  jspb.Message.setProto3StringField(this, 10, value);
 };
 
 

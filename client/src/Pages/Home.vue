@@ -1,40 +1,39 @@
 <template>
     <div>
-<!--        <div id="loader" v-bind:class="{ 'show-loader': loaderIsActive }">-->
-<!--            <div class="loader-content p-3 text-center">-->
-<!--                <div class="d-inline mr-2">-->
-<!--                    <img class="loading-logo" src="../assets/bluelogo.png" width="60" height="60">-->
-<!--                </div>-->
-<!--                <div class="d-inline mr-2">{{loader_status}}</div>-->
-<!--            </div>-->
-<!--        </div>-->
         <Navbar/>
         <div class="container" style="margin-top: 40px">
-            <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
+            <div class="row">
+              <div class="col-md-4 col-6">
+                <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
+              </div>
+              <div class="col-md-3 col-6">
                 <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
+              </div>
+              <div class="col-md-5 col-12 mt-1 mt-sm-0">
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle float-right mr-2" type="button" id="dropdownActionButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Actions
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownActionButton">
-                        <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
-                        <b-dropdown-text>
-                            <b-form-radio-group
-                                v-model="userSelected"
-                                :options="userOptions"
-                                value-field="item"
-                                text-field="name"
-                            ></b-form-radio-group>
-                        </b-dropdown-text>
-                        <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
-                    </div>
+                  <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownActionButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownActionButton">
+                    <b-dropdown-item v-on:click="create_signup_key">Invite User</b-dropdown-item>
+                    <b-dropdown-text>
+                      <b-form-radio-group
+                          v-model="userSelected"
+                          :options="userOptions"
+                          value-field="item"
+                          text-field="name"
+                      ></b-form-radio-group>
+                    </b-dropdown-text>
+                    <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
+                  </div>
                 </div>
                 <b-dropdown id="event-status" text="Event Status" class="float-right mr-2">
-                    <b-dropdown-item-button v-on:click="listEvent(Running)">Running</b-dropdown-item-button>
-                    <b-dropdown-item-button v-on:click="listEvent(Booked)">Booked</b-dropdown-item-button>
-                    <b-dropdown-item-button v-on:click="listEvent(Suspended)">Suspended</b-dropdown-item-button>
+                  <b-dropdown-item-button v-on:click="listEvent(Running)">Running</b-dropdown-item-button>
+                  <b-dropdown-item-button v-on:click="listEvent(Booked)">Booked</b-dropdown-item-button>
+                  <b-dropdown-item-button v-on:click="listEvent(Suspended)">Suspended</b-dropdown-item-button>
                 </b-dropdown>
-                <div class="clearfix"></div>
+              </div>
+            </div>
             <hr>
             <div v-if="error" class="alert alert-danger alert-dismissible">{{error}}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -55,10 +54,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="table-responsive mt-1">
+            <div class="table-responsive mt-1 mb-5">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Created_By</th><th>Action</th><th>Stop</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Availability</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Created_By</th><th>Action</th><th>Stop</th>
                     </thead>
                     <tbody v-if="events!=null">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
@@ -66,6 +65,7 @@
                             <td>{{event.name}}</td>
                             <td>{{event.teamcount}}</td>
                             <td>{{challenges_count(event.exercises)}}</td>
+                            <td>{{event.availability}}</td>
                             <td>{{event.capacity}}</td>
                             <td>{{beaut_date(event.creationtime)}}</td>
                             <td>{{beaut_date(event.finishtime)}}</td>
@@ -77,7 +77,7 @@
                     </tbody>
                     <tbody v-else>
                         <tr>
-                            <td colspan="8" class="text-center">No events founds...</td>
+                            <td colspan="12" class="text-center">No events founds...</td>
                         </tr>
                     </tbody>
                 </table>
