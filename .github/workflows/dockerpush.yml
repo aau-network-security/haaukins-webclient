@@ -34,3 +34,23 @@ jobs:
        dockerfile: ./client/Dockerfile
        context: ./client
   
+    - name: Publish Webclient to Docker Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+       name: aaunetworksecurity/haaukins-webclient/webclient
+       username: aaunetworksecurity
+       password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+       tags: ${{ steps.tagName.outputs.tag }}
+       dockerfile: ./client/Dockerfile
+       context: ./client
+
+    - name: Publish Envoy to Docker Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+       name: aaunetworksecurity/haaukins-webclient/envoy
+       username: aaunetworksecurity
+       password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+       tags: ${{ steps.tagName.outputs.tag }}
+       dockerfile: ./envoy/Dockerfile
+       context: ./envoy
+   
