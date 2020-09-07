@@ -37,10 +37,10 @@ jobs:
     - name: Publish Webclient to Docker Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-       name: aaunetworksecurity/haaukins-webclient:webclient
+       name: aaunetworksecurity/haaukins-webclient
        username: aaunetworksecurity
        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-       tags: ${{ steps.tagName.outputs.tag }}
+       tags: webclient
        dockerfile: ./client/Dockerfile
        context: ./client
 
@@ -50,7 +50,7 @@ jobs:
        name: aaunetworksecurity/haaukins-webclient:envoy
        username: aaunetworksecurity
        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-       tags: ${{ steps.tagName.outputs.tag }}
+       tags: envoy 
        dockerfile: ./envoy/Dockerfile
        context: ./envoy
    
