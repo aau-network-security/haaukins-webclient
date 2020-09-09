@@ -1,0 +1,30 @@
+version: '3.4'
+services:
+  proxy:
+    image: aaunetworksecurity/haaukins-webclient:envoy
+    ports:
+      - '8000:8000'
+    volumes:
+      - ${CERTIFICATES_PATH}:/etc/certs
+    networks:
+      - haaukins-webclient
+    env_file:
+      - .env
+
+  webclient:
+    image: aaunetworksecurity/haaukins-webclient:webclient
+    ports:
+      - '8003:8003'
+    volumes:
+      - ${CERTIFICATES_PATH}:/etc/certs
+    networks:
+      - haaukins-webclient
+    env_file:
+      - .env
+
+# webclient .env file should consist VUE_APP_SLACK_API_KEY value
+# in order to get notification through slack
+
+networks:
+  haaukins-webclient:
+
