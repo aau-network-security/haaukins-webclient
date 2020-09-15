@@ -40,17 +40,17 @@ jobs:
        name: aaunetworksecurity/haaukins-webclient
        username: aaunetworksecurity
        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-       tags: webclient
+       tags: ${{ steps.tagName.outputs.tag }}
        dockerfile: ./client/Dockerfile
        context: ./client
 
     - name: Publish Envoy to Docker Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-       name: aaunetworksecurity/haaukins-webclient:envoy
+       name: aaunetworksecurity/haaukins-wc-envoy
        username: aaunetworksecurity
        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-       tags: envoy 
+       tags: ${{ steps.tagName.outputs.tag }} 
        dockerfile: ./envoy/Dockerfile
        context: ./envoy
    
