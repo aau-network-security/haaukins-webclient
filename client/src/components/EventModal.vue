@@ -292,7 +292,6 @@
                 if (month < 10) {
                     month = "0" + month
                 }
-                window.console.log(month)
                 const day = date.getDate().toString().length == 1 ? "0" + date.getDate() : date.getDate();
                 return date.getFullYear() + "-" + month + "-" + day + " 00:00:00"
             },
@@ -307,8 +306,6 @@
                 }else{
                     this.eventName = this.encodeHTML(this.eventName);
                     this.eventTag = this.encodeHTML(this.eventTag);
-                    this.eventAvailability = this.encodeHTML(this.eventAvailability);
-                    this.eventCapacity = this.encodeHTML(this.eventCapacity);
                     this.eventFinishTime = this.get_date(this.eventFinishTime);
                     this.eventStartTime = this.get_date(this.eventStartTime);
                     return false
