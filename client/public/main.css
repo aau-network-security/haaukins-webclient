@@ -93,3 +93,52 @@ h1, h2 {
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.slide-leave-active,
+.slide-enter-active {
+    transition: 1s;
+}
+.slide-enter {
+    transform: translate(100%, 0);
+}
+.slide-leave-to {
+    transform: translate(-100%, 0);
+}
+
+.slideback-leave-active,
+.slideback-enter-active {
+    transition: 1s;
+}
+.slideback-enter {
+    transform: translate(-100%, 0);
+}
+.slideback-leave-to {
+    transform: translate(100%, 0);
+}
+
+.div-slider{
+    overflow: hidden;
+    position: relative;
+    height: 600px;
+    width: 100%;
+}
+
+.div-slider-item {
+    position: absolute;
+    height: 600px;
+    width: 100%;
+}
+
+@media (max-width: 992px) {
+    .div-slider{
+        height: 780px;
+    }
+}
+
+@media (max-width: 768px) {
+    .div-slider{
+        height: 1050px;
+    }
+}
+
+
