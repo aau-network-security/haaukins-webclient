@@ -19,6 +19,7 @@
     "slack": "^11.0.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vuedraggable": "^2.24.1",
     "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {

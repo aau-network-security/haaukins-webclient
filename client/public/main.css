@@ -25,18 +25,18 @@ h1, h2 {
     font-family: 'Raleway', 'RalewayOffline', sans-serif!important;
 }
 
-.btn-haaukins{
+.btn-haaukins, .badge-haaukins{
     color: #fff!important;
     background-color: #211a52!important;
     border-bottom-color: #211a52!important;
 }
 
-.btn-haaukins:hover{
+.btn-haaukins:hover, .badge-haaukins:hover{
     background-color: #251E54!important;
     background-color: #251E54!important;
 }
 
-.btn-haaukins:focus{
+.btn-haaukins:focus, .badge-haaukins:focus{
     background-color: #251E54!important;
     border-color: #251E54!important;
     box-shadow: 0 0 0 0.2rem rgba(37, 30, 84, 0.5);
@@ -129,14 +129,48 @@ h1, h2 {
     width: 100%;
 }
 
+.challenges-step{
+    border: 1px solid #251E54;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-bottom: 0;
+    color: #fff;
+    background-color: #251E54;
+}
+
+.challenges-step-group{
+    border: 1px solid #bbb;
+    background-color: #f0eff8;
+}
+
+.remove-chal{
+    font-weight: bold;
+    color: #fd0000 !important;
+    padding-left: 15px;
+    cursor: pointer;
+}
+
+.badge-haaukins{
+    cursor: pointer;
+}
+
 @media (max-width: 992px) {
     .div-slider{
         height: 780px;
+    }
+    .div-slider-item {
+        height: 780px;
+    }
+    .challenges-step-name{
+        font-size: 13px;
     }
 }
 
 @media (max-width: 768px) {
     .div-slider{
+        height: 1050px;
+    }
+    .div-slider-item {
         height: 1050px;
     }
 }

@@ -2,7 +2,7 @@
     <b-modal ref="modal" id="create-event-modal" size="lg" centered hide-footer>
       <template v-slot:modal-title> Create a new Event </template>
         <form ref="form" @submit.stop.prevent="createEvent()">
-          <transition-group tag="div" class="div-slider" :name="!nextStep? 'slideback' : 'slide'">
+          <transition-group tag="div" class="div-slider mb-3" :name="!nextStep? 'slideback' : 'slide'">
             <div v-if="nextStep == false" key="1">
               <div class="div-slider-item">
                 <b-row>
@@ -18,6 +18,7 @@
                               id="eventName"
                               v-model="eventName"
                               type="text"
+                              :class="{ 'my-is-invalid': submitted && this.eventName == ''}"
                               required
                           ></b-form-input>
                         </b-form-group>
@@ -35,6 +36,7 @@
                               id="eventTag"
                               v-model="eventTag"
                               type="text"
+                              :class="{ 'my-is-invalid': submitted && this.eventTag == ''}"
                               required
                           ></b-form-input>
                         </b-form-group>
@@ -72,6 +74,7 @@
                               type="number"
                               min="1"
                               step="1"
+                              :class="{ 'my-is-invalid': submitted && this.eventAvailability < 1}"
                               required
                           ></b-form-input>
                         </b-form-group>
@@ -88,10 +91,10 @@
                           <b-form-input
                               id="eventCapacity"
                               v-model="eventCapacity"
-                              @keyup="getAvailability"
                               type="number"
                               min="2"
                               step="1"
+                              :class="{ 'my-is-invalid': submitted && this.eventCapacity < 2}"
                               required
                           ></b-form-input>
                         </b-form-group>
@@ -119,6 +122,13 @@
                         List of available Frontends
                       </b-tooltip>
                     </div>
+                    <div class="custom-control custom-switch mt-2 mt-sm-2 mt-md-5">
+                      <input type="checkbox" class="custom-control-input" id="isStepByStep" v-model="isStepByStep" name="isStepByStep">
+                      <label class="custom-control-label" for="isStepByStep">Enable Step-by-Step</label>
+                    </div>
+                    <b-tooltip target="isStepByStep" triggers="hover">
+                      Automatically enabled with more than 10 challenges
+                    </b-tooltip>
                   </b-col>
                   <b-col md="12" class="mt-3 mt-lg-0" style="z-index: 2">
                     <b-form-group>
@@ -206,13 +216,45 @@
               </div>
             </div>
             <div v-if="nextStep == true" key="2">
-              <div class="div-slider-item">
-                <div class="challenges-step" v-for="(step, count) in steps" v-bind:key="step.l">
-                  <div class="py-2">
-                    Step {{count + 1}}:<span class="float-right">({{step.l}}, {{step.h}})</span><br>
-                    <span>{{step.tags}}</span>
+              <div v-if="isStepByStep == true" class="div-slider-item" style="overflow-y: auto; overflow-x: hidden">
+                <div class="row">
+                  <div class="col-12 col-sm-9">
+                    <span>Feel free to move challenges in different steps, add steps or remove some!</span>
+                  </div>
+                  <div class="col-12 col-sm-3">
+                    <a class="badge badge-haaukins float-right p-2" @click="createSteps(steps.length + 1)">Add Step</a>
+                  </div>
+                  <div class="col-12 text-center">
+                    <span class="text-danger">{{stepsError}}</span>
                   </div>
                 </div>
+                <div v-for="(step, count) in steps" v-bind:key="step.l">
+                  <div class="my-4">
+                    <p class="challenges-step px-2">
+                      Step {{count + 1}}:
+                      <a class="remove-chal float-right" @click="removeStep(count, steps.length)">X</a>
+                      <span class="float-right">Default range [{{step.l}}, {{step.h}}]</span>
+                    </p>
+                      <draggable class="row" :list="step.chals" group="tags" style="margin-left: 0px; margin-right: 0px">
+                          <div
+                              class="col-12 col-sm-6 challenges-step-group px-2 py-1"
+                              v-for="(c, idx) in step.chals"
+                              :key="c.tag"
+                          >
+                            <p class="mb-0 challenges-step-name">
+                              {{ c.name }}
+                              <a class="remove-chal float-right" @click="removeChallengeFromStep(count, idx)">X</a>
+                              <span class="float-right">[{{c.points}}]</span>
+                            </p>
+                          </div>
+                      </draggable>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="div-slider-item text-center">
+                <p class="mt-5">Step-by-Steps is <strong>NOT ENABLED</strong>. You can continue by creating the Event!</p>
+                <p class="text-black-50">{{stepsError}}</p>
+                <img src="../assets/warning.svg" class="img-fluid mt-5" width="500"/>
               </div>
             </div>
           </transition-group>
@@ -227,10 +269,12 @@
     import { Empty, CreateEventRequest } from "daemon_pb";
     import { daemonclient } from "../App";
     import Datepicker from "vuejs-datepicker"
+    import draggable from 'vuedraggable'
+
 
     export default {
         name: "EventModal",
-        components: { Datepicker},
+        components: { Datepicker, draggable},
         props: {
             memoryProp: String
         },
@@ -240,7 +284,7 @@
                 submitted: false,
                 nextStep: false,
                 nextStepValue: "Next",
-                steps: [],
+                steps: [], stepsError: "", isStepByStep: false,
                 eventName: '',
                 eventTag: '',
                 eventAvailability: 0,
@@ -266,6 +310,26 @@
             this.getFrontends();
             this.handleButtons();
         },
+        watch: {
+            selectedChallenges: function (){
+              if (this.selectedChallenges.length > 10) {
+                this.isStepByStep = true
+              }
+            },
+            eventCapacity: function () {
+              this.eventAvailability = Math.ceil(this.eventCapacity / 7)
+            },
+            steps: {
+              handler: function () {
+                for (let z = 0; z < this.steps.length; z++) {
+                  if (this.steps[z].chals.length == 0) {
+                    this.removeStep(z, this.steps.length)
+                  }
+                }
+              },
+              deep: true
+            }
+        },
         methods: {
             disabledDatesFinishTime: function() {
                 return {
@@ -273,9 +337,22 @@
                 }
             },
             goNextStep: function () {
-                if (!this.nextStep){
-                    this.steps = []
-                    this.createSteps()
+              this.stepsError = ""
+              if (!this.nextStep){
+                  this.steps = []
+                  if(this.handleSubmit()){
+                      return
+                    }
+                    if (this.selectedChallenges.length < 2){
+                      this.isStepByStep = false
+                      this.stepsError = "You can not enable Step-by-Step with just a challenge"
+                    }
+                    if (this.selectedChallenges.length > 10){
+                      this.isStepByStep = true
+                    }
+                    if (this.isStepByStep){
+                      this.defineSteps()
+                    }
                     this.nextStep = true
                     this.nextStepValue = "Back"
                     return
@@ -283,16 +360,12 @@
                 this.nextStep = false
                 this.nextStepValue = "Next"
             },
-            createSteps: function (){
-              let lowest = this.selectedChallenges.reduce((min, p) => p.points < min ? p.points : min, this.selectedChallenges[0].points);
-              let highest = this.selectedChallenges.reduce((max, p) => p.points > max ? p.points : max, this.selectedChallenges[0].points);
+            defineSteps: function (){
               let n_selected_chals = this.selectedChallenges.length
-              let n_steps = 1
+              let n_steps = 2
 
               //Define the number of steps
-              if (n_selected_chals > 5 && n_selected_chals <= 10){
-                  n_steps = 2
-              }else if (n_selected_chals > 11 && n_selected_chals <= 15){
+              if (n_selected_chals > 11 && n_selected_chals <= 15){
                 n_steps = 3
               }else if (n_selected_chals > 16 && n_selected_chals <= 25){
                 n_steps = 4
@@ -301,11 +374,23 @@
               }else if (n_selected_chals > 42){
                 n_steps = 6
               }
+              this.createSteps(n_steps)
+
+            },
+            createSteps: function (n_steps){
+              if (n_steps > 6) {
+                  this.stepsError = "You can not create more than 6 steps!"
+                  return
+              }
+              this.steps = []
+              let lowest = this.selectedChallenges.reduce((min, p) => p.points < min ? p.points : min, this.selectedChallenges[0].points);
+              let highest = this.selectedChallenges.reduce((max, p) => p.points > max ? p.points : max, this.selectedChallenges[0].points);
+              let n_selected_chals = this.selectedChallenges.length
 
               //Create the steps
               let range = Math.floor((highest - lowest) / n_steps)
               for (let i = 0; i < n_steps; i++) {
-                this.steps.push({l: lowest, h: lowest + range - 1, tags: []})
+                this.steps.push({l: lowest, h: lowest + range - 1, chals: []})
                 lowest = lowest + range
               }
               this.steps[n_steps - 1].h = highest
@@ -314,26 +399,25 @@
               for (let j = 0; j < n_selected_chals; j++) {
                 for (let z = 0; z < this.steps.length; z++) {
                   if (this.selectedChallenges[j].points >= this.steps[z].l && this.selectedChallenges[j].points <= this.steps[z].h){
-                    this.steps[z].tags.push(this.selectedChallenges[j].tag)
+                    this.steps[z].chals.push(this.selectedChallenges[j])
                   }
                 }
               }
+            },
+            removeChallengeFromStep: function (step_id, chal_id){
+              this.steps[step_id].chals.splice(chal_id, 1);
+                if (this.steps[step_id].chals.length == 0) {
+                    this.removeStep(step_id, this.steps.length)
+                }
+            },
+            removeStep: function (id, n_steps){
+                this.steps.splice(id, 1);
+                this.createSteps(n_steps - 1)
             },
             handleButtons: function(){
                 if (this.memoryProp < 85) {
                     this.isDisabled = true
                 }
-            },
-            getAvailability: function () {
-              if (this.eventCapacity >= 70) {
-                this.eventAvailability = Math.round(this.eventCapacity / 4) - 3
-                return
-              }
-              if (this.eventCapacity < 15) {
-                this.eventAvailability = Math.round(this.eventCapacity / 3)
-                return
-              }
-              this.eventAvailability = Math.round(this.eventCapacity / 4)
             },
             toggleAllChallenges: function(checked) {
                 this.selectedChallenges = checked ? this.challengesWE
@@ -422,27 +506,27 @@
 
                         let taglist = element.getTagsList();
                         let name = element.getName();
-                        let parentChallenge = { text: name + that.childrenChallenges, value: {tag: taglist[0], points: points} };
+                        let parentChallenge = { text: name + that.childrenChallenges, value: {tag: taglist[0], name: name, points: points} };
                         switch (that.cat) {
                             case "Web exploitation":
                                 that.challengesTextWE.push(parentChallenge);
-                                that.challengesWE.push({tag: taglist[0], points: points});
+                                that.challengesWE.push({tag: taglist[0], name: name, points: points});
                                 break;
                             case "Forensics":
                                 that.challengesTextF.push(parentChallenge);
-                                that.challengesF.push({tag: taglist[0], points: points});
+                                that.challengesF.push({tag: taglist[0], name: name, points: points});
                                 break;
                             case "Binary":
                                 that.challengesTextB.push(parentChallenge);
-                                that.challengesB.push({tag: taglist[0], points: points});
+                                that.challengesB.push({tag: taglist[0], name: name, points: points});
                                 break;
                             case "Cryptography":
                                 that.challengesTextC.push(parentChallenge);
-                                that.challengesC.push({tag: taglist[0], points: points});
+                                that.challengesC.push({tag: taglist[0], name: name, points: points});
                                 break;
                             case "Reverse Engineering":
                                 that.challengesTextRE.push(parentChallenge);
-                                that.challengesRE.push({tag: taglist[0], points: points});
+                                that.challengesRE.push({tag: taglist[0], name: name, points: points});
                                 break;
                         }
 
