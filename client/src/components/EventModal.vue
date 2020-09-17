@@ -403,6 +403,9 @@
                   }
                 }
               }
+              for (let z = 0; z < this.steps.length; z++) {
+                this.steps[z].chals.sort((a, b)=> a.points - b.points)
+              }
             },
             removeChallengeFromStep: function (step_id, chal_id){
               this.steps[step_id].chals.splice(chal_id, 1);
@@ -458,11 +461,10 @@
                 }
             },
             createEvent: function () {
-
-                if(this.handleSubmit()){
-                    return
+                //todo maybe make more checks before create the event
+                if (this.isStepByStep){
+                  this.selectedChallenges = []
                 }
-
                 let getRequest = new CreateEventRequest();
                 getRequest.setName(this.eventName);
                 getRequest.setTag(this.eventTag);
@@ -470,13 +472,20 @@
                 getRequest.setCapacity(this.eventCapacity);
                 getRequest.setFinishtime(this.eventFinishTime);
                 getRequest.setStarttime(this.eventStartTime.toString());
+                getRequest.addFrontends(this.selectedFrontends)
                 this.selectedChallenges.forEach(function(challenge) {
-                    getRequest.addExercises(challenge.tag) //todo maybe change it
+                  getRequest.addExercises(challenge.tag)
                 });
 
-                getRequest.addFrontends(this.selectedFrontends)
+                for (let j = 0; j < this.steps.length; j++) {
+                  let proto_step = new CreateEventRequest.Step()
+                  for (let z = 0; z < this.steps[j].chals.length; z++) {
+                    proto_step.addExercises(this.steps[j].chals[z].tag)
+                  }
+                  getRequest.addSteps(proto_step)
+                }
 
-                //this.$emit('createEvent', getRequest)
+                this.$emit('createEvent', getRequest)
 
             },
             getChallenges: function () {
