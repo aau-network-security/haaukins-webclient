@@ -59,8 +59,8 @@ static_resources:
       tls_context:
         common_tls_context:
           tls_certificates:
-            certificate_chain: {"filename": "/etc/certs/domain.cert.pem"}
-            private_key: {"filename": "/etc/certs/private.key.pem"}
+            certificate_chain: {"filename": "/etc/certs/fullchain.pem"}
+            private_key: {"filename": "/etc/certs/privkey.pem"}
 
     - name: application_frontend
       connect_timeout: 0.25s
@@ -80,5 +80,5 @@ static_resources:
       tls_context:
         common_tls_context:
           tls_certificates:
-            certificate_chain: {"filename": "/etc/certs/domain.cert.pem"}
-            private_key: {"filename": "/etc/certs/private.key.pem"}
+            certificate_chain: {"filename": "/etc/certs/fullchain.pem"}
+            private_key: {"filename": "/etc/certs/privkey.pem"}
