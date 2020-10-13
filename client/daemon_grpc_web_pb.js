@@ -1088,6 +1088,86 @@ proto.DaemonPromiseClient.prototype.restartTeamLab =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.TestEventLoadReq,
+ *   !proto.TestEventLoadResp>}
+ */
+const methodDescriptor_Daemon_StressEvent = new grpc.web.MethodDescriptor(
+  '/Daemon/StressEvent',
+  grpc.web.MethodType.UNARY,
+  proto.TestEventLoadReq,
+  proto.TestEventLoadResp,
+  /**
+   * @param {!proto.TestEventLoadReq} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.TestEventLoadResp.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.TestEventLoadReq,
+ *   !proto.TestEventLoadResp>}
+ */
+const methodInfo_Daemon_StressEvent = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.TestEventLoadResp,
+  /**
+   * @param {!proto.TestEventLoadReq} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.TestEventLoadResp.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.TestEventLoadReq} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.TestEventLoadResp)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.TestEventLoadResp>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.DaemonClient.prototype.stressEvent =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Daemon/StressEvent',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_StressEvent,
+      callback);
+};
+
+
+/**
+ * @param {!proto.TestEventLoadReq} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.TestEventLoadResp>}
+ *     A native promise that resolves to the response
+ */
+proto.DaemonPromiseClient.prototype.stressEvent =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Daemon/StressEvent',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_StressEvent);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.Empty,
  *   !proto.UpdateExercisesFileResponse>}
  */
