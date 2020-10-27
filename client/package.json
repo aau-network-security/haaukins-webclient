@@ -18,7 +18,7 @@
     "popper.js": "^1.16.1",
     "slack": "^11.0.2",
     "vue": "^2.6.12",
-    "vue-router": "^3.4.7",
+    "vue-router": "^3.4.8",
     "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {
