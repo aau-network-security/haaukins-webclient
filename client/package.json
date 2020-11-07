@@ -8,9 +8,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "apexcharts": "^3.22.0",
+    "apexcharts": "^3.22.1",
     "bootstrap": "^4.5.3",
-    "bootstrap-vue": "^2.18.0",
+    "bootstrap-vue": "^2.18.1",
     "core-js": "^3.6.5",
     "google-protobuf": "^3.13.0",
     "grpc-web": "^1.2.1",
@@ -18,17 +18,17 @@
     "popper.js": "^1.16.1",
     "slack": "^11.0.2",
     "vue": "^2.6.12",
-    "vue-router": "^3.4.7",
+    "vue-router": "^3.4.9",
     "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.7",
     "@vue/cli-plugin-eslint": "^4.5.8",
-    "@vue/cli-service": "^4.5.7",
+    "@vue/cli-service": "^4.5.8",
     "babel-eslint": "^10.1.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
-    "vue-loader": "^15.9.2",
+    "vue-loader": "^15.9.5",
     "vue-template-compiler": "^2.6.12"
   },
   "eslintConfig": {
