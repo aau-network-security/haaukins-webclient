@@ -19,9 +19,13 @@ static_resources:
                     - name: local_service
                       domains: ["*"]
                       routes:
-                        - match: { prefix: "/" }
+                        - match: { prefix: "/Daemon" }
                           route:
                             cluster: gRPC_endpoint
+                            max_grpc_timeout: 0s
+                        - match: { prefix: "/ExerciseStore" }
+                          route:
+                            cluster: gRPC_endpoint_exercise
                             max_grpc_timeout: 0s
                         - match:
                             prefix: "/"
@@ -48,6 +52,13 @@ static_resources:
       http2_protocol_options: {}
       lb_policy: round_robin
       hosts: [{ socket_address: { address: 172.17.0.1, port_value: 5454  }}]
+
+    - name: gRPC_endpoint_exercise
+      connect_timeout: 0.25s
+      type: strict_dns
+      http2_protocol_options: { }
+      lb_policy: round_robin
+      hosts: [ { socket_address: { address: 172.17.0.1, port_value: 50095 } } ]
 
     - name: application_frontend
       connect_timeout: 0.25s
