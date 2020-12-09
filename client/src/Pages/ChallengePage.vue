@@ -12,6 +12,7 @@
           <b-card no-body class="mb-1" v-for="e in challenges[c.tag]" v-bind:key="e.tag">
             <b-button  block v-b-toggle v-bind:href="'#' + e.tag">
               <h5 class="float-left mb-0 py-2">{{e.name}}</h5>
+              <router-link :to="{name: 'challenge', params: {tag: e.tag}}" class="float-right pt-2 pl-2"><b-badge pill variant="warning">View</b-badge></router-link>
               <span class="float-right pt-2">[{{e.tag}}]</span>
             </b-button>
             <b-collapse :id="e.tag" visible accordion="my-accordion" role="tabpanel">
@@ -60,7 +61,7 @@ import { Empty } from "exercise_pb"
 import { ExerciseClient, token } from "../App";
 
 export default {
-  name: "Challenges",
+  name: "ChallengesPage",
   components: {Footer, Navbar},
   data: function () {
     return {

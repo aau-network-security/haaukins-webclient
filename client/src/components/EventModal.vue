@@ -403,10 +403,10 @@
         display: flex;
         align-items: center;
     }
-    .nav-link {
+    .challenges-field-modal .nav-link {
         color: #211a52!important;
     }
-    .nav-link.active{
+    .challenges-field-modal .nav-link.active{
         color: #fff!important;
         background-color: #211a52!important;
         border-color: #211a52!important;
