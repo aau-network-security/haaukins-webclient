@@ -1,35 +1,34 @@
 name: Build and  Publish Docker
 on:
   push:
-    tags: 
+    tags:
       - 'v*.*.*' ## will be the tag of docker image
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: olegtarasov/get-tag@v1
-      id: tagName
+      - uses: actions/checkout@v1
 
-   
-    - name: Publish Webclient to Github Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-       name: aau-network-security/haaukins-webclient/webclient
-       username: ${{ github.actor }}
-       password: ${{ secrets.DOCKER_PASSWORD }}
-       registry: docker.pkg.github.com
-       tags: ${{ steps.tagName.outputs.tag }}
-       dockerfile: ./client/Dockerfile
-       context: ./client
-  
-    - name: Publish Webclient to Docker Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-       name: aaunetworksecurity/haaukins-webclient
-       username: aaunetworksecurity
-       password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-       tags: ${{ steps.tagName.outputs.tag }}
-       dockerfile: ./client/Dockerfile
-       context: ./client
+      - name: Publish Webclient to Github Registry
+        uses: docker/build-push-action@v1
+        with:
+          name: aau-network-security/haaukins-webclient/webclient
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: docker.pkg.github.com
+          dockerfile: ./client/Dockerfile
+          path: ./client
+          tag_with_ref: true
+          tag_with_sha: true
+
+      - name: Publish Webclient to Docker Registry
+        uses: docker/build-push-action@v1
+        with:
+          name: aaunetworksecurity/haaukins-webclient
+          username: aaunetworksecurity
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          dockerfile: ./client/Dockerfile
+          path: ./client
+          tag_with_ref: true
+          tag_with_sha: true
