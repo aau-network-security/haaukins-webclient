@@ -10,18 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Publish Webclient to Github Registry
-        uses: docker/build-push-action@v1
-        with:
-          name: aau-network-security/haaukins-webclient/webclient
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: docker.pkg.github.com
-          dockerfile: ./client/Dockerfile
-          path: ./client
-          tag_with_ref: true
-          tag_with_sha: true
-
       - name: Publish Webclient to Docker Registry
         uses: docker/build-push-action@v1
         with:
