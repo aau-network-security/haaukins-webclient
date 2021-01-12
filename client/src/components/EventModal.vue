@@ -147,9 +147,8 @@
                     <div class="row">
                       <div class="col-3">
                         <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
-
-                          <a class="nav-link active show" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="true">Web_Exploit.</a>
-                          <a class="nav-link" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="false">Starters</a>
+                          <a class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
+                          <a class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web_Exploit.</a>
                           <a class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
                           <a class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
                           <a class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse_Eng.</a>
@@ -158,7 +157,18 @@
                       </div>
                       <div class="col-9">
                         <div class="tab-content" id="v-pills-tabContent">
-                          <div class="tab-pane fade active show" id="web-exploit" role="tabpanel" aria-labelledby="web-exploit-tab">
+                          <div class="tab-pane fade active show" id="starters" role="tabpanel" aria-labelledby="starters-tab">
+                            <b-form-checkbox-group
+                                id="challengesS"
+                                v-model="selectedChallenges"
+                                :options="challengesTextS"
+                                name="challengesS"
+                                class="ml-4"
+                                stacked
+                            ></b-form-checkbox-group>
+                          </div>
+
+                          <div class="tab-pane fade" id="web-exploit" role="tabpanel" aria-labelledby="web-exploit-tab">
                             <b-form-checkbox-group
                                 id="challengesWE"
                                 v-model="selectedChallenges"
@@ -168,6 +178,7 @@
                                 stacked
                             ></b-form-checkbox-group>
                           </div>
+
                           <div class="tab-pane fade" id="forensics" role="tabpanel" aria-labelledby="forensics-tab">
                             <b-form-checkbox-group
                                 id="challengesF"
@@ -179,23 +190,12 @@
                             ></b-form-checkbox-group>
                           </div>
 
-                          <div class="tab-pane fade" id="starters" role="tabpanel" aria-labelledby="starters-tab">
-                            <b-form-checkbox-group
-                                id="challengesS"
-                                v-model="selectedChallenges"
-                                :options="challengesTextS"
-                                name="challengesS"
-                                class="ml-4"
-                                stacked
-                            ></b-form-checkbox-group>
-                          </div>
-
                           <div class="tab-pane fade" id="binary" role="tabpanel" aria-labelledby="binary-tab">
                             <b-form-checkbox-group
                                 id="challengesB"
                                 v-model="selectedChallenges"
                                 :options="challengesTextB"
-                                name="challengesB"
+                                name="challengesWE"
                                 class="ml-4"
                                 stacked
                             ></b-form-checkbox-group>
