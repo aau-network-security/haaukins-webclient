@@ -147,7 +147,9 @@
                     <div class="row">
                       <div class="col-3">
                         <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
+
                           <a class="nav-link active show" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="true">Web_Exploit.</a>
+                          <a class="nav-link" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="false">Starters</a>
                           <a class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
                           <a class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
                           <a class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse_Eng.</a>
@@ -176,6 +178,18 @@
                                 stacked
                             ></b-form-checkbox-group>
                           </div>
+
+                          <div class="tab-pane fade" id="starters" role="tabpanel" aria-labelledby="starters-tab">
+                            <b-form-checkbox-group
+                                id="challengesS"
+                                v-model="selectedChallenges"
+                                :options="challengesTextS"
+                                name="challengesS"
+                                class="ml-4"
+                                stacked
+                            ></b-form-checkbox-group>
+                          </div>
+
                           <div class="tab-pane fade" id="binary" role="tabpanel" aria-labelledby="binary-tab">
                             <b-form-checkbox-group
                                 id="challengesB"
@@ -262,6 +276,7 @@
                 challengesF: [], challengesTextF: [],
                 challengesRE: [], challengesTextRE: [],
                 challengesC: [], challengesTextC: [],
+                challengesS: [], challengesTextS: [],
                 cat: '', childrenChallenges: '', isDisabled: false,
                 disabledDates: {
                     to: new Date(Date.now() - 8640000)
@@ -295,6 +310,7 @@
                     .concat(this.challengesB)
                     .concat(this.challengesF)
                     .concat(this.challengesRE)
+                    .concat(this.challengesS)
                     .concat(this.challengesC): []
             },
             encodeHTML: function(s) {
@@ -395,6 +411,10 @@
                                 that.challengesTextRE.push(parentChallenge);
                                 that.challengesRE.push(taglist[0]);
                                 break;
+                            case "Starters":
+                              that.challengesTextS.push(parentChallenge);
+                              that.challengesS.push(taglist[0])
+
                         }
 
                     })
