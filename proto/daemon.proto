@@ -114,7 +114,7 @@ message CreateEventRequest {
     repeated string exercises = 4;
     int32 available = 5;
     int32 capacity = 6;
-    string startTime = 7;
+    string  startTime = 7;
     string finishTime = 8;
     bool onlyVPN = 9;
 }
@@ -190,6 +190,7 @@ message ListExercisesResponse {
         string name = 2;
         int32 dockerImageCount = 3;
         int32 vboxImageCount = 4;
+        bool secret = 6;
         repeated ExerciseInfo exerciseinfo = 5;
     }
     repeated Exercise exercises = 1;
