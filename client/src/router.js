@@ -10,6 +10,7 @@ import TeamAction from "./Pages/TeamAction";
 import Signup from "./Pages/Signup";
 import Graphs from "./Pages/Graphs";
 import Users from "./Pages/Users";
+import APICreds from "@/Pages/APICreds";
 
 Vue.use(Router);
 
@@ -25,7 +26,7 @@ export const router = new Router({
         { name: 'users', path: '/users', component: Users},
         { name: 'vms', path: '/vms', component: VMs },
         { name: 'graphs', path: '/graphs', component: Graphs},
-
+        { name: 'apicreds', path: '/apicreds', component: APICreds},
         // otherwise redirect to home
         { path: '*', redirect: '/' }
     ]
