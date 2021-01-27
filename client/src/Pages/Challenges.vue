@@ -14,6 +14,10 @@
                     {{ row.item.tagsList[0] }}  {{ row.item.tagsList[1] }}
                 </template>
 
+                <template v-slot:cell(secret)="row">
+                  {{ row.item.secret }}
+                </template>
+
                <template v-slot:cell(exerciseinfoList)="row">
                     <b-button size="sm" @click="row.toggleDetails">
                         {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
@@ -54,6 +58,7 @@
                 challengesFields: [
                     {key:"tagsList", label:"Tags List"},
                     {key:"name", label:"Name"},
+                    {key:"secret", label:"Secret"},
                     {key:"dockerimagecount", label:"#_Docker"},
                     {key:"vboximagecount", label:"#_VBox"},
                     {key:"exerciseinfoList", label:"Challenges"}
