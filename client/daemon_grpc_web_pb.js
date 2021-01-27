@@ -606,6 +606,80 @@ proto.DaemonPromiseClient.prototype.setTeamSuspend =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.Empty,
+ *   !proto.CredsResponse>}
+ */
+const methodDescriptor_Daemon_GetAPICreds = new grpc.web.MethodDescriptor(
+  '/Daemon/GetAPICreds',
+  grpc.web.MethodType.UNARY,
+  proto.Empty,
+  proto.CredsResponse,
+  /** @param {!proto.Empty} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.CredsResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.Empty,
+ *   !proto.CredsResponse>}
+ */
+const methodInfo_Daemon_GetAPICreds = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.CredsResponse,
+  /** @param {!proto.Empty} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.CredsResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.Empty} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.CredsResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.CredsResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.DaemonClient.prototype.getAPICreds =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/Daemon/GetAPICreds',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_GetAPICreds,
+      callback);
+};
+
+
+/**
+ * @param {!proto.Empty} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.CredsResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.DaemonPromiseClient.prototype.getAPICreds =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/Daemon/GetAPICreds',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_GetAPICreds);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.CreateEventRequest,
  *   !proto.LabStatus>}
  */

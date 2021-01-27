@@ -85,4 +85,14 @@ protoc -I proto/ proto/deamon.proto --go_out=plugins=grpc:proto
 ```
 - Create the proto compiled code for JS (Run in the proto folder)
 ```bash
-protoc daemon.proto --js_out=import_style=commonjs,binary:../client --grpc-web_out=import_style=commonjs,mode=grpcwebtext:../client ```
+protoc daemon.proto --js_out=import_style=commonjs,binary:../client --grpc-web_out=import_style=commonjs,mode=grpcwebtext:../client
+```
+
+#### Run in local as development mode 
+
+1. Create `.env` file on the same level with [docker-compose-dev.yml](./docker-compose-dev.yml) file, as given in [.env.sample](.env.sample)
+2. Run `docker-compose-dev.yml` file 
+```bash 
+$ docker-compose -f docker-compose-dev.yml up --build -d 
+```
+3. Make sure that Haaukins is up and running in given port in [envoy-dev.yaml](./envoy/envoy-dev.yaml) file

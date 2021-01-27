@@ -16,6 +16,7 @@
                         <b-nav-item href="/users">Users</b-nav-item>
                         <b-nav-item href="/vms">VMs</b-nav-item>
                         <b-nav-item href="/graphs">Graphs</b-nav-item>
+                        <b-nav-item href="/apicreds">API Creds</b-nav-item>
                     </b-navbar-nav>
                     <b-navbar-nav class="ml-lg-auto">
                         <b-nav-item href="/login">Logout</b-nav-item>
