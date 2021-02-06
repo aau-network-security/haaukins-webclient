@@ -338,7 +338,7 @@
                     return true;
                 }else{
                     this.eventName = this.encodeHTML(this.eventName);
-                    this.eventTag = this.encodeHTML(this.eventTag);
+                    this.eventTag = this.encodeHTML(this.eventTag.toLowerCase());
                     this.eventFinishTime = this.get_date(this.eventFinishTime);
                     this.eventStartTime = this.get_date(this.eventStartTime);
                     return false
@@ -352,7 +352,7 @@
 
                 let getRequest = new CreateEventRequest();
                 getRequest.setName(this.eventName);
-                getRequest.setTag(this.eventTag);
+                getRequest.setTag(this.eventTag.toLowerCase());
                 getRequest.setAvailable(this.eventAvailability);
                 getRequest.setCapacity(this.eventCapacity);
                 getRequest.setFinishtime(this.eventFinishTime);
@@ -433,8 +433,12 @@
                         }
                     })
                 });
+
             },
             selectedVPNOption: function (isVPN) {
+              if (isVPN) {
+                this.frontends.push("VPN")
+              }
               this.isVPNON = isVPN
               this.$refs.createEventCarousel.next()
             }
