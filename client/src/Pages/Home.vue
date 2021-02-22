@@ -54,10 +54,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="table-responsive mt-1 mb-5">
+            <div class=" mt-1 mb-5" style="overflow: -moz-scrollbars-horizontal; overflow-x: scroll;">
                 <table class="table table-hover table-striped">
                     <thead>
-                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Availability</th><th>Capacity</th><th>Creation_Date</th><th>Finish_Date</th><th>Status</th><th>Created_By</th><th>Action</th><th>Stop</th>
+                        <th>Event_Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Availability</th><th>Capacity</th><th>Status</th><th>Action</th><th>Stop</th><th>Created_By</th><th>Creation_Date</th><th>Finish_Date</th>
                     </thead>
                     <tbody v-if="events!=null">
                         <tr v-for="event in events.eventsList" v-bind:key="event.tag">
@@ -67,12 +67,12 @@
                             <td>{{challenges_count(event.exercises)}}</td>
                             <td>{{event.availability}}</td>
                             <td>{{event.capacity}}</td>
-                            <td>{{beaut_date(event.creationtime)}}</td>
-                            <td>{{beaut_date(event.finishtime)}}</td>
                             <td>{{event_status(event.status)}}</td>
-                            <td>{{event.createdby}}</td>
                             <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == Booked">{{suspendResumeEventButton(event.status)}}</button></td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
+                            <td>{{event.createdby}}</td>
+                            <td>{{beaut_date(event.creationtime)}}</td>
+                            <td>{{beaut_date(event.finishtime)}}</td>
                         </tr>
                     </tbody>
                     <tbody v-else>
