@@ -14,7 +14,7 @@ services:
       - .env
 
   webclient:
-    image: aaunetworksecurity/haaukins-webclient:v1.4.0
+    image: aaunetworksecurity/haaukins-webclient:v1.4.7
     container_name: webclient
     ports:
       - '8003:8003'
