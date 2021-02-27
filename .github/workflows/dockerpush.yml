@@ -50,7 +50,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          bodyfile: ./changelog.txt
+          body_path: ./changelog.txt
           draft: false
           prerelease: false
 
