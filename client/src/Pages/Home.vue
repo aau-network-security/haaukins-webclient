@@ -24,7 +24,6 @@
                           text-field="name"
                       ></b-form-radio-group>
                     </b-dropdown-text>
-                    <b-dropdown-item v-on:click="update_exercises_file">Update Exercise file</b-dropdown-item>
                   </div>
                 </div>
                 <b-dropdown id="event-status" text="Event Status" class="float-right mr-2">
@@ -293,13 +292,6 @@
             beaut_date: function (string_date){
                 let date = new Date(string_date.replace(/\s/, 'T'));
                 return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
-            },
-            update_exercises_file: function () {
-                let getRequest = new Empty();
-                daemonclient.updateExercisesFile(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    this.error = err;
-                    this.success = response.getMsg()
-                });
             },
             create_signup_key: function () {
                 let getRequest = new InviteUserRequest();
