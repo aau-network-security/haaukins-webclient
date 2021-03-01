@@ -12,7 +12,7 @@ RUN NODE_ENV=production npm run build
 
 
 # production stage
-FROM nginx:1.16.0-alpine as production-stage
+FROM nginx:1.18.0-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d
