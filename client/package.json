@@ -14,7 +14,7 @@
     "bootstrap-vue": "^2.21.2",
     "google-protobuf": "^3.15.3",
     "grpc-web": "^1.2.1",
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
     "slack": "^11.0.2",
     "vue": "^2.6.12",
