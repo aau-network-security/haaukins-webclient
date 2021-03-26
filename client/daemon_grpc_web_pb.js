@@ -1,5 +1,5 @@
 /**
- * @fileoverview gRPC-Web generated client stub for 
+ * @fileoverview gRPC-Web generated client stub for daemon
  * @enhanceable
  * @public
  */
@@ -11,7 +11,8 @@
 const grpc = {};
 grpc.web = require('grpc-web');
 
-const proto = require('./daemon_pb.js');
+const proto = {};
+proto.daemon = require('./daemon_pb.js');
 
 /**
  * @param {string} hostname
@@ -21,7 +22,7 @@ const proto = require('./daemon_pb.js');
  * @struct
  * @final
  */
-proto.DaemonClient =
+proto.daemon.DaemonClient =
     function(hostname, credentials, options) {
   if (!options) options = {};
   options['format'] = 'text';
@@ -57,7 +58,7 @@ proto.DaemonClient =
  * @struct
  * @final
  */
-proto.DaemonPromiseClient =
+proto.daemon.DaemonPromiseClient =
     function(hostname, credentials, options) {
   if (!options) options = {};
   options['format'] = 'text';
@@ -88,52 +89,52 @@ proto.DaemonPromiseClient =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.LoginUserRequest,
- *   !proto.LoginUserResponse>}
+ *   !proto.daemon.LoginUserRequest,
+ *   !proto.daemon.LoginUserResponse>}
  */
 const methodDescriptor_Daemon_LoginUser = new grpc.web.MethodDescriptor(
-  '/Daemon/LoginUser',
+  '/daemon.Daemon/LoginUser',
   grpc.web.MethodType.UNARY,
-  proto.LoginUserRequest,
-  proto.LoginUserResponse,
-  /** @param {!proto.LoginUserRequest} request */
+  proto.daemon.LoginUserRequest,
+  proto.daemon.LoginUserResponse,
+  /** @param {!proto.daemon.LoginUserRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.LoginUserResponse.deserializeBinary
+  proto.daemon.LoginUserResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.LoginUserRequest,
- *   !proto.LoginUserResponse>}
+ *   !proto.daemon.LoginUserRequest,
+ *   !proto.daemon.LoginUserResponse>}
  */
 const methodInfo_Daemon_LoginUser = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.LoginUserResponse,
-  /** @param {!proto.LoginUserRequest} request */
+  proto.daemon.LoginUserResponse,
+  /** @param {!proto.daemon.LoginUserRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.LoginUserResponse.deserializeBinary
+  proto.daemon.LoginUserResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.LoginUserRequest} request The
+ * @param {!proto.daemon.LoginUserRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.LoginUserResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.LoginUserResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.LoginUserResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.LoginUserResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.loginUser =
+proto.daemon.DaemonClient.prototype.loginUser =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/LoginUser',
+      '/daemon.Daemon/LoginUser',
       request,
       metadata || {},
       methodDescriptor_Daemon_LoginUser,
@@ -142,17 +143,17 @@ proto.DaemonClient.prototype.loginUser =
 
 
 /**
- * @param {!proto.LoginUserRequest} request The
+ * @param {!proto.daemon.LoginUserRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.LoginUserResponse>}
+ * @return {!Promise<!proto.daemon.LoginUserResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.loginUser =
+proto.daemon.DaemonPromiseClient.prototype.loginUser =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/LoginUser',
+      '/daemon.Daemon/LoginUser',
       request,
       metadata || {},
       methodDescriptor_Daemon_LoginUser);
@@ -162,52 +163,52 @@ proto.DaemonPromiseClient.prototype.loginUser =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.SignupUserRequest,
- *   !proto.LoginUserResponse>}
+ *   !proto.daemon.SignupUserRequest,
+ *   !proto.daemon.LoginUserResponse>}
  */
 const methodDescriptor_Daemon_SignupUser = new grpc.web.MethodDescriptor(
-  '/Daemon/SignupUser',
+  '/daemon.Daemon/SignupUser',
   grpc.web.MethodType.UNARY,
-  proto.SignupUserRequest,
-  proto.LoginUserResponse,
-  /** @param {!proto.SignupUserRequest} request */
+  proto.daemon.SignupUserRequest,
+  proto.daemon.LoginUserResponse,
+  /** @param {!proto.daemon.SignupUserRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.LoginUserResponse.deserializeBinary
+  proto.daemon.LoginUserResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.SignupUserRequest,
- *   !proto.LoginUserResponse>}
+ *   !proto.daemon.SignupUserRequest,
+ *   !proto.daemon.LoginUserResponse>}
  */
 const methodInfo_Daemon_SignupUser = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.LoginUserResponse,
-  /** @param {!proto.SignupUserRequest} request */
+  proto.daemon.LoginUserResponse,
+  /** @param {!proto.daemon.SignupUserRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.LoginUserResponse.deserializeBinary
+  proto.daemon.LoginUserResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.SignupUserRequest} request The
+ * @param {!proto.daemon.SignupUserRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.LoginUserResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.LoginUserResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.LoginUserResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.LoginUserResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.signupUser =
+proto.daemon.DaemonClient.prototype.signupUser =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/SignupUser',
+      '/daemon.Daemon/SignupUser',
       request,
       metadata || {},
       methodDescriptor_Daemon_SignupUser,
@@ -216,17 +217,17 @@ proto.DaemonClient.prototype.signupUser =
 
 
 /**
- * @param {!proto.SignupUserRequest} request The
+ * @param {!proto.daemon.SignupUserRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.LoginUserResponse>}
+ * @return {!Promise<!proto.daemon.LoginUserResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.signupUser =
+proto.daemon.DaemonPromiseClient.prototype.signupUser =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/SignupUser',
+      '/daemon.Daemon/SignupUser',
       request,
       metadata || {},
       methodDescriptor_Daemon_SignupUser);
@@ -236,52 +237,52 @@ proto.DaemonPromiseClient.prototype.signupUser =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.InviteUserRequest,
- *   !proto.InviteUserResponse>}
+ *   !proto.daemon.InviteUserRequest,
+ *   !proto.daemon.InviteUserResponse>}
  */
 const methodDescriptor_Daemon_InviteUser = new grpc.web.MethodDescriptor(
-  '/Daemon/InviteUser',
+  '/daemon.Daemon/InviteUser',
   grpc.web.MethodType.UNARY,
-  proto.InviteUserRequest,
-  proto.InviteUserResponse,
-  /** @param {!proto.InviteUserRequest} request */
+  proto.daemon.InviteUserRequest,
+  proto.daemon.InviteUserResponse,
+  /** @param {!proto.daemon.InviteUserRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.InviteUserResponse.deserializeBinary
+  proto.daemon.InviteUserResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.InviteUserRequest,
- *   !proto.InviteUserResponse>}
+ *   !proto.daemon.InviteUserRequest,
+ *   !proto.daemon.InviteUserResponse>}
  */
 const methodInfo_Daemon_InviteUser = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.InviteUserResponse,
-  /** @param {!proto.InviteUserRequest} request */
+  proto.daemon.InviteUserResponse,
+  /** @param {!proto.daemon.InviteUserRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.InviteUserResponse.deserializeBinary
+  proto.daemon.InviteUserResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.InviteUserRequest} request The
+ * @param {!proto.daemon.InviteUserRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.InviteUserResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.InviteUserResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.InviteUserResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.InviteUserResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.inviteUser =
+proto.daemon.DaemonClient.prototype.inviteUser =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/InviteUser',
+      '/daemon.Daemon/InviteUser',
       request,
       metadata || {},
       methodDescriptor_Daemon_InviteUser,
@@ -290,17 +291,17 @@ proto.DaemonClient.prototype.inviteUser =
 
 
 /**
- * @param {!proto.InviteUserRequest} request The
+ * @param {!proto.daemon.InviteUserRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.InviteUserResponse>}
+ * @return {!Promise<!proto.daemon.InviteUserResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.inviteUser =
+proto.daemon.DaemonPromiseClient.prototype.inviteUser =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/InviteUser',
+      '/daemon.Daemon/InviteUser',
       request,
       metadata || {},
       methodDescriptor_Daemon_InviteUser);
@@ -310,52 +311,52 @@ proto.DaemonPromiseClient.prototype.inviteUser =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.Empty,
- *   !proto.ListUsersResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.ListUsersResponse>}
  */
 const methodDescriptor_Daemon_ListUsers = new grpc.web.MethodDescriptor(
-  '/Daemon/ListUsers',
+  '/daemon.Daemon/ListUsers',
   grpc.web.MethodType.UNARY,
-  proto.Empty,
-  proto.ListUsersResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.Empty,
+  proto.daemon.ListUsersResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListUsersResponse.deserializeBinary
+  proto.daemon.ListUsersResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.Empty,
- *   !proto.ListUsersResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.ListUsersResponse>}
  */
 const methodInfo_Daemon_ListUsers = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.ListUsersResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.ListUsersResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListUsersResponse.deserializeBinary
+  proto.daemon.ListUsersResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.ListUsersResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.ListUsersResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.ListUsersResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ListUsersResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.listUsers =
+proto.daemon.DaemonClient.prototype.listUsers =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/ListUsers',
+      '/daemon.Daemon/ListUsers',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListUsers,
@@ -364,17 +365,17 @@ proto.DaemonClient.prototype.listUsers =
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.ListUsersResponse>}
+ * @return {!Promise<!proto.daemon.ListUsersResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.listUsers =
+proto.daemon.DaemonPromiseClient.prototype.listUsers =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/ListUsers',
+      '/daemon.Daemon/ListUsers',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListUsers);
@@ -384,52 +385,52 @@ proto.DaemonPromiseClient.prototype.listUsers =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.UpdatePasswdRequest,
- *   !proto.UpdatePasswdResponse>}
+ *   !proto.daemon.UpdatePasswdRequest,
+ *   !proto.daemon.UpdatePasswdResponse>}
  */
 const methodDescriptor_Daemon_ChangeUserPasswd = new grpc.web.MethodDescriptor(
-  '/Daemon/ChangeUserPasswd',
+  '/daemon.Daemon/ChangeUserPasswd',
   grpc.web.MethodType.UNARY,
-  proto.UpdatePasswdRequest,
-  proto.UpdatePasswdResponse,
-  /** @param {!proto.UpdatePasswdRequest} request */
+  proto.daemon.UpdatePasswdRequest,
+  proto.daemon.UpdatePasswdResponse,
+  /** @param {!proto.daemon.UpdatePasswdRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.UpdatePasswdResponse.deserializeBinary
+  proto.daemon.UpdatePasswdResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.UpdatePasswdRequest,
- *   !proto.UpdatePasswdResponse>}
+ *   !proto.daemon.UpdatePasswdRequest,
+ *   !proto.daemon.UpdatePasswdResponse>}
  */
 const methodInfo_Daemon_ChangeUserPasswd = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.UpdatePasswdResponse,
-  /** @param {!proto.UpdatePasswdRequest} request */
+  proto.daemon.UpdatePasswdResponse,
+  /** @param {!proto.daemon.UpdatePasswdRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.UpdatePasswdResponse.deserializeBinary
+  proto.daemon.UpdatePasswdResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.UpdatePasswdRequest} request The
+ * @param {!proto.daemon.UpdatePasswdRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.UpdatePasswdResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.UpdatePasswdResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.UpdatePasswdResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.UpdatePasswdResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.changeUserPasswd =
+proto.daemon.DaemonClient.prototype.changeUserPasswd =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/ChangeUserPasswd',
+      '/daemon.Daemon/ChangeUserPasswd',
       request,
       metadata || {},
       methodDescriptor_Daemon_ChangeUserPasswd,
@@ -438,17 +439,17 @@ proto.DaemonClient.prototype.changeUserPasswd =
 
 
 /**
- * @param {!proto.UpdatePasswdRequest} request The
+ * @param {!proto.daemon.UpdatePasswdRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.UpdatePasswdResponse>}
+ * @return {!Promise<!proto.daemon.UpdatePasswdResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.changeUserPasswd =
+proto.daemon.DaemonPromiseClient.prototype.changeUserPasswd =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/ChangeUserPasswd',
+      '/daemon.Daemon/ChangeUserPasswd',
       request,
       metadata || {},
       methodDescriptor_Daemon_ChangeUserPasswd);
@@ -458,52 +459,52 @@ proto.DaemonPromiseClient.prototype.changeUserPasswd =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.DestroyUserRequest,
- *   !proto.DestroyUserResponse>}
+ *   !proto.daemon.DestroyUserRequest,
+ *   !proto.daemon.DestroyUserResponse>}
  */
 const methodDescriptor_Daemon_DestroyUser = new grpc.web.MethodDescriptor(
-  '/Daemon/DestroyUser',
+  '/daemon.Daemon/DestroyUser',
   grpc.web.MethodType.UNARY,
-  proto.DestroyUserRequest,
-  proto.DestroyUserResponse,
-  /** @param {!proto.DestroyUserRequest} request */
+  proto.daemon.DestroyUserRequest,
+  proto.daemon.DestroyUserResponse,
+  /** @param {!proto.daemon.DestroyUserRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.DestroyUserResponse.deserializeBinary
+  proto.daemon.DestroyUserResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.DestroyUserRequest,
- *   !proto.DestroyUserResponse>}
+ *   !proto.daemon.DestroyUserRequest,
+ *   !proto.daemon.DestroyUserResponse>}
  */
 const methodInfo_Daemon_DestroyUser = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.DestroyUserResponse,
-  /** @param {!proto.DestroyUserRequest} request */
+  proto.daemon.DestroyUserResponse,
+  /** @param {!proto.daemon.DestroyUserRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.DestroyUserResponse.deserializeBinary
+  proto.daemon.DestroyUserResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.DestroyUserRequest} request The
+ * @param {!proto.daemon.DestroyUserRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.DestroyUserResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.DestroyUserResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.DestroyUserResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.DestroyUserResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.destroyUser =
+proto.daemon.DaemonClient.prototype.destroyUser =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/DestroyUser',
+      '/daemon.Daemon/DestroyUser',
       request,
       metadata || {},
       methodDescriptor_Daemon_DestroyUser,
@@ -512,17 +513,17 @@ proto.DaemonClient.prototype.destroyUser =
 
 
 /**
- * @param {!proto.DestroyUserRequest} request The
+ * @param {!proto.daemon.DestroyUserRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.DestroyUserResponse>}
+ * @return {!Promise<!proto.daemon.DestroyUserResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.destroyUser =
+proto.daemon.DaemonPromiseClient.prototype.destroyUser =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/DestroyUser',
+      '/daemon.Daemon/DestroyUser',
       request,
       metadata || {},
       methodDescriptor_Daemon_DestroyUser);
@@ -532,52 +533,52 @@ proto.DaemonPromiseClient.prototype.destroyUser =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.SetTeamSuspendRequest,
- *   !proto.Empty>}
+ *   !proto.daemon.SetTeamSuspendRequest,
+ *   !proto.daemon.Empty>}
  */
 const methodDescriptor_Daemon_SetTeamSuspend = new grpc.web.MethodDescriptor(
-  '/Daemon/SetTeamSuspend',
+  '/daemon.Daemon/SetTeamSuspend',
   grpc.web.MethodType.UNARY,
-  proto.SetTeamSuspendRequest,
-  proto.Empty,
-  /** @param {!proto.SetTeamSuspendRequest} request */
+  proto.daemon.SetTeamSuspendRequest,
+  proto.daemon.Empty,
+  /** @param {!proto.daemon.SetTeamSuspendRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.Empty.deserializeBinary
+  proto.daemon.Empty.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.SetTeamSuspendRequest,
- *   !proto.Empty>}
+ *   !proto.daemon.SetTeamSuspendRequest,
+ *   !proto.daemon.Empty>}
  */
 const methodInfo_Daemon_SetTeamSuspend = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.Empty,
-  /** @param {!proto.SetTeamSuspendRequest} request */
+  proto.daemon.Empty,
+  /** @param {!proto.daemon.SetTeamSuspendRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.Empty.deserializeBinary
+  proto.daemon.Empty.deserializeBinary
 );
 
 
 /**
- * @param {!proto.SetTeamSuspendRequest} request The
+ * @param {!proto.daemon.SetTeamSuspendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.Empty)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.Empty)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.Empty>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.Empty>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.setTeamSuspend =
+proto.daemon.DaemonClient.prototype.setTeamSuspend =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/SetTeamSuspend',
+      '/daemon.Daemon/SetTeamSuspend',
       request,
       metadata || {},
       methodDescriptor_Daemon_SetTeamSuspend,
@@ -586,17 +587,17 @@ proto.DaemonClient.prototype.setTeamSuspend =
 
 
 /**
- * @param {!proto.SetTeamSuspendRequest} request The
+ * @param {!proto.daemon.SetTeamSuspendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.Empty>}
+ * @return {!Promise<!proto.daemon.Empty>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.setTeamSuspend =
+proto.daemon.DaemonPromiseClient.prototype.setTeamSuspend =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/SetTeamSuspend',
+      '/daemon.Daemon/SetTeamSuspend',
       request,
       metadata || {},
       methodDescriptor_Daemon_SetTeamSuspend);
@@ -606,52 +607,52 @@ proto.DaemonPromiseClient.prototype.setTeamSuspend =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.Empty,
- *   !proto.CredsResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.CredsResponse>}
  */
 const methodDescriptor_Daemon_GetAPICreds = new grpc.web.MethodDescriptor(
-  '/Daemon/GetAPICreds',
+  '/daemon.Daemon/GetAPICreds',
   grpc.web.MethodType.UNARY,
-  proto.Empty,
-  proto.CredsResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.Empty,
+  proto.daemon.CredsResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.CredsResponse.deserializeBinary
+  proto.daemon.CredsResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.Empty,
- *   !proto.CredsResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.CredsResponse>}
  */
 const methodInfo_Daemon_GetAPICreds = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.CredsResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.CredsResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.CredsResponse.deserializeBinary
+  proto.daemon.CredsResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.CredsResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.CredsResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.CredsResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.CredsResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.getAPICreds =
+proto.daemon.DaemonClient.prototype.getAPICreds =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/GetAPICreds',
+      '/daemon.Daemon/GetAPICreds',
       request,
       metadata || {},
       methodDescriptor_Daemon_GetAPICreds,
@@ -660,17 +661,17 @@ proto.DaemonClient.prototype.getAPICreds =
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.CredsResponse>}
+ * @return {!Promise<!proto.daemon.CredsResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.getAPICreds =
+proto.daemon.DaemonPromiseClient.prototype.getAPICreds =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/GetAPICreds',
+      '/daemon.Daemon/GetAPICreds',
       request,
       metadata || {},
       methodDescriptor_Daemon_GetAPICreds);
@@ -680,49 +681,49 @@ proto.DaemonPromiseClient.prototype.getAPICreds =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.CreateEventRequest,
- *   !proto.LabStatus>}
+ *   !proto.daemon.CreateEventRequest,
+ *   !proto.daemon.LabStatus>}
  */
 const methodDescriptor_Daemon_CreateEvent = new grpc.web.MethodDescriptor(
-  '/Daemon/CreateEvent',
+  '/daemon.Daemon/CreateEvent',
   grpc.web.MethodType.SERVER_STREAMING,
-  proto.CreateEventRequest,
-  proto.LabStatus,
-  /** @param {!proto.CreateEventRequest} request */
+  proto.daemon.CreateEventRequest,
+  proto.daemon.LabStatus,
+  /** @param {!proto.daemon.CreateEventRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.LabStatus.deserializeBinary
+  proto.daemon.LabStatus.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.CreateEventRequest,
- *   !proto.LabStatus>}
+ *   !proto.daemon.CreateEventRequest,
+ *   !proto.daemon.LabStatus>}
  */
 const methodInfo_Daemon_CreateEvent = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.LabStatus,
-  /** @param {!proto.CreateEventRequest} request */
+  proto.daemon.LabStatus,
+  /** @param {!proto.daemon.CreateEventRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.LabStatus.deserializeBinary
+  proto.daemon.LabStatus.deserializeBinary
 );
 
 
 /**
- * @param {!proto.CreateEventRequest} request The request proto
+ * @param {!proto.daemon.CreateEventRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.LabStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.LabStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.createEvent =
+proto.daemon.DaemonClient.prototype.createEvent =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/CreateEvent',
+      '/daemon.Daemon/CreateEvent',
       request,
       metadata || {},
       methodDescriptor_Daemon_CreateEvent);
@@ -730,16 +731,16 @@ proto.DaemonClient.prototype.createEvent =
 
 
 /**
- * @param {!proto.CreateEventRequest} request The request proto
+ * @param {!proto.daemon.CreateEventRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.LabStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.LabStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonPromiseClient.prototype.createEvent =
+proto.daemon.DaemonPromiseClient.prototype.createEvent =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/CreateEvent',
+      '/daemon.Daemon/CreateEvent',
       request,
       metadata || {},
       methodDescriptor_Daemon_CreateEvent);
@@ -749,49 +750,49 @@ proto.DaemonPromiseClient.prototype.createEvent =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.StopEventRequest,
- *   !proto.EventStatus>}
+ *   !proto.daemon.StopEventRequest,
+ *   !proto.daemon.EventStatus>}
  */
 const methodDescriptor_Daemon_StopEvent = new grpc.web.MethodDescriptor(
-  '/Daemon/StopEvent',
+  '/daemon.Daemon/StopEvent',
   grpc.web.MethodType.SERVER_STREAMING,
-  proto.StopEventRequest,
-  proto.EventStatus,
-  /** @param {!proto.StopEventRequest} request */
+  proto.daemon.StopEventRequest,
+  proto.daemon.EventStatus,
+  /** @param {!proto.daemon.StopEventRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.EventStatus.deserializeBinary
+  proto.daemon.EventStatus.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.StopEventRequest,
- *   !proto.EventStatus>}
+ *   !proto.daemon.StopEventRequest,
+ *   !proto.daemon.EventStatus>}
  */
 const methodInfo_Daemon_StopEvent = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.EventStatus,
-  /** @param {!proto.StopEventRequest} request */
+  proto.daemon.EventStatus,
+  /** @param {!proto.daemon.StopEventRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.EventStatus.deserializeBinary
+  proto.daemon.EventStatus.deserializeBinary
 );
 
 
 /**
- * @param {!proto.StopEventRequest} request The request proto
+ * @param {!proto.daemon.StopEventRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.EventStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.EventStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.stopEvent =
+proto.daemon.DaemonClient.prototype.stopEvent =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/StopEvent',
+      '/daemon.Daemon/StopEvent',
       request,
       metadata || {},
       methodDescriptor_Daemon_StopEvent);
@@ -799,16 +800,16 @@ proto.DaemonClient.prototype.stopEvent =
 
 
 /**
- * @param {!proto.StopEventRequest} request The request proto
+ * @param {!proto.daemon.StopEventRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.EventStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.EventStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonPromiseClient.prototype.stopEvent =
+proto.daemon.DaemonPromiseClient.prototype.stopEvent =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/StopEvent',
+      '/daemon.Daemon/StopEvent',
       request,
       metadata || {},
       methodDescriptor_Daemon_StopEvent);
@@ -818,49 +819,49 @@ proto.DaemonPromiseClient.prototype.stopEvent =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.SuspendEventRequest,
- *   !proto.EventStatus>}
+ *   !proto.daemon.SuspendEventRequest,
+ *   !proto.daemon.EventStatus>}
  */
 const methodDescriptor_Daemon_SuspendEvent = new grpc.web.MethodDescriptor(
-  '/Daemon/SuspendEvent',
+  '/daemon.Daemon/SuspendEvent',
   grpc.web.MethodType.SERVER_STREAMING,
-  proto.SuspendEventRequest,
-  proto.EventStatus,
-  /** @param {!proto.SuspendEventRequest} request */
+  proto.daemon.SuspendEventRequest,
+  proto.daemon.EventStatus,
+  /** @param {!proto.daemon.SuspendEventRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.EventStatus.deserializeBinary
+  proto.daemon.EventStatus.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.SuspendEventRequest,
- *   !proto.EventStatus>}
+ *   !proto.daemon.SuspendEventRequest,
+ *   !proto.daemon.EventStatus>}
  */
 const methodInfo_Daemon_SuspendEvent = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.EventStatus,
-  /** @param {!proto.SuspendEventRequest} request */
+  proto.daemon.EventStatus,
+  /** @param {!proto.daemon.SuspendEventRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.EventStatus.deserializeBinary
+  proto.daemon.EventStatus.deserializeBinary
 );
 
 
 /**
- * @param {!proto.SuspendEventRequest} request The request proto
+ * @param {!proto.daemon.SuspendEventRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.EventStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.EventStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.suspendEvent =
+proto.daemon.DaemonClient.prototype.suspendEvent =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/SuspendEvent',
+      '/daemon.Daemon/SuspendEvent',
       request,
       metadata || {},
       methodDescriptor_Daemon_SuspendEvent);
@@ -868,16 +869,16 @@ proto.DaemonClient.prototype.suspendEvent =
 
 
 /**
- * @param {!proto.SuspendEventRequest} request The request proto
+ * @param {!proto.daemon.SuspendEventRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.EventStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.EventStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonPromiseClient.prototype.suspendEvent =
+proto.daemon.DaemonPromiseClient.prototype.suspendEvent =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/SuspendEvent',
+      '/daemon.Daemon/SuspendEvent',
       request,
       metadata || {},
       methodDescriptor_Daemon_SuspendEvent);
@@ -887,52 +888,52 @@ proto.DaemonPromiseClient.prototype.suspendEvent =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.ListEventsRequest,
- *   !proto.ListEventsResponse>}
+ *   !proto.daemon.ListEventsRequest,
+ *   !proto.daemon.ListEventsResponse>}
  */
 const methodDescriptor_Daemon_ListEvents = new grpc.web.MethodDescriptor(
-  '/Daemon/ListEvents',
+  '/daemon.Daemon/ListEvents',
   grpc.web.MethodType.UNARY,
-  proto.ListEventsRequest,
-  proto.ListEventsResponse,
-  /** @param {!proto.ListEventsRequest} request */
+  proto.daemon.ListEventsRequest,
+  proto.daemon.ListEventsResponse,
+  /** @param {!proto.daemon.ListEventsRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListEventsResponse.deserializeBinary
+  proto.daemon.ListEventsResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.ListEventsRequest,
- *   !proto.ListEventsResponse>}
+ *   !proto.daemon.ListEventsRequest,
+ *   !proto.daemon.ListEventsResponse>}
  */
 const methodInfo_Daemon_ListEvents = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.ListEventsResponse,
-  /** @param {!proto.ListEventsRequest} request */
+  proto.daemon.ListEventsResponse,
+  /** @param {!proto.daemon.ListEventsRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListEventsResponse.deserializeBinary
+  proto.daemon.ListEventsResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.ListEventsRequest} request The
+ * @param {!proto.daemon.ListEventsRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.ListEventsResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.ListEventsResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.ListEventsResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ListEventsResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.listEvents =
+proto.daemon.DaemonClient.prototype.listEvents =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/ListEvents',
+      '/daemon.Daemon/ListEvents',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListEvents,
@@ -941,17 +942,17 @@ proto.DaemonClient.prototype.listEvents =
 
 
 /**
- * @param {!proto.ListEventsRequest} request The
+ * @param {!proto.daemon.ListEventsRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.ListEventsResponse>}
+ * @return {!Promise<!proto.daemon.ListEventsResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.listEvents =
+proto.daemon.DaemonPromiseClient.prototype.listEvents =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/ListEvents',
+      '/daemon.Daemon/ListEvents',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListEvents);
@@ -961,52 +962,52 @@ proto.DaemonPromiseClient.prototype.listEvents =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.ListEventTeamsRequest,
- *   !proto.ListEventTeamsResponse>}
+ *   !proto.daemon.ListEventTeamsRequest,
+ *   !proto.daemon.ListEventTeamsResponse>}
  */
 const methodDescriptor_Daemon_ListEventTeams = new grpc.web.MethodDescriptor(
-  '/Daemon/ListEventTeams',
+  '/daemon.Daemon/ListEventTeams',
   grpc.web.MethodType.UNARY,
-  proto.ListEventTeamsRequest,
-  proto.ListEventTeamsResponse,
-  /** @param {!proto.ListEventTeamsRequest} request */
+  proto.daemon.ListEventTeamsRequest,
+  proto.daemon.ListEventTeamsResponse,
+  /** @param {!proto.daemon.ListEventTeamsRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListEventTeamsResponse.deserializeBinary
+  proto.daemon.ListEventTeamsResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.ListEventTeamsRequest,
- *   !proto.ListEventTeamsResponse>}
+ *   !proto.daemon.ListEventTeamsRequest,
+ *   !proto.daemon.ListEventTeamsResponse>}
  */
 const methodInfo_Daemon_ListEventTeams = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.ListEventTeamsResponse,
-  /** @param {!proto.ListEventTeamsRequest} request */
+  proto.daemon.ListEventTeamsResponse,
+  /** @param {!proto.daemon.ListEventTeamsRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListEventTeamsResponse.deserializeBinary
+  proto.daemon.ListEventTeamsResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.ListEventTeamsRequest} request The
+ * @param {!proto.daemon.ListEventTeamsRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.ListEventTeamsResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.ListEventTeamsResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.ListEventTeamsResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ListEventTeamsResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.listEventTeams =
+proto.daemon.DaemonClient.prototype.listEventTeams =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/ListEventTeams',
+      '/daemon.Daemon/ListEventTeams',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListEventTeams,
@@ -1015,17 +1016,17 @@ proto.DaemonClient.prototype.listEventTeams =
 
 
 /**
- * @param {!proto.ListEventTeamsRequest} request The
+ * @param {!proto.daemon.ListEventTeamsRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.ListEventTeamsResponse>}
+ * @return {!Promise<!proto.daemon.ListEventTeamsResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.listEventTeams =
+proto.daemon.DaemonPromiseClient.prototype.listEventTeams =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/ListEventTeams',
+      '/daemon.Daemon/ListEventTeams',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListEventTeams);
@@ -1035,49 +1036,49 @@ proto.DaemonPromiseClient.prototype.listEventTeams =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.RestartTeamLabRequest,
- *   !proto.EventStatus>}
+ *   !proto.daemon.RestartTeamLabRequest,
+ *   !proto.daemon.EventStatus>}
  */
 const methodDescriptor_Daemon_RestartTeamLab = new grpc.web.MethodDescriptor(
-  '/Daemon/RestartTeamLab',
+  '/daemon.Daemon/RestartTeamLab',
   grpc.web.MethodType.SERVER_STREAMING,
-  proto.RestartTeamLabRequest,
-  proto.EventStatus,
-  /** @param {!proto.RestartTeamLabRequest} request */
+  proto.daemon.RestartTeamLabRequest,
+  proto.daemon.EventStatus,
+  /** @param {!proto.daemon.RestartTeamLabRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.EventStatus.deserializeBinary
+  proto.daemon.EventStatus.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.RestartTeamLabRequest,
- *   !proto.EventStatus>}
+ *   !proto.daemon.RestartTeamLabRequest,
+ *   !proto.daemon.EventStatus>}
  */
 const methodInfo_Daemon_RestartTeamLab = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.EventStatus,
-  /** @param {!proto.RestartTeamLabRequest} request */
+  proto.daemon.EventStatus,
+  /** @param {!proto.daemon.RestartTeamLabRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.EventStatus.deserializeBinary
+  proto.daemon.EventStatus.deserializeBinary
 );
 
 
 /**
- * @param {!proto.RestartTeamLabRequest} request The request proto
+ * @param {!proto.daemon.RestartTeamLabRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.EventStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.EventStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.restartTeamLab =
+proto.daemon.DaemonClient.prototype.restartTeamLab =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/RestartTeamLab',
+      '/daemon.Daemon/RestartTeamLab',
       request,
       metadata || {},
       methodDescriptor_Daemon_RestartTeamLab);
@@ -1085,16 +1086,16 @@ proto.DaemonClient.prototype.restartTeamLab =
 
 
 /**
- * @param {!proto.RestartTeamLabRequest} request The request proto
+ * @param {!proto.daemon.RestartTeamLabRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.EventStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.EventStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonPromiseClient.prototype.restartTeamLab =
+proto.daemon.DaemonPromiseClient.prototype.restartTeamLab =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/RestartTeamLab',
+      '/daemon.Daemon/RestartTeamLab',
       request,
       metadata || {},
       methodDescriptor_Daemon_RestartTeamLab);
@@ -1104,52 +1105,52 @@ proto.DaemonPromiseClient.prototype.restartTeamLab =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.TestEventLoadReq,
- *   !proto.TestEventLoadResp>}
+ *   !proto.daemon.TestEventLoadReq,
+ *   !proto.daemon.TestEventLoadResp>}
  */
 const methodDescriptor_Daemon_StressEvent = new grpc.web.MethodDescriptor(
-  '/Daemon/StressEvent',
+  '/daemon.Daemon/StressEvent',
   grpc.web.MethodType.UNARY,
-  proto.TestEventLoadReq,
-  proto.TestEventLoadResp,
-  /** @param {!proto.TestEventLoadReq} request */
+  proto.daemon.TestEventLoadReq,
+  proto.daemon.TestEventLoadResp,
+  /** @param {!proto.daemon.TestEventLoadReq} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.TestEventLoadResp.deserializeBinary
+  proto.daemon.TestEventLoadResp.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.TestEventLoadReq,
- *   !proto.TestEventLoadResp>}
+ *   !proto.daemon.TestEventLoadReq,
+ *   !proto.daemon.TestEventLoadResp>}
  */
 const methodInfo_Daemon_StressEvent = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.TestEventLoadResp,
-  /** @param {!proto.TestEventLoadReq} request */
+  proto.daemon.TestEventLoadResp,
+  /** @param {!proto.daemon.TestEventLoadReq} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.TestEventLoadResp.deserializeBinary
+  proto.daemon.TestEventLoadResp.deserializeBinary
 );
 
 
 /**
- * @param {!proto.TestEventLoadReq} request The
+ * @param {!proto.daemon.TestEventLoadReq} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.TestEventLoadResp)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.TestEventLoadResp)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.TestEventLoadResp>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.TestEventLoadResp>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.stressEvent =
+proto.daemon.DaemonClient.prototype.stressEvent =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/StressEvent',
+      '/daemon.Daemon/StressEvent',
       request,
       metadata || {},
       methodDescriptor_Daemon_StressEvent,
@@ -1158,17 +1159,17 @@ proto.DaemonClient.prototype.stressEvent =
 
 
 /**
- * @param {!proto.TestEventLoadReq} request The
+ * @param {!proto.daemon.TestEventLoadReq} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.TestEventLoadResp>}
+ * @return {!Promise<!proto.daemon.TestEventLoadResp>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.stressEvent =
+proto.daemon.DaemonPromiseClient.prototype.stressEvent =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/StressEvent',
+      '/daemon.Daemon/StressEvent',
       request,
       metadata || {},
       methodDescriptor_Daemon_StressEvent);
@@ -1178,52 +1179,52 @@ proto.DaemonPromiseClient.prototype.stressEvent =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.Empty,
- *   !proto.ListExercisesResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.ListExercisesResponse>}
  */
 const methodDescriptor_Daemon_ListExercises = new grpc.web.MethodDescriptor(
-  '/Daemon/ListExercises',
+  '/daemon.Daemon/ListExercises',
   grpc.web.MethodType.UNARY,
-  proto.Empty,
-  proto.ListExercisesResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.Empty,
+  proto.daemon.ListExercisesResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListExercisesResponse.deserializeBinary
+  proto.daemon.ListExercisesResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.Empty,
- *   !proto.ListExercisesResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.ListExercisesResponse>}
  */
 const methodInfo_Daemon_ListExercises = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.ListExercisesResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.ListExercisesResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListExercisesResponse.deserializeBinary
+  proto.daemon.ListExercisesResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.ListExercisesResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.ListExercisesResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.ListExercisesResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ListExercisesResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.listExercises =
+proto.daemon.DaemonClient.prototype.listExercises =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/ListExercises',
+      '/daemon.Daemon/ListExercises',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListExercises,
@@ -1232,17 +1233,17 @@ proto.DaemonClient.prototype.listExercises =
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.ListExercisesResponse>}
+ * @return {!Promise<!proto.daemon.ListExercisesResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.listExercises =
+proto.daemon.DaemonPromiseClient.prototype.listExercises =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/ListExercises',
+      '/daemon.Daemon/ListExercises',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListExercises);
@@ -1252,49 +1253,49 @@ proto.DaemonPromiseClient.prototype.listExercises =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.ResetExerciseRequest,
- *   !proto.ResetTeamStatus>}
+ *   !proto.daemon.ResetExerciseRequest,
+ *   !proto.daemon.ResetTeamStatus>}
  */
 const methodDescriptor_Daemon_ResetExercise = new grpc.web.MethodDescriptor(
-  '/Daemon/ResetExercise',
+  '/daemon.Daemon/ResetExercise',
   grpc.web.MethodType.SERVER_STREAMING,
-  proto.ResetExerciseRequest,
-  proto.ResetTeamStatus,
-  /** @param {!proto.ResetExerciseRequest} request */
+  proto.daemon.ResetExerciseRequest,
+  proto.daemon.ResetTeamStatus,
+  /** @param {!proto.daemon.ResetExerciseRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ResetTeamStatus.deserializeBinary
+  proto.daemon.ResetTeamStatus.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.ResetExerciseRequest,
- *   !proto.ResetTeamStatus>}
+ *   !proto.daemon.ResetExerciseRequest,
+ *   !proto.daemon.ResetTeamStatus>}
  */
 const methodInfo_Daemon_ResetExercise = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.ResetTeamStatus,
-  /** @param {!proto.ResetExerciseRequest} request */
+  proto.daemon.ResetTeamStatus,
+  /** @param {!proto.daemon.ResetExerciseRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ResetTeamStatus.deserializeBinary
+  proto.daemon.ResetTeamStatus.deserializeBinary
 );
 
 
 /**
- * @param {!proto.ResetExerciseRequest} request The request proto
+ * @param {!proto.daemon.ResetExerciseRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.ResetTeamStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ResetTeamStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.resetExercise =
+proto.daemon.DaemonClient.prototype.resetExercise =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/ResetExercise',
+      '/daemon.Daemon/ResetExercise',
       request,
       metadata || {},
       methodDescriptor_Daemon_ResetExercise);
@@ -1302,16 +1303,16 @@ proto.DaemonClient.prototype.resetExercise =
 
 
 /**
- * @param {!proto.ResetExerciseRequest} request The request proto
+ * @param {!proto.daemon.ResetExerciseRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.ResetTeamStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ResetTeamStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonPromiseClient.prototype.resetExercise =
+proto.daemon.DaemonPromiseClient.prototype.resetExercise =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/ResetExercise',
+      '/daemon.Daemon/ResetExercise',
       request,
       metadata || {},
       methodDescriptor_Daemon_ResetExercise);
@@ -1321,52 +1322,52 @@ proto.DaemonPromiseClient.prototype.resetExercise =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.Empty,
- *   !proto.ListFrontendsResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.ListFrontendsResponse>}
  */
 const methodDescriptor_Daemon_ListFrontends = new grpc.web.MethodDescriptor(
-  '/Daemon/ListFrontends',
+  '/daemon.Daemon/ListFrontends',
   grpc.web.MethodType.UNARY,
-  proto.Empty,
-  proto.ListFrontendsResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.Empty,
+  proto.daemon.ListFrontendsResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListFrontendsResponse.deserializeBinary
+  proto.daemon.ListFrontendsResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.Empty,
- *   !proto.ListFrontendsResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.ListFrontendsResponse>}
  */
 const methodInfo_Daemon_ListFrontends = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.ListFrontendsResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.ListFrontendsResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ListFrontendsResponse.deserializeBinary
+  proto.daemon.ListFrontendsResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.ListFrontendsResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.ListFrontendsResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.ListFrontendsResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ListFrontendsResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.listFrontends =
+proto.daemon.DaemonClient.prototype.listFrontends =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/ListFrontends',
+      '/daemon.Daemon/ListFrontends',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListFrontends,
@@ -1375,17 +1376,17 @@ proto.DaemonClient.prototype.listFrontends =
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.ListFrontendsResponse>}
+ * @return {!Promise<!proto.daemon.ListFrontendsResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.listFrontends =
+proto.daemon.DaemonPromiseClient.prototype.listFrontends =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/ListFrontends',
+      '/daemon.Daemon/ListFrontends',
       request,
       metadata || {},
       methodDescriptor_Daemon_ListFrontends);
@@ -1395,49 +1396,49 @@ proto.DaemonPromiseClient.prototype.listFrontends =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.ResetFrontendsRequest,
- *   !proto.ResetTeamStatus>}
+ *   !proto.daemon.ResetFrontendsRequest,
+ *   !proto.daemon.ResetTeamStatus>}
  */
 const methodDescriptor_Daemon_ResetFrontends = new grpc.web.MethodDescriptor(
-  '/Daemon/ResetFrontends',
+  '/daemon.Daemon/ResetFrontends',
   grpc.web.MethodType.SERVER_STREAMING,
-  proto.ResetFrontendsRequest,
-  proto.ResetTeamStatus,
-  /** @param {!proto.ResetFrontendsRequest} request */
+  proto.daemon.ResetFrontendsRequest,
+  proto.daemon.ResetTeamStatus,
+  /** @param {!proto.daemon.ResetFrontendsRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ResetTeamStatus.deserializeBinary
+  proto.daemon.ResetTeamStatus.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.ResetFrontendsRequest,
- *   !proto.ResetTeamStatus>}
+ *   !proto.daemon.ResetFrontendsRequest,
+ *   !proto.daemon.ResetTeamStatus>}
  */
 const methodInfo_Daemon_ResetFrontends = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.ResetTeamStatus,
-  /** @param {!proto.ResetFrontendsRequest} request */
+  proto.daemon.ResetTeamStatus,
+  /** @param {!proto.daemon.ResetFrontendsRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ResetTeamStatus.deserializeBinary
+  proto.daemon.ResetTeamStatus.deserializeBinary
 );
 
 
 /**
- * @param {!proto.ResetFrontendsRequest} request The request proto
+ * @param {!proto.daemon.ResetFrontendsRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.ResetTeamStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ResetTeamStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.resetFrontends =
+proto.daemon.DaemonClient.prototype.resetFrontends =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/ResetFrontends',
+      '/daemon.Daemon/ResetFrontends',
       request,
       metadata || {},
       methodDescriptor_Daemon_ResetFrontends);
@@ -1445,16 +1446,16 @@ proto.DaemonClient.prototype.resetFrontends =
 
 
 /**
- * @param {!proto.ResetFrontendsRequest} request The request proto
+ * @param {!proto.daemon.ResetFrontendsRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.ResetTeamStatus>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ResetTeamStatus>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonPromiseClient.prototype.resetFrontends =
+proto.daemon.DaemonPromiseClient.prototype.resetFrontends =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/ResetFrontends',
+      '/daemon.Daemon/ResetFrontends',
       request,
       metadata || {},
       methodDescriptor_Daemon_ResetFrontends);
@@ -1464,52 +1465,52 @@ proto.DaemonPromiseClient.prototype.resetFrontends =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.SetFrontendMemoryRequest,
- *   !proto.Empty>}
+ *   !proto.daemon.SetFrontendMemoryRequest,
+ *   !proto.daemon.Empty>}
  */
 const methodDescriptor_Daemon_SetFrontendMemory = new grpc.web.MethodDescriptor(
-  '/Daemon/SetFrontendMemory',
+  '/daemon.Daemon/SetFrontendMemory',
   grpc.web.MethodType.UNARY,
-  proto.SetFrontendMemoryRequest,
-  proto.Empty,
-  /** @param {!proto.SetFrontendMemoryRequest} request */
+  proto.daemon.SetFrontendMemoryRequest,
+  proto.daemon.Empty,
+  /** @param {!proto.daemon.SetFrontendMemoryRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.Empty.deserializeBinary
+  proto.daemon.Empty.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.SetFrontendMemoryRequest,
- *   !proto.Empty>}
+ *   !proto.daemon.SetFrontendMemoryRequest,
+ *   !proto.daemon.Empty>}
  */
 const methodInfo_Daemon_SetFrontendMemory = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.Empty,
-  /** @param {!proto.SetFrontendMemoryRequest} request */
+  proto.daemon.Empty,
+  /** @param {!proto.daemon.SetFrontendMemoryRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.Empty.deserializeBinary
+  proto.daemon.Empty.deserializeBinary
 );
 
 
 /**
- * @param {!proto.SetFrontendMemoryRequest} request The
+ * @param {!proto.daemon.SetFrontendMemoryRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.Empty)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.Empty)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.Empty>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.Empty>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.setFrontendMemory =
+proto.daemon.DaemonClient.prototype.setFrontendMemory =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/SetFrontendMemory',
+      '/daemon.Daemon/SetFrontendMemory',
       request,
       metadata || {},
       methodDescriptor_Daemon_SetFrontendMemory,
@@ -1518,17 +1519,17 @@ proto.DaemonClient.prototype.setFrontendMemory =
 
 
 /**
- * @param {!proto.SetFrontendMemoryRequest} request The
+ * @param {!proto.daemon.SetFrontendMemoryRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.Empty>}
+ * @return {!Promise<!proto.daemon.Empty>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.setFrontendMemory =
+proto.daemon.DaemonPromiseClient.prototype.setFrontendMemory =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/SetFrontendMemory',
+      '/daemon.Daemon/SetFrontendMemory',
       request,
       metadata || {},
       methodDescriptor_Daemon_SetFrontendMemory);
@@ -1538,52 +1539,52 @@ proto.DaemonPromiseClient.prototype.setFrontendMemory =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.SetFrontendCpuRequest,
- *   !proto.Empty>}
+ *   !proto.daemon.SetFrontendCpuRequest,
+ *   !proto.daemon.Empty>}
  */
 const methodDescriptor_Daemon_SetFrontendCpu = new grpc.web.MethodDescriptor(
-  '/Daemon/SetFrontendCpu',
+  '/daemon.Daemon/SetFrontendCpu',
   grpc.web.MethodType.UNARY,
-  proto.SetFrontendCpuRequest,
-  proto.Empty,
-  /** @param {!proto.SetFrontendCpuRequest} request */
+  proto.daemon.SetFrontendCpuRequest,
+  proto.daemon.Empty,
+  /** @param {!proto.daemon.SetFrontendCpuRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.Empty.deserializeBinary
+  proto.daemon.Empty.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.SetFrontendCpuRequest,
- *   !proto.Empty>}
+ *   !proto.daemon.SetFrontendCpuRequest,
+ *   !proto.daemon.Empty>}
  */
 const methodInfo_Daemon_SetFrontendCpu = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.Empty,
-  /** @param {!proto.SetFrontendCpuRequest} request */
+  proto.daemon.Empty,
+  /** @param {!proto.daemon.SetFrontendCpuRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.Empty.deserializeBinary
+  proto.daemon.Empty.deserializeBinary
 );
 
 
 /**
- * @param {!proto.SetFrontendCpuRequest} request The
+ * @param {!proto.daemon.SetFrontendCpuRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.Empty)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.Empty)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.Empty>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.Empty>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.setFrontendCpu =
+proto.daemon.DaemonClient.prototype.setFrontendCpu =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/SetFrontendCpu',
+      '/daemon.Daemon/SetFrontendCpu',
       request,
       metadata || {},
       methodDescriptor_Daemon_SetFrontendCpu,
@@ -1592,17 +1593,17 @@ proto.DaemonClient.prototype.setFrontendCpu =
 
 
 /**
- * @param {!proto.SetFrontendCpuRequest} request The
+ * @param {!proto.daemon.SetFrontendCpuRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.Empty>}
+ * @return {!Promise<!proto.daemon.Empty>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.setFrontendCpu =
+proto.daemon.DaemonPromiseClient.prototype.setFrontendCpu =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/SetFrontendCpu',
+      '/daemon.Daemon/SetFrontendCpu',
       request,
       metadata || {},
       methodDescriptor_Daemon_SetFrontendCpu);
@@ -1612,52 +1613,52 @@ proto.DaemonPromiseClient.prototype.setFrontendCpu =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.GetTeamInfoRequest,
- *   !proto.GetTeamInfoResponse>}
+ *   !proto.daemon.GetTeamInfoRequest,
+ *   !proto.daemon.GetTeamInfoResponse>}
  */
 const methodDescriptor_Daemon_GetTeamInfo = new grpc.web.MethodDescriptor(
-  '/Daemon/GetTeamInfo',
+  '/daemon.Daemon/GetTeamInfo',
   grpc.web.MethodType.UNARY,
-  proto.GetTeamInfoRequest,
-  proto.GetTeamInfoResponse,
-  /** @param {!proto.GetTeamInfoRequest} request */
+  proto.daemon.GetTeamInfoRequest,
+  proto.daemon.GetTeamInfoResponse,
+  /** @param {!proto.daemon.GetTeamInfoRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.GetTeamInfoResponse.deserializeBinary
+  proto.daemon.GetTeamInfoResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.GetTeamInfoRequest,
- *   !proto.GetTeamInfoResponse>}
+ *   !proto.daemon.GetTeamInfoRequest,
+ *   !proto.daemon.GetTeamInfoResponse>}
  */
 const methodInfo_Daemon_GetTeamInfo = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.GetTeamInfoResponse,
-  /** @param {!proto.GetTeamInfoRequest} request */
+  proto.daemon.GetTeamInfoResponse,
+  /** @param {!proto.daemon.GetTeamInfoRequest} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.GetTeamInfoResponse.deserializeBinary
+  proto.daemon.GetTeamInfoResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.GetTeamInfoRequest} request The
+ * @param {!proto.daemon.GetTeamInfoRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.GetTeamInfoResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.GetTeamInfoResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.GetTeamInfoResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.GetTeamInfoResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.getTeamInfo =
+proto.daemon.DaemonClient.prototype.getTeamInfo =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/GetTeamInfo',
+      '/daemon.Daemon/GetTeamInfo',
       request,
       metadata || {},
       methodDescriptor_Daemon_GetTeamInfo,
@@ -1666,17 +1667,17 @@ proto.DaemonClient.prototype.getTeamInfo =
 
 
 /**
- * @param {!proto.GetTeamInfoRequest} request The
+ * @param {!proto.daemon.GetTeamInfoRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.GetTeamInfoResponse>}
+ * @return {!Promise<!proto.daemon.GetTeamInfoResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.getTeamInfo =
+proto.daemon.DaemonPromiseClient.prototype.getTeamInfo =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/GetTeamInfo',
+      '/daemon.Daemon/GetTeamInfo',
       request,
       metadata || {},
       methodDescriptor_Daemon_GetTeamInfo);
@@ -1686,49 +1687,49 @@ proto.DaemonPromiseClient.prototype.getTeamInfo =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.Empty,
- *   !proto.MonitorHostResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.MonitorHostResponse>}
  */
 const methodDescriptor_Daemon_MonitorHost = new grpc.web.MethodDescriptor(
-  '/Daemon/MonitorHost',
+  '/daemon.Daemon/MonitorHost',
   grpc.web.MethodType.SERVER_STREAMING,
-  proto.Empty,
-  proto.MonitorHostResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.Empty,
+  proto.daemon.MonitorHostResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.MonitorHostResponse.deserializeBinary
+  proto.daemon.MonitorHostResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.Empty,
- *   !proto.MonitorHostResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.MonitorHostResponse>}
  */
 const methodInfo_Daemon_MonitorHost = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.MonitorHostResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.MonitorHostResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.MonitorHostResponse.deserializeBinary
+  proto.daemon.MonitorHostResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.Empty} request The request proto
+ * @param {!proto.daemon.Empty} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.MonitorHostResponse>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.MonitorHostResponse>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.monitorHost =
+proto.daemon.DaemonClient.prototype.monitorHost =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/MonitorHost',
+      '/daemon.Daemon/MonitorHost',
       request,
       metadata || {},
       methodDescriptor_Daemon_MonitorHost);
@@ -1736,16 +1737,16 @@ proto.DaemonClient.prototype.monitorHost =
 
 
 /**
- * @param {!proto.Empty} request The request proto
+ * @param {!proto.daemon.Empty} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!grpc.web.ClientReadableStream<!proto.MonitorHostResponse>}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.MonitorHostResponse>}
  *     The XHR Node Readable Stream
  */
-proto.DaemonPromiseClient.prototype.monitorHost =
+proto.daemon.DaemonPromiseClient.prototype.monitorHost =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/Daemon/MonitorHost',
+      '/daemon.Daemon/MonitorHost',
       request,
       metadata || {},
       methodDescriptor_Daemon_MonitorHost);
@@ -1755,52 +1756,52 @@ proto.DaemonPromiseClient.prototype.monitorHost =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.Empty,
- *   !proto.VersionResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.VersionResponse>}
  */
 const methodDescriptor_Daemon_Version = new grpc.web.MethodDescriptor(
-  '/Daemon/Version',
+  '/daemon.Daemon/Version',
   grpc.web.MethodType.UNARY,
-  proto.Empty,
-  proto.VersionResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.Empty,
+  proto.daemon.VersionResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.VersionResponse.deserializeBinary
+  proto.daemon.VersionResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.Empty,
- *   !proto.VersionResponse>}
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.VersionResponse>}
  */
 const methodInfo_Daemon_Version = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.VersionResponse,
-  /** @param {!proto.Empty} request */
+  proto.daemon.VersionResponse,
+  /** @param {!proto.daemon.Empty} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.VersionResponse.deserializeBinary
+  proto.daemon.VersionResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.VersionResponse)}
+ * @param {function(?grpc.web.Error, ?proto.daemon.VersionResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.VersionResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.VersionResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.DaemonClient.prototype.version =
+proto.daemon.DaemonClient.prototype.version =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/Daemon/Version',
+      '/daemon.Daemon/Version',
       request,
       metadata || {},
       methodDescriptor_Daemon_Version,
@@ -1809,22 +1810,22 @@ proto.DaemonClient.prototype.version =
 
 
 /**
- * @param {!proto.Empty} request The
+ * @param {!proto.daemon.Empty} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.VersionResponse>}
+ * @return {!Promise<!proto.daemon.VersionResponse>}
  *     A native promise that resolves to the response
  */
-proto.DaemonPromiseClient.prototype.version =
+proto.daemon.DaemonPromiseClient.prototype.version =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/Daemon/Version',
+      '/daemon.Daemon/Version',
       request,
       metadata || {},
       methodDescriptor_Daemon_Version);
 };
 
 
-module.exports = proto;
+module.exports = proto.daemon;
 
