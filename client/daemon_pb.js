@@ -3507,7 +3507,8 @@ proto.daemon.CreateEventRequest.toObject = function(includeInstance, msg) {
     capacity: jspb.Message.getFieldWithDefault(msg, 6, 0),
     starttime: jspb.Message.getFieldWithDefault(msg, 7, ""),
     finishtime: jspb.Message.getFieldWithDefault(msg, 8, ""),
-    onlyvpn: jspb.Message.getFieldWithDefault(msg, 9, false)
+    onlyvpn: jspb.Message.getFieldWithDefault(msg, 9, false),
+    secretevent: jspb.Message.getFieldWithDefault(msg, 10, "")
   };
 
   if (includeInstance) {
@@ -3579,6 +3580,10 @@ proto.daemon.CreateEventRequest.deserializeBinaryFromReader = function(msg, read
     case 9:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setOnlyvpn(value);
+      break;
+    case 10:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSecretevent(value);
       break;
     default:
       reader.skipField();
@@ -3669,6 +3674,13 @@ proto.daemon.CreateEventRequest.serializeBinaryToWriter = function(message, writ
   if (f) {
     writer.writeBool(
       9,
+      f
+    );
+  }
+  f = message.getSecretevent();
+  if (f.length > 0) {
+    writer.writeString(
+      10,
       f
     );
   }
@@ -3843,6 +3855,21 @@ proto.daemon.CreateEventRequest.prototype.getOnlyvpn = function() {
 /** @param {boolean} value */
 proto.daemon.CreateEventRequest.prototype.setOnlyvpn = function(value) {
   jspb.Message.setProto3BooleanField(this, 9, value);
+};
+
+
+/**
+ * optional string secretEvent = 10;
+ * @return {string}
+ */
+proto.daemon.CreateEventRequest.prototype.getSecretevent = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 10, ""));
+};
+
+
+/** @param {string} value */
+proto.daemon.CreateEventRequest.prototype.setSecretevent = function(value) {
+  jspb.Message.setProto3StringField(this, 10, value);
 };
 
 
@@ -4407,7 +4434,8 @@ proto.daemon.ListEventsResponse.Events.toObject = function(includeInstance, msg)
     creationtime: jspb.Message.getFieldWithDefault(msg, 7, ""),
     finishtime: jspb.Message.getFieldWithDefault(msg, 8, ""),
     status: jspb.Message.getFieldWithDefault(msg, 9, 0),
-    createdby: jspb.Message.getFieldWithDefault(msg, 10, "")
+    createdby: jspb.Message.getFieldWithDefault(msg, 10, ""),
+    secretevent: jspb.Message.getFieldWithDefault(msg, 11, "")
   };
 
   if (includeInstance) {
@@ -4483,6 +4511,10 @@ proto.daemon.ListEventsResponse.Events.deserializeBinaryFromReader = function(ms
     case 10:
       var value = /** @type {string} */ (reader.readString());
       msg.setCreatedby(value);
+      break;
+    case 11:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSecretevent(value);
       break;
     default:
       reader.skipField();
@@ -4580,6 +4612,13 @@ proto.daemon.ListEventsResponse.Events.serializeBinaryToWriter = function(messag
   if (f.length > 0) {
     writer.writeString(
       10,
+      f
+    );
+  }
+  f = message.getSecretevent();
+  if (f.length > 0) {
+    writer.writeString(
+      11,
       f
     );
   }
@@ -4733,6 +4772,21 @@ proto.daemon.ListEventsResponse.Events.prototype.getCreatedby = function() {
 /** @param {string} value */
 proto.daemon.ListEventsResponse.Events.prototype.setCreatedby = function(value) {
   jspb.Message.setProto3StringField(this, 10, value);
+};
+
+
+/**
+ * optional string secretEvent = 11;
+ * @return {string}
+ */
+proto.daemon.ListEventsResponse.Events.prototype.getSecretevent = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
+};
+
+
+/** @param {string} value */
+proto.daemon.ListEventsResponse.Events.prototype.setSecretevent = function(value) {
+  jspb.Message.setProto3StringField(this, 11, value);
 };
 
 

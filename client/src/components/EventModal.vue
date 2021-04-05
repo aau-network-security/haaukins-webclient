@@ -136,22 +136,40 @@
                     List of available Frontends
                   </b-tooltip>
                 </div>
-                <div class="custom-control custom-switch mt-2 mt-sm-2 mt-md-5">
+                <b-row>
+                  <b-col md="9">
+                    <b-form-group
+                        id="fieldset-secretKey"
+                        label="Secret Key (Optional)"
+                        label-for="secretKey"
+                    >
+                      <b-form-input
+                          id="secretKey"
+                          v-model="secretKey"
+                          type="text"
+                      ></b-form-input>
+                    </b-form-group>
+                    <b-tooltip target="fieldset-secretKey" triggers="hover">
+                      OPTIONAL: Users will need this key to signup to the event.
+                    </b-tooltip>
+                  </b-col>
+                </b-row>
+                <div class="custom-control custom-switch mt-2 mt-sm-2 mt-md-0">
                   <input type="checkbox" class="custom-control-input" id="isVPNON" v-model="isVPNON" name="isVPNON">
                   <label class="custom-control-label" for="isVPNON">Enable VPN</label>
                 </div>
               </b-col>
               <b-col md="12" class="mt-3 mt-lg-0" style="z-index: 2">
                 <b-form-group>
-                  <div class="challenges-field-modal frontends-field-modal p-3 mt-2" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
+                  <div class="challenges-field-modal frontends-field-modal p-3 mt-0" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
                     <div class="row">
                       <div class="col-3">
                         <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
                           <a class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
-                          <a class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web_Exploit.</a>
+                          <a class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web Exploit.</a>
                           <a class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
                           <a class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
-                          <a class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse_Eng.</a>
+                          <a class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse Eng.</a>
                           <a class="nav-link" id="cryptography-tab" data-toggle="pill" href="#cryptography" role="tab" aria-controls="cryptography" aria-selected="false">Cryptography</a>
                         </div>
                       </div>
@@ -270,6 +288,7 @@
                 selectedChallenges: [],
                 selectAllChallenges: false,
                 frontends: [],
+                secretKey: '',
                 selectedFrontends: null,
                 challengesWE: [], challengesTextWE: [],
                 challengesB: [], challengesTextB: [],
@@ -338,6 +357,7 @@
                     return true;
                 }else{
                     this.eventName = this.encodeHTML(this.eventName);
+                    this.secretKey = this.encodeHTML(this.secretKey);
                     this.eventTag = this.encodeHTML(this.eventTag.toLowerCase());
                     this.eventFinishTime = this.get_date(this.eventFinishTime);
                     this.eventStartTime = this.get_date(this.eventStartTime);
@@ -352,6 +372,7 @@
 
                 let getRequest = new CreateEventRequest();
                 getRequest.setName(this.eventName);
+                getRequest.setSecretevent(this.secretKey);
                 getRequest.setTag(this.eventTag.toLowerCase());
                 getRequest.setAvailable(this.eventAvailability);
                 getRequest.setCapacity(this.eventCapacity);
