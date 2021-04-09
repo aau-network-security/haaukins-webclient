@@ -61,6 +61,8 @@ export default {
   methods: {
     getTeamChallenges () {
       let getRequest = new GetTeamInfoRequest();
+      this.error =null
+      this.success = null
       getRequest.setEventtag(this.$route.params.tag);
       getRequest.setTeamid(this.$route.params.id)
 
@@ -81,7 +83,8 @@ export default {
       getRequest.setEventtag(this.$route.params.tag);
       getRequest.setTeamid(this.$route.params.id)
       getRequest.setChallengetag(chalTag)
-
+      this.error = null
+      this.success = null
         daemonclient.solveChallenge(getRequest,{Token: localStorage.getItem("user")}, (err, response) => {
         if (err == null) {
           this.success = response.toObject().status
