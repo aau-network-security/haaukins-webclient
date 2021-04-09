@@ -31,20 +31,22 @@
                 <table class="table mx-auto table-hover table-striped" id="teamsEventTable" cellspacing="0" style="table-layout: auto; width: 100%">
                     <thead>
                         <tr class="text-center">
-                            <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td><td>Actions</td>
+                          <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td><td>Actions</td>
                         </tr>
                     </thead>
                     <tbody v-if="teams">
                         <tr v-for="(team,count) in teams.teamsList" v-bind:key="team.id">
                             <td class="text-center">{{count + 1}}</td>
                             <td><strong><router-link :to="{name: 'team', params: {id: team.id}}" class="text-haaukins" >{{team.id}}</router-link></strong></td>
+
                             <td>{{team.name}}</td>
                             <td>{{team.email}}</td>
                             <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="resetFrontend(team.id)">Frontend</button></td>
                             <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="restartTeamLab(team.id)">Lab</button></td>
                             <td class="text-center">
-                                <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team.id, true)">Suspend</button>
-                                <button class="btn btn-warning btn-sm" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
+                              <router-link :to="{name:'flags', params: {id: team.id, flags:'flags'}}" class="text-haaukins"><button class="btn btn-warning btn-sm m-btn-responsive">Flags</button></router-link>
+                              <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team.id, true)">Suspend</button>
+                              <button class="btn btn-warning btn-sm" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
                             </td>
                         </tr>
                     </tbody>
