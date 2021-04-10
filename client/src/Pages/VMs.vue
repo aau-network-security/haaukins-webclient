@@ -46,13 +46,12 @@
             listFrontends: function () {
                 let getRequest = new Empty();
                 daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    this.error = err;
-                    if (err.message === 'token contains an invalid number of segments') {
-                      this.$router.push({ path: 'login' })
-                      window.localStorage.clear()
-                    }
+                    this.error = err
                     this.frontends = response.toObject()
-
+                  if (err.message === 'token contains an invalid number of segments') {
+                    this.$router.push({ path: 'login' })
+                    window.localStorage.clear()
+                  }
                 });
             }
         }

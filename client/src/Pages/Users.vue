@@ -105,10 +105,9 @@
                     }else{
                         this.error = err["message"];
                       if (this.error === 'token contains an invalid number of segments') {
-                        this.$router.push({ path: 'login' })
+                        this.$router.push({path: 'login'})
                         window.localStorage.clear()
                       }
-
                     }
                 });
             },

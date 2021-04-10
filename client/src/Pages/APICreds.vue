@@ -41,12 +41,12 @@
         let getRequest = new Empty();
         daemonclient.getAPICreds(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
           this.error = err;
+          this.username = response.getUsername()
+          this.password = response.getPassword()
           if (err.message === 'token contains an invalid number of segments') {
             this.$router.push({ path: 'login' })
             window.localStorage.clear()
           }
-          this.username = response.getUsername()
-          this.password = response.getPassword()
         });
       }
     }

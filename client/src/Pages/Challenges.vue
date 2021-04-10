@@ -73,12 +73,11 @@
                 let getRequest = new Empty();
                 daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
                     this.error = err;
-                 if (err.message === 'token contains an invalid number of segments') {
+                    this.challenges = response.toObject()
+                  if (err.message === 'token contains an invalid number of segments') {
                     this.$router.push({ path: 'login' })
                     window.localStorage.clear()
-                   }
-                    this.challenges = response.toObject()
-
+                  }
                 });
 
             }
