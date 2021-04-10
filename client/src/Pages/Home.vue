@@ -217,6 +217,10 @@
                             that.listEvent()
                         }else{
                             that.error = status['metadata']['grpc-message']
+                          if (status.details === 'token contains an invalid number of segments') {
+                            that.$router.push({ path: 'login' })
+                            window.localStorage.clear()
+                          }
                         }
                     });
                 }else{
@@ -247,6 +251,10 @@
                         that.listEvent()
                     }else{
                         that.error = status['metadata']['grpc-message']
+                       if (status.details === 'token contains an invalid number of segments') {
+                        that.$router.push({ path: 'login' })
+                        window.localStorage.clear()
+                      }
                     }
                 });
 
@@ -276,6 +284,10 @@
                         that.listEvent()
                     }else{
                         that.error = status['metadata']['grpc-message']
+                      if (status.details === 'token contains an invalid number of segments') {
+                        that.$router.push({ path: 'login' })
+                        window.localStorage.clear()
+                      }
                     }
                 });
             },
@@ -329,6 +341,10 @@
                     that.error = e
                 });
                 call.on('status', function(status) {
+                  if (status.details === 'token contains an invalid number of segments') {
+                     that.$router.push({ path: 'login' })
+                     window.localStorage.clear()
+                  }
                     window.console.log(status)
                 });
             },
