@@ -28,7 +28,7 @@
             <td>{{count + 1}}</td>
             <td>{{info.challengename}}</td>
             <td>{{info.challengetag}}</td>
-            <td class="label info" style="text-align: left; font-weight: bold">{{info.challengeflag}}</td>
+            <td class="user-select-all" style="text-align: left; font-weight: bold">{{info.challengeflag}}</td>
             <td><button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="solveChallenge(info.challengetag)">Solve it !</button></td>
           </tr>
           </tbody>
