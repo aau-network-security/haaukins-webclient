@@ -204,11 +204,14 @@
                     const call = daemonclient.createEvent(request, {Token: localStorage.getItem("user")});
 
                     call.on('data', function(response) {
-                        //TODO nothign receive because cause the deamon dosen't send anything
+                        // daemon sends back to errorMessage
+                        that.error = response.array.toString().replace('/,/g', ' ')
                         window.console.log(response)
                     });
                     call.on('error', function(e) {
-                        that.error = e
+                         that.loaderIsActive = false;
+                        window.console.log(e['message'])
+                        that.error = e['message']
                     });
                     call.on('status', function(status) {
                         that.loaderIsActive = false;
