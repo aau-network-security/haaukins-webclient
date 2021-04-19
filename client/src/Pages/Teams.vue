@@ -46,8 +46,9 @@
                             <td class="text-center">
                               <router-link :to="{name:'flags', params: {id: team.id, flags:'flags'}}" class="text-haaukins"><button class="btn btn-warning btn-sm m-btn-responsive">Flags</button></router-link>
                               <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team.id, true)">Suspend</button>
-                              <button class="btn btn-warning btn-sm" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
-                            </td>
+                              <button class="btn btn-warning btn-sm mr-1" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
+                              <button class="btn btn-secondary btn-sm m-btn-responsive" v-on:click="openModal(team.id)">Update</button>
+                          </td>
                         </tr>
                     </tbody>
                     <tbody v-else>
@@ -59,6 +60,39 @@
             </div>
         </div>
         <Footer/>
+      <b-modal ref="modal" id="update-team-modal" centered hide-footer>
+        <template v-slot:modal-title>
+          Update  {{teamUpdate}} password
+        </template>
+        <b-form ref="form" @submit.stop.prevent="updateTeamPassword()">
+          <b-form-group
+              id="fieldset-updatePass"
+              label="New Password"
+              label-for="updatePass"
+          >
+            <b-form-input
+                id="updatePass"
+                v-model="password"
+                type="password"
+                required
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+              id="fieldset-updateRepeatPass"
+              label="Repeat Password"
+              label-for="updateRepeatPass"
+          >
+            <b-form-input
+                id="updateRepeatPass"
+                v-model="repeatPassword"
+                type="password"
+                required
+            ></b-form-input>
+          </b-form-group>
+          <b-button variant="secondary" @click="$bvModal.hide('update-team-modal')">Close</b-button>
+          <b-button type="submit" class="btn-haaukins float-right">Update</b-button>
+        </b-form>
+      </b-modal>
     </div>
 </template>
 
@@ -66,7 +100,14 @@
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
     import { daemonclient } from "../App";
-    import { ListEventTeamsRequest, RestartTeamLabRequest, ResetFrontendsRequest, Team, SetTeamSuspendRequest } from "daemon_pb"
+    import {
+      ListEventTeamsRequest,
+      RestartTeamLabRequest,
+      ResetFrontendsRequest,
+      Team,
+      SetTeamSuspendRequest,
+      UpdateTeamPassRequest
+    } from "daemon_pb"
 
     export default {
         name: "Teams",
@@ -78,7 +119,7 @@
                 teams: null,
                 eventStatus: null,
                 loaderIsActive: false,
-
+                teamUpdate : "",
                 loader_msg:"Loading...",
                 loader_id:""
             }
@@ -158,6 +199,35 @@
                         that.success = "Frontend successfully restarted!"
                     }, 1000);
                 });
+            },
+            openModal: function (teamid) {
+              this.teamUpdate = teamid
+              this.$bvModal.show('update-team-modal')
+            },
+            updateTeamPassword: function () {
+              if (this.password != this.repeatPassword){
+                this.$bvModal.hide('update-team-modal')
+                this.password = ""
+                this.repeatPassword = ""
+                this.error = "Passwords don't match each other!"
+                return
+              }
+
+              let getRequest = new UpdateTeamPassRequest();
+              getRequest.setTeamid(this.teamUpdate)
+              getRequest.setEventtag(this.$route.params.tag)
+              getRequest.setPassword(this.password)
+              getRequest.setPasswordrepeat(this.password)
+              daemonclient.updateTeamPassword(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+                if (err == null) {
+                  this.success = response.toObject().status
+                }else{
+                  this.error = err["status"];
+                }
+              });
+              this.password = ""
+              this.repeatPassword = ""
+              this.$bvModal.hide('update-team-modal')
             },
             suspendResumeTeamLab: function (teamID, setSuspend) {
                 let getRequest = new SetTeamSuspendRequest()
