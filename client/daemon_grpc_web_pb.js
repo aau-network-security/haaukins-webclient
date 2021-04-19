@@ -607,6 +607,80 @@ proto.daemon.DaemonPromiseClient.prototype.setTeamSuspend =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.UpdateTeamPassRequest,
+ *   !proto.daemon.UpdateTeamPassResponse>}
+ */
+const methodDescriptor_Daemon_UpdateTeamPassword = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/UpdateTeamPassword',
+  grpc.web.MethodType.UNARY,
+  proto.daemon.UpdateTeamPassRequest,
+  proto.daemon.UpdateTeamPassResponse,
+  /** @param {!proto.daemon.UpdateTeamPassRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.UpdateTeamPassResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.UpdateTeamPassRequest,
+ *   !proto.daemon.UpdateTeamPassResponse>}
+ */
+const methodInfo_Daemon_UpdateTeamPassword = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.UpdateTeamPassResponse,
+  /** @param {!proto.daemon.UpdateTeamPassRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.UpdateTeamPassResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.UpdateTeamPassRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.daemon.UpdateTeamPassResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.UpdateTeamPassResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.updateTeamPassword =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/daemon.Daemon/UpdateTeamPassword',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_UpdateTeamPassword,
+      callback);
+};
+
+
+/**
+ * @param {!proto.daemon.UpdateTeamPassRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.daemon.UpdateTeamPassResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.daemon.DaemonPromiseClient.prototype.updateTeamPassword =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/daemon.Daemon/UpdateTeamPassword',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_UpdateTeamPassword);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.daemon.Empty,
  *   !proto.daemon.CredsResponse>}
  */
