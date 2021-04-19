@@ -46,7 +46,7 @@
             listFrontends: function () {
                 let getRequest = new Empty();
                 daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    this.error = err;
+                    this.error = err
                     this.frontends = response.toObject()
                 });
             }

@@ -6,6 +6,7 @@ import LoginPage from './Pages/Login'
 import Teams from "./Pages/Teams";
 import Challenges from "./Pages/Challenges";
 import VMs from "./Pages/VMs";
+import TeamFlags from "./Pages/TeamFlags";
 import TeamAction from "./Pages/TeamAction";
 import Signup from "./Pages/Signup";
 import Graphs from "./Pages/Graphs";
@@ -21,6 +22,7 @@ export const router = new Router({
         { name: 'login', path: '/login', component: LoginPage },
         { name: 'signup', path: '/signup', component: Signup },
         { name: 'event', path: '/events/:tag', component: Teams },
+        { name: 'flags',path: '/events/:tag/:id/flags', component: TeamFlags},
         { name: 'team', path: '/events/:tag/:id', component: TeamAction },
         { name: 'challenges', path: '/challenges', component: Challenges},
         { name: 'users', path: '/users', component: Users},

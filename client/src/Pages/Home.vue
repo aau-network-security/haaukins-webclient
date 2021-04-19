@@ -204,11 +204,14 @@
                     const call = daemonclient.createEvent(request, {Token: localStorage.getItem("user")});
 
                     call.on('data', function(response) {
-                        //TODO nothign receive because cause the deamon dosen't send anything
+                        // daemon sends back to errorMessage
+                        that.error = response.array.toString().replace('/,/g', ' ')
                         window.console.log(response)
                     });
                     call.on('error', function(e) {
-                        that.error = e
+                         that.loaderIsActive = false;
+                        window.console.log(e['message'])
+                        that.error = e['message']
                     });
                     call.on('status', function(status) {
                         that.loaderIsActive = false;
@@ -217,6 +220,10 @@
                             that.listEvent()
                         }else{
                             that.error = status['metadata']['grpc-message']
+                          if (status.details === 'token contains an invalid number of segments') {
+                            that.$router.push({ path: 'login' })
+                            window.localStorage.clear()
+                          }
                         }
                     });
                 }else{
@@ -247,6 +254,10 @@
                         that.listEvent()
                     }else{
                         that.error = status['metadata']['grpc-message']
+                       if (status.details === 'token contains an invalid number of segments') {
+                        that.$router.push({ path: 'login' })
+                        window.localStorage.clear()
+                      }
                     }
                 });
 
@@ -276,6 +287,10 @@
                         that.listEvent()
                     }else{
                         that.error = status['metadata']['grpc-message']
+                      if (status.details === 'token contains an invalid number of segments') {
+                        that.$router.push({ path: 'login' })
+                        window.localStorage.clear()
+                      }
                     }
                 });
             },
@@ -329,6 +344,10 @@
                     that.error = e
                 });
                 call.on('status', function(status) {
+                  if (status.details === 'token contains an invalid number of segments') {
+                     that.$router.push({ path: 'login' })
+                     window.localStorage.clear()
+                  }
                     window.console.log(status)
                 });
             },

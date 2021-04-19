@@ -104,6 +104,10 @@
                         this.users = response.toObject()
                     }else{
                         this.error = err["message"];
+                      if (this.error === 'token contains an invalid number of segments') {
+                        this.$router.push({path: 'login'})
+                        window.localStorage.clear()
+                      }
                     }
                 });
             },
@@ -143,6 +147,7 @@
                         this.listUsers()
                     }else{
                         this.error = err["message"];
+
                     }
                 });
 

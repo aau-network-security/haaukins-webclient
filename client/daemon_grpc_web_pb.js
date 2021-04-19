@@ -607,6 +607,80 @@ proto.daemon.DaemonPromiseClient.prototype.setTeamSuspend =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.UpdateTeamPassRequest,
+ *   !proto.daemon.UpdateTeamPassResponse>}
+ */
+const methodDescriptor_Daemon_UpdateTeamPassword = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/UpdateTeamPassword',
+  grpc.web.MethodType.UNARY,
+  proto.daemon.UpdateTeamPassRequest,
+  proto.daemon.UpdateTeamPassResponse,
+  /** @param {!proto.daemon.UpdateTeamPassRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.UpdateTeamPassResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.UpdateTeamPassRequest,
+ *   !proto.daemon.UpdateTeamPassResponse>}
+ */
+const methodInfo_Daemon_UpdateTeamPassword = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.UpdateTeamPassResponse,
+  /** @param {!proto.daemon.UpdateTeamPassRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.UpdateTeamPassResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.UpdateTeamPassRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.daemon.UpdateTeamPassResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.UpdateTeamPassResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.updateTeamPassword =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/daemon.Daemon/UpdateTeamPassword',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_UpdateTeamPassword,
+      callback);
+};
+
+
+/**
+ * @param {!proto.daemon.UpdateTeamPassRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.daemon.UpdateTeamPassResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.daemon.DaemonPromiseClient.prototype.updateTeamPassword =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/daemon.Daemon/UpdateTeamPassword',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_UpdateTeamPassword);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.daemon.Empty,
  *   !proto.daemon.CredsResponse>}
  */
@@ -1099,6 +1173,154 @@ proto.daemon.DaemonPromiseClient.prototype.restartTeamLab =
       request,
       metadata || {},
       methodDescriptor_Daemon_RestartTeamLab);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.SolveChallengeRequest,
+ *   !proto.daemon.SolveChallengeResponse>}
+ */
+const methodDescriptor_Daemon_SolveChallenge = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/SolveChallenge',
+  grpc.web.MethodType.UNARY,
+  proto.daemon.SolveChallengeRequest,
+  proto.daemon.SolveChallengeResponse,
+  /** @param {!proto.daemon.SolveChallengeRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.SolveChallengeResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.SolveChallengeRequest,
+ *   !proto.daemon.SolveChallengeResponse>}
+ */
+const methodInfo_Daemon_SolveChallenge = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.SolveChallengeResponse,
+  /** @param {!proto.daemon.SolveChallengeRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.SolveChallengeResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.SolveChallengeRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.daemon.SolveChallengeResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.SolveChallengeResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.solveChallenge =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/daemon.Daemon/SolveChallenge',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_SolveChallenge,
+      callback);
+};
+
+
+/**
+ * @param {!proto.daemon.SolveChallengeRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.daemon.SolveChallengeResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.daemon.DaemonPromiseClient.prototype.solveChallenge =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/daemon.Daemon/SolveChallenge',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_SolveChallenge);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.GetTeamInfoRequest,
+ *   !proto.daemon.TeamChalsInfo>}
+ */
+const methodDescriptor_Daemon_GetTeamChals = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/GetTeamChals',
+  grpc.web.MethodType.UNARY,
+  proto.daemon.GetTeamInfoRequest,
+  proto.daemon.TeamChalsInfo,
+  /** @param {!proto.daemon.GetTeamInfoRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.TeamChalsInfo.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.GetTeamInfoRequest,
+ *   !proto.daemon.TeamChalsInfo>}
+ */
+const methodInfo_Daemon_GetTeamChals = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.TeamChalsInfo,
+  /** @param {!proto.daemon.GetTeamInfoRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.TeamChalsInfo.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.GetTeamInfoRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.daemon.TeamChalsInfo)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.TeamChalsInfo>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.getTeamChals =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/daemon.Daemon/GetTeamChals',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_GetTeamChals,
+      callback);
+};
+
+
+/**
+ * @param {!proto.daemon.GetTeamInfoRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.daemon.TeamChalsInfo>}
+ *     A native promise that resolves to the response
+ */
+proto.daemon.DaemonPromiseClient.prototype.getTeamChals =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/daemon.Daemon/GetTeamChals',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_GetTeamChals);
 };
 
 
