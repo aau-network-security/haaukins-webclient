@@ -79,19 +79,23 @@ export default {
     },
 
     solveChallenge: function (chalTag) {
-      let getRequest = new SolveChallengeRequest()
-      getRequest.setEventtag(this.$route.params.tag);
-      getRequest.setTeamid(this.$route.params.id)
-      getRequest.setChallengetag(chalTag)
-      this.error = null
-      this.success = null
+
+      var x = confirm("Are you sure you want to solve challenge " + chalTag + " for team "+ this.$route.params.id+ " ?");
+      if (x) {
+        let getRequest = new SolveChallengeRequest()
+        getRequest.setEventtag(this.$route.params.tag);
+        getRequest.setTeamid(this.$route.params.id)
+        getRequest.setChallengetag(chalTag)
+        this.error = null
+        this.success = null
         daemonclient.solveChallenge(getRequest,{Token: localStorage.getItem("user")}, (err, response) => {
-        if (err == null) {
-          this.success = response.toObject().status
-        }else{
-          this.error =  err["message"];
-        }
-      });
+          if (err == null) {
+            this.success = response.toObject().status
+          }else{
+            this.error =  err["message"];
+          }
+        });
+      }
     },
   }
 }
