@@ -48,6 +48,7 @@
                               <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team.id, true)">Suspend</button>
                               <button class="btn btn-warning btn-sm mr-1" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
                               <button class="btn btn-secondary btn-sm m-btn-responsive" v-on:click="openModal(team.id)">Update</button>
+                              <button class="btn btn-danger btn-sm m-btn-responsive" v-on:click="deleteTeam(team.id)">Delete</button>
                           </td>
                         </tr>
                     </tbody>
@@ -106,7 +107,8 @@
       ResetFrontendsRequest,
       Team,
       SetTeamSuspendRequest,
-      UpdateTeamPassRequest
+      UpdateTeamPassRequest,
+      DeleteTeamRequest,
     } from "daemon_pb"
 
     export default {
@@ -169,6 +171,22 @@
                     }
                 });
             },
+           deleteTeam(teamId){
+             let getRequest = new DeleteTeamRequest();
+             var x = confirm("Do you really want to delete " + teamId + " on event "+ this.$route.params.tag+ " ?");
+             if (x) {
+               getRequest.setEvtag(this.$route.params.tag)
+               getRequest.setTeamid(teamId)
+               daemonclient.deleteTeam(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+                 if (err == null) {
+                   this.listTeams()
+                   this.success = response.toObject().message
+                 }else{
+                   this.error = err["message"];
+                 }
+               });
+             }
+             },
             resetFrontend(teamID){
                 const that = this
                 this.loaderIsActive = true
