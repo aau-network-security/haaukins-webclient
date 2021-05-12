@@ -5,7 +5,7 @@
             <b-navbar toggleable="lg" type="dark" class="container">
                 <b-navbar-brand href="/">
                     <img src="../assets/dashboard-logo.png" width="40" height="40" class="d-inline-block align-top" alt="">
-                    <span class="logo-text">Administration</span>
+                    <span class="logo-text">Home</span>
                 </b-navbar-brand>
 
                 <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
