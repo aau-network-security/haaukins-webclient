@@ -159,18 +159,18 @@
                 });
                 call.on('end', function() {
                   window.console.log("enddd")
+                  that.loaderIsActive=false
+                  that.listTeams()
                 });
                 call.on('error', function(e) {
                     that.error = e
                 });
-                call.on('status', function(status) {
+                call.on('status', function() {
                     that.loaderIsActive = false
-                    if (status['metadata']['grpc-message'] == "") {
-                        that.success = "Team Lab Successfully Restarted!"
-                        that.listTeams()
-                    }else{
-                        that.error = status['metadata']['grpc-message']
-                    }
+                  setTimeout(function(){
+                    that.loaderIsActive = false
+                    that.success = "Team [ " +teamID + " ] Lab Successfully Restarted!"
+                  }, 500);
                 });
             },
            deleteTeam(teamId){
@@ -192,19 +192,18 @@
                });
                call.on('end', function() {
                  window.console.log("enddd")
+                 that.loaderIsActive=false
+                 that.listTeams()
                });
                call.on('error', function(e) {
                  that.error = e
                });
-               call.on('status', function(status) {
+               call.on('status', function() {
                  that.loaderIsActive = false
-                 if (status['metadata']['grpc-message'] == "") {
+                 setTimeout(function(){
                    that.loaderIsActive = false
                    that.success = "Team [ " +teamId + " ] is deleted from event tag [ " + eventTag+  " ] !"
-                   that.listTeams()
-                 }else{
-                   that.error = status['metadata']['grpc-message']
-                 }
+                 }, 500);
                });
              }else{
                that.loaderIsActive = false
