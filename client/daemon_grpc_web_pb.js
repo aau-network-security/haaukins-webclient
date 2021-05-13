@@ -1253,6 +1253,75 @@ proto.daemon.DaemonPromiseClient.prototype.solveChallenge =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.DeleteTeamRequest,
+ *   !proto.daemon.DeleteTeamResponse>}
+ */
+const methodDescriptor_Daemon_DeleteTeam = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/DeleteTeam',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.daemon.DeleteTeamRequest,
+  proto.daemon.DeleteTeamResponse,
+  /** @param {!proto.daemon.DeleteTeamRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.DeleteTeamResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.DeleteTeamRequest,
+ *   !proto.daemon.DeleteTeamResponse>}
+ */
+const methodInfo_Daemon_DeleteTeam = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.DeleteTeamResponse,
+  /** @param {!proto.daemon.DeleteTeamRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.DeleteTeamResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.DeleteTeamRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.DeleteTeamResponse>}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.deleteTeam =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/daemon.Daemon/DeleteTeam',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_DeleteTeam);
+};
+
+
+/**
+ * @param {!proto.daemon.DeleteTeamRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.DeleteTeamResponse>}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonPromiseClient.prototype.deleteTeam =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/daemon.Daemon/DeleteTeam',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_DeleteTeam);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.daemon.GetTeamInfoRequest,
  *   !proto.daemon.TeamChalsInfo>}
  */
@@ -1538,6 +1607,80 @@ proto.daemon.DaemonPromiseClient.prototype.resetExercise =
       request,
       metadata || {},
       methodDescriptor_Daemon_ResetExercise);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.GetExsByTagsReq,
+ *   !proto.daemon.GetExsByTagsResp>}
+ */
+const methodDescriptor_Daemon_GetExercisesByTags = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/GetExercisesByTags',
+  grpc.web.MethodType.UNARY,
+  proto.daemon.GetExsByTagsReq,
+  proto.daemon.GetExsByTagsResp,
+  /** @param {!proto.daemon.GetExsByTagsReq} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.GetExsByTagsResp.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.GetExsByTagsReq,
+ *   !proto.daemon.GetExsByTagsResp>}
+ */
+const methodInfo_Daemon_GetExercisesByTags = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.GetExsByTagsResp,
+  /** @param {!proto.daemon.GetExsByTagsReq} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.GetExsByTagsResp.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.GetExsByTagsReq} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.daemon.GetExsByTagsResp)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.GetExsByTagsResp>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.getExercisesByTags =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/daemon.Daemon/GetExercisesByTags',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_GetExercisesByTags,
+      callback);
+};
+
+
+/**
+ * @param {!proto.daemon.GetExsByTagsReq} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.daemon.GetExsByTagsResp>}
+ *     A native promise that resolves to the response
+ */
+proto.daemon.DaemonPromiseClient.prototype.getExercisesByTags =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/daemon.Daemon/GetExercisesByTags',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_GetExercisesByTags);
 };
 
 
