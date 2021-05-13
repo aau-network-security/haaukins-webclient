@@ -1254,11 +1254,11 @@ proto.daemon.DaemonPromiseClient.prototype.solveChallenge =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.daemon.DeleteTeamRequest,
- *   !proto.daemon.DeleteTeamRequest>}
+ *   !proto.daemon.DeleteTeamResponse>}
  */
 const methodDescriptor_Daemon_DeleteTeam = new grpc.web.MethodDescriptor(
   '/daemon.Daemon/DeleteTeam',
-  grpc.web.MethodType.UNARY,
+  grpc.web.MethodType.SERVER_STREAMING,
   proto.daemon.DeleteTeamRequest,
   proto.daemon.DeleteTeamResponse,
   /** @param {!proto.daemon.DeleteTeamRequest} request */
@@ -1273,7 +1273,7 @@ const methodDescriptor_Daemon_DeleteTeam = new grpc.web.MethodDescriptor(
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
  *   !proto.daemon.DeleteTeamRequest,
- *   !proto.daemon.DeleteTeamRequest>}
+ *   !proto.daemon.DeleteTeamResponse>}
  */
 const methodInfo_Daemon_DeleteTeam = new grpc.web.AbstractClientBase.MethodInfo(
   proto.daemon.DeleteTeamResponse,
@@ -1286,37 +1286,32 @@ const methodInfo_Daemon_DeleteTeam = new grpc.web.AbstractClientBase.MethodInfo(
 
 
 /**
- * @param {!proto.daemon.DeleteTeamRequest} request The
- *     request proto
+ * @param {!proto.daemon.DeleteTeamRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.daemon.DeleteTeamResponse)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.daemon.DeleteTeamResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.DeleteTeamResponse>}
  *     The XHR Node Readable Stream
  */
 proto.daemon.DaemonClient.prototype.deleteTeam =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
       '/daemon.Daemon/DeleteTeam',
       request,
       metadata || {},
-      methodDescriptor_Daemon_DeleteTeam,
-      callback);
+      methodDescriptor_Daemon_DeleteTeam);
 };
 
 
 /**
- * @param {!proto.daemon.DeleteTeamRequest} request The
- *     request proto
+ * @param {!proto.daemon.DeleteTeamRequest} request The request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.daemon.DeleteTeamResponse>}
- *     A native promise that resolves to the response
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.DeleteTeamResponse>}
+ *     The XHR Node Readable Stream
  */
 proto.daemon.DaemonPromiseClient.prototype.deleteTeam =
     function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
+  return this.client_.serverStreaming(this.hostname_ +
       '/daemon.Daemon/DeleteTeam',
       request,
       metadata || {},

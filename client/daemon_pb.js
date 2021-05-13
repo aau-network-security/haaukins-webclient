@@ -139,7 +139,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.daemon.DeleteTeamRequest = function (opt_data, p, p1) {
+proto.daemon.DeleteTeamRequest = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.daemon.DeleteTeamRequest, jspb.Message);
