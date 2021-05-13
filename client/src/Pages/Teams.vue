@@ -159,8 +159,6 @@
                 });
                 call.on('end', function() {
                   window.console.log("enddd")
-                  that.success = "Team [ "+ teamID + " ] Lab Successfully Restarted!"
-                  that.listTeams()
                 });
                 call.on('error', function(e) {
                     that.error = e
@@ -194,8 +192,6 @@
                });
                call.on('end', function() {
                  window.console.log("enddd")
-                 that.success = "Team [ " +teamId + " ] is deleted from event tag [ " +eventTag+  " ]"
-                 that.listTeams()
                });
                call.on('error', function(e) {
                  that.error = e
@@ -204,12 +200,14 @@
                  that.loaderIsActive = false
                  if (status['metadata']['grpc-message'] == "") {
                    that.loaderIsActive = false
-                   that.success = "Team [ " +teamId + " ] is deleted from event tag [ " +this.$route.params.tag+  " ] !"
+                   that.success = "Team [ " +teamId + " ] is deleted from event tag [ " + eventTag+  " ] !"
                    that.listTeams()
                  }else{
                    that.error = status['metadata']['grpc-message']
                  }
                });
+             }else{
+               that.loaderIsActive = false
              }
              },
             resetFrontend(teamID){
