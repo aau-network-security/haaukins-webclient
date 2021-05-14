@@ -12,7 +12,7 @@
     "bootstrap": "^4.6.0",
     "core-js": "^3.12.1",
     "bootstrap-vue": "^2.21.2",
-    "google-protobuf": "^3.16.0",
+    "google-protobuf": "^3.17.0",
     "grpc-web": "^1.2.1",
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
