@@ -29,16 +29,13 @@
                   <b-col md="6">
                     <b-form-group
                         id="fieldset-eventName"
-                        label="Event Name (Max: 20)"
+                        label="Event Name"
                         label-for="eventName"
                     >
                       <b-form-input
                           id="eventName"
                           v-model="eventName"
-                          :state="nameState"
                           type="text"
-                          min="2"
-                          max="20"
                           required
                       ></b-form-input>
                     </b-form-group>
@@ -55,7 +52,6 @@
                       <b-form-input
                           id="eventTag"
                           v-model="eventTag"
-                          :state="tagState"
                           type="text"
                           required
                       ></b-form-input>
@@ -91,7 +87,6 @@
                       <b-form-input
                           id="eventAvailability"
                           v-model="eventAvailability"
-                          :state="availabilityState"
                           type="number"
                           min="1"
                           step="1"
@@ -112,7 +107,6 @@
                           id="eventCapacity"
                           v-model="eventCapacity"
                           type="number"
-                          :state="capacityState"
                           min="2"
                           step="1"
                           required
@@ -132,7 +126,6 @@
                         id="frontends"
                         v-model="selectedFrontends"
                         :options="frontends"
-                        :state="frontendState"
                         name="frontends"
                         class="ml-4"
                         aria-label="Individual flavours"
@@ -264,34 +257,7 @@
               </b-col>
             </b-row>
             <b-button variant="secondary" @click="$bvModal.hide('create-event-modal')">Close</b-button>
-            <b-button  class="btn-haaukins float-right" :disabled="!isDisabled" @click="getExsByTags(selectedChallenges)">Next</b-button>
-          </template>
-        </b-carousel-slide>
-
-        <b-carousel-slide class="carousel-height" >
-          <template slot="img" class="h-100 text-center ">
-            <div class="card" style="margin-bottom: 5px; ">
-              <h5 class="btn btn-warning">OPTIONAL</h5>
-              <div class="card-body">
-                <h5 class="card-title">Choose challenges to disable at event start</h5>
-                <p class="card-text">By default, Haaukins platform will run all challenges choosen in previous step. If you would like to enable manual start for specific challenges select them below. </p>
-                <b-input-group >
-                  <b-form-checkbox-group
-                      id="disableChallenge"
-                      v-model="disableChallenges"
-                      :options="enableChallenges"
-                      name="disableChallenge"
-                      style="column-count: 3;"
-                      class="ml-4"
-                      stacked
-                  ></b-form-checkbox-group>
-                </b-input-group>
-                <br>
-              </div>
-            </div>
-            <b-button variant="secondary" @click="$bvModal.hide('create-event-modal')">Close</b-button>
-            <b-button variant="warning ml-2" @click="handlePrev()">Prev</b-button>
-            <b-button type="submit" class="btn-haaukins float-right" :disabled="!isDisabled" @click="handleSubmit">Create</b-button>
+            <b-button type="submit" class="btn-haaukins float-right" :disabled="!isDisabled">Create</b-button>
           </template>
         </b-carousel-slide>
       </b-carousel>
@@ -300,7 +266,7 @@
 </template>
 
 <script>
-    import { Empty, CreateEventRequest,GetExsByTagsReq } from "daemon_pb";
+    import { Empty, CreateEventRequest } from "daemon_pb";
     import { daemonclient } from "../App";
     import Datepicker from "vuejs-datepicker"
 
@@ -310,23 +276,6 @@
         props: {
             memoryProp: String
         },
-       computed:{
-         nameState() {
-           return this.eventName.length > 20 || this.eventName.length < 2 ? false : true
-         },
-         availabilityState() {
-           return this.eventAvailability <= this.eventCapacity && this.eventCapacity >= 2 && this.eventAvailability <= 253 ? true : false
-         },
-         frontendState (){
-           return this.frontends.length <= 0  ? false : true
-         },
-         tagState (){
-           return this.eventTag == '' || this.eventTag.match(/^[a-zA-Z][A-Za-z0-9-]*[^-]$/g) == null || this.eventTag.length > 20 ? false : true
-         },
-         capacityState () {
-           return this.eventCapacity < this.eventAvailability || this.eventCapacity < 2  || this.eventCapacity > 253 || this.eventCapacity.toString().match(/^(?:(?:[1-9][0-9]*)|0)$/) == null ? false : true
-         }
-       },
         data: function () {
             return {
                 error: null,
@@ -337,8 +286,6 @@
                 eventCapacity: 0,
                 eventFinishTime: '', eventStartTime: Date.now(),
                 selectedChallenges: [],
-                enableChallenges: [],
-                disableChallenges: [],
                 selectAllChallenges: false,
                 frontends: [],
                 secretKey: '',
@@ -364,9 +311,6 @@
         watch: {
           eventCapacity: function () {
             this.eventAvailability = Math.ceil(this.eventCapacity / 7)
-            if (this.eventCapacity < 0) {
-              this.eventCapacity = 2
-            }
           },
         },
         methods: {
@@ -422,6 +366,10 @@
             },
             createEvent: function () {
 
+                if(this.handleSubmit()){
+                    return
+                }
+
                 let getRequest = new CreateEventRequest();
                 getRequest.setName(this.eventName);
                 getRequest.setSecretevent(this.secretKey);
@@ -433,13 +381,10 @@
                 this.selectedChallenges.forEach(function(challenge) {
                     getRequest.addExercises(challenge)
                 });
-                this.disableChallenges.forEach(function (challenge){
-                  getRequest.addDisableexercises(challenge)
-                })
+
                 getRequest.addFrontends(this.selectedFrontends)
                 getRequest.setOnlyvpn(this.isVPNON)
-
-              this.$emit('createEvent', getRequest)
+                this.$emit('createEvent', getRequest)
 
             },
             getChallenges: function () {
@@ -495,43 +440,8 @@
 
                     })
                 });
-            },
-            handlePrev : function () {
-              this.enableChallenges = []
-              this.disableChallenges = []
-              this.$refs.createEventCarousel.prev()
-            },
-            getExsByTags : function (tags) {
-              let getExsRequest = new GetExsByTagsReq()
-              const that = this
-              getExsRequest.setTagsList(tags)
-              daemonclient.getExercisesByTags(getExsRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                this.error = err
-                let exercises  = response.getExercisesList()
-                exercises.forEach(function (element){
-                  let challengeInfo = {text: element.getName(), value: element.getTag()}
-                  that.enableChallenges.push(challengeInfo)
-                })
-              });
 
-              if (this.eventName == '' || this.eventTag == '') {
-                this.enableChallenges = []
-                this.disableChallenges = []
-                return
-              }else if (this.selectedChallenges.length == 0) {
-                this.enableChallenges = []
-                this.disableChallenges = []
-                return
-              }else if (this.eventAvailability == 0 && ( this.eventCapacity < 2 || this.eventCapacity == 0 || this.eventCapacity < this.eventAvailability)){
-                this.enableChallenges = []
-                this.disableChallenges = []
-                return
-              } else {
-                this.$refs.createEventCarousel.next()
-                return
-              }
-           },
-
+            },
             getFrontends: function () {
                 let getRequest = new Empty();
                 daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {

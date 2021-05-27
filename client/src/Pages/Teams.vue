@@ -48,6 +48,7 @@
                               <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team.id, true)">Suspend</button>
                               <button class="btn btn-warning btn-sm mr-1" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
                               <button class="btn btn-secondary btn-sm m-btn-responsive" v-on:click="openModal(team.id)">Update</button>
+                              <button class="btn btn-danger btn-sm m-btn-responsive" v-on:click="deleteTeam(team.id)">Delete</button>
                           </td>
                         </tr>
                     </tbody>
@@ -106,7 +107,8 @@
       ResetFrontendsRequest,
       Team,
       SetTeamSuspendRequest,
-      UpdateTeamPassRequest
+      UpdateTeamPassRequest,
+      DeleteTeamRequest,
     } from "daemon_pb"
 
     export default {
@@ -151,24 +153,62 @@
 
                 call.on('data', function(response) {
                     //this.status = response.getErrormessage();
+                    that.loader_msg = response.getStatus()
+                    that.loader_id = teamID
                     window.console.log(response)
                 });
                 call.on('end', function() {
-                    window.console.log("enddd")
+                  window.console.log("enddd")
+                  that.loaderIsActive=false
+                  that.listTeams()
                 });
                 call.on('error', function(e) {
                     that.error = e
                 });
-                call.on('status', function(status) {
+                call.on('status', function() {
                     that.loaderIsActive = false
-                    if (status['metadata']['grpc-message'] == "") {
-                        that.success = "Team Lab Successfully Restarted!"
-                        that.listEvent()
-                    }else{
-                        that.error = status['metadata']['grpc-message']
-                    }
+                  setTimeout(function(){
+                    that.loaderIsActive = false
+                    that.success = "Team [ " +teamID + " ] Lab Successfully Restarted!"
+                  }, 500);
                 });
             },
+           deleteTeam(teamId){
+             const that = this
+             this.loaderIsActive = true
+             const eventTag = this.$route.params.tag
+             let getRequest = new DeleteTeamRequest();
+             var x = confirm("Do you really want to delete " + teamId + " on event "+ this.$route.params.tag+ " ?");
+             if (x) {
+               getRequest.setEvtag(this.$route.params.tag)
+               getRequest.setTeamid(teamId)
+
+               const call = daemonclient.deleteTeam(getRequest, {Token: localStorage.getItem("user")});
+
+               call.on('data', function(response) {
+                 window.console.log(response.getMessage())
+                 that.loader_msg = response.getMessage()
+                 that.loader_id = teamId
+               });
+               call.on('end', function() {
+                 window.console.log("enddd")
+                 that.loaderIsActive=false
+                 that.listTeams()
+               });
+               call.on('error', function(e) {
+                 that.error = e
+               });
+               call.on('status', function() {
+                 that.loaderIsActive = false
+                 setTimeout(function(){
+                   that.loaderIsActive = false
+                   that.success = "Team [ " +teamId + " ] is deleted from event tag [ " + eventTag+  " ] !"
+                 }, 500);
+               });
+             }else{
+               that.loaderIsActive = false
+             }
+             },
             resetFrontend(teamID){
                 const that = this
                 this.loaderIsActive = true
