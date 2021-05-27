@@ -29,13 +29,16 @@
                   <b-col md="6">
                     <b-form-group
                         id="fieldset-eventName"
-                        label="Event Name"
+                        label="Event Name (Max: 20)"
                         label-for="eventName"
                     >
                       <b-form-input
                           id="eventName"
                           v-model="eventName"
+                          :state="nameState"
                           type="text"
+                          min="2"
+                          max="20"
                           required
                       ></b-form-input>
                     </b-form-group>
@@ -52,6 +55,7 @@
                       <b-form-input
                           id="eventTag"
                           v-model="eventTag"
+                          :state="tagState"
                           type="text"
                           required
                       ></b-form-input>
@@ -87,6 +91,7 @@
                       <b-form-input
                           id="eventAvailability"
                           v-model="eventAvailability"
+                          :state="availabilityState"
                           type="number"
                           min="1"
                           step="1"
@@ -107,6 +112,7 @@
                           id="eventCapacity"
                           v-model="eventCapacity"
                           type="number"
+                          :state="capacityState"
                           min="2"
                           step="1"
                           required
@@ -126,6 +132,7 @@
                         id="frontends"
                         v-model="selectedFrontends"
                         :options="frontends"
+                        :state="frontendState"
                         name="frontends"
                         class="ml-4"
                         aria-label="Individual flavours"
@@ -257,259 +264,342 @@
               </b-col>
             </b-row>
             <b-button variant="secondary" @click="$bvModal.hide('create-event-modal')">Close</b-button>
-            <b-button type="submit" class="btn-haaukins float-right" :disabled="!isDisabled">Create</b-button>
+            <b-button  class="btn-haaukins float-right" :disabled="!isDisabled" @click="getExsByTags(selectedChallenges)">Next</b-button>
+          </template>
+        </b-carousel-slide>
+
+        <b-carousel-slide class="carousel-height" >
+          <template slot="img" class="h-100 text-center ">
+            <div class="card" style="margin-bottom: 5px; ">
+              <h5 class="btn btn-warning">OPTIONAL</h5>
+              <div class="card-body">
+                <h5 class="card-title">Choose challenges to disable at event start</h5>
+                <p class="card-text">By default, Haaukins platform will run all challenges choosen in previous step. If you would like to enable manual start for specific challenges select them below. </p>
+                <b-input-group >
+                  <b-form-checkbox-group
+                      id="disableChallenge"
+                      v-model="disableChallenges"
+                      :options="enableChallenges"
+                      name="disableChallenge"
+                      style="column-count: 3;"
+                      class="ml-4"
+                      stacked
+                  ></b-form-checkbox-group>
+                </b-input-group>
+                <br>
+              </div>
+            </div>
+            <b-button variant="secondary" @click="$bvModal.hide('create-event-modal')">Close</b-button>
+            <b-button variant="warning ml-2" @click="handlePrev()">Prev</b-button>
+            <b-button type="submit" class="btn-haaukins float-right" :disabled="!isDisabled" @click="handleSubmit">Create</b-button>
           </template>
         </b-carousel-slide>
       </b-carousel>
-      </form>
+    </form>
   </b-modal>
 </template>
 
 <script>
-    import { Empty, CreateEventRequest } from "daemon_pb";
-    import { daemonclient } from "../App";
-    import Datepicker from "vuejs-datepicker"
+import { Empty, CreateEventRequest,GetExsByTagsReq } from "daemon_pb";
+import { daemonclient } from "../App";
+import Datepicker from "vuejs-datepicker"
 
-    export default {
-        name: "EventModal",
-        components: { Datepicker},
-        props: {
-            memoryProp: String
-        },
-        data: function () {
-            return {
-                error: null,
-                submitted: false,
-                eventName: '',
-                eventTag: '',
-                eventAvailability: 0,
-                eventCapacity: 0,
-                eventFinishTime: '', eventStartTime: Date.now(),
-                selectedChallenges: [],
-                selectAllChallenges: false,
-                frontends: [],
-                secretKey: '',
-                selectedFrontends: null,
-                challengesWE: [], challengesTextWE: [],
-                challengesB: [], challengesTextB: [],
-                challengesF: [], challengesTextF: [],
-                challengesRE: [], challengesTextRE: [],
-                challengesC: [], challengesTextC: [],
-                challengesS: [], challengesTextS: [],
-                cat: '', childrenChallenges: '', isDisabled: false,
-                disabledDates: {
-                    to: new Date(Date.now() - 8640000)
-                },
-                isVPNON: false,
-            }
-        },
-        mounted: function(){
-            this.getChallenges();
-            this.getFrontends();
-            this.handleButtons();
-        },
-        watch: {
-          eventCapacity: function () {
-            this.eventAvailability = Math.ceil(this.eventCapacity / 7)
-          },
-        },
-        methods: {
-            disabledDatesFinishTime: function() {
-                return {
-                    to: new Date(this.eventStartTime - 8640000)
-                }
-            },
-            handleButtons: function(){
-                if (this.memoryProp < 85) {
-                    this.isDisabled = true
-                }
-            },
-            toggleAllChallenges: function(checked) {
-                this.selectedChallenges = checked ? this.challengesWE
-                    .concat(this.challengesB)
-                    .concat(this.challengesF)
-                    .concat(this.challengesRE)
-                    .concat(this.challengesS)
-                    .concat(this.challengesC): []
-            },
-            encodeHTML: function(s) {
-                return s.replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;');
-            },
-            get_date: function (string_date){
-                const date = new Date(string_date);
-                let month = date.getMonth() + 1
-                if (month < 10) {
-                    month = "0" + month
-                }
-                const day = date.getDate().toString().length == 1 ? "0" + date.getDate() : date.getDate();
-                return date.getFullYear() + "-" + month + "-" + day + " 00:00:00"
-            },
-            handleSubmit() {
-                this.submitted = true;
-                if (!(this.eventName && this.eventTag)){
-                    return true;
-                }else if (this.selectedFrontends == null || this.selectedChallenges.length == 0) {
-                    return true;
-                }else if (this.eventCapacity == 0 || this.eventAvailability == 0 || this.eventFinishTime == ''){
-                    return true;
-                }else{
-                    this.eventName = this.encodeHTML(this.eventName);
-                    this.secretKey = this.encodeHTML(this.secretKey);
-                    this.eventTag = this.encodeHTML(this.eventTag.toLowerCase());
-                    this.eventFinishTime = this.get_date(this.eventFinishTime);
-                    this.eventStartTime = this.get_date(this.eventStartTime);
-                    return false
-                }
-            },
-            createEvent: function () {
-
-                if(this.handleSubmit()){
-                    return
-                }
-
-                let getRequest = new CreateEventRequest();
-                getRequest.setName(this.eventName);
-                getRequest.setSecretevent(this.secretKey);
-                getRequest.setTag(this.eventTag.toLowerCase());
-                getRequest.setAvailable(this.eventAvailability);
-                getRequest.setCapacity(this.eventCapacity);
-                getRequest.setFinishtime(this.eventFinishTime);
-                getRequest.setStarttime(this.eventStartTime.toString());
-                this.selectedChallenges.forEach(function(challenge) {
-                    getRequest.addExercises(challenge)
-                });
-
-                getRequest.addFrontends(this.selectedFrontends)
-                getRequest.setOnlyvpn(this.isVPNON)
-                this.$emit('createEvent', getRequest)
-
-            },
-            getChallenges: function () {
-                let getRequest = new Empty();
-                const that = this
-                daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    this.error = err;
-                    let exercisesListObj = response.getExercisesList();
-                    exercisesListObj.forEach(function (element) {
-                        let childrenChallengesObj = element.getExerciseinfoList();
-                        that.childrenChallenges = "   (";
-
-                        for (let i = 0; i < childrenChallengesObj.length; i++){
-                            that.cat = childrenChallengesObj[i].getCategory();
-                            that.childrenChallenges+= childrenChallengesObj[i].getName() + ", "
-                        }
-                        that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2)
-                        that.childrenChallenges+= ")";
-                        if (childrenChallengesObj.length == 1){
-                            that.childrenChallenges = '';
-                        }
-
-
-                        let taglist = element.getTagsList();
-                        let name = element.getName();
-                        let parentChallenge = { text: name + that.childrenChallenges, value: taglist[0] };
-                        switch (that.cat) {
-                            case "Web exploitation":
-                                that.challengesTextWE.push(parentChallenge);
-                                that.challengesWE.push(taglist[0]);
-                                break;
-                            case "Forensics":
-                                that.challengesTextF.push(parentChallenge);
-                                that.challengesF.push(taglist[0]);
-                                break;
-                            case "Binary":
-                                that.challengesTextB.push(parentChallenge);
-                                that.challengesB.push(taglist[0]);
-                                break;
-                            case "Cryptography":
-                                that.challengesTextC.push(parentChallenge);
-                                that.challengesC.push(taglist[0]);
-                                break;
-                            case "Reverse Engineering":
-                                that.challengesTextRE.push(parentChallenge);
-                                that.challengesRE.push(taglist[0]);
-                                break;
-                            case "Starters":
-                              that.challengesTextS.push(parentChallenge);
-                              that.challengesS.push(taglist[0])
-
-                        }
-
-                    })
-                });
-
-            },
-            getFrontends: function () {
-                let getRequest = new Empty();
-                daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    this.error = err;
-                    const that = this
-                    let frontendsListObj = response.getFrontendsList()
-                    frontendsListObj.forEach(function (element) {
-                        if (!element.getImage().includes("vulnerability")){
-                            that.frontends.push(element.getImage())
-                        }
-                    })
-                });
-
-            },
-            selectedVPNOption: function (isVPN) {
-              if (isVPN) {
-                this.frontends.push("VPN")
-              }
-              this.isVPNON = isVPN
-              this.$refs.createEventCarousel.next()
-            }
-        }
+export default {
+  name: "EventModal",
+  components: { Datepicker},
+  props: {
+    memoryProp: String
+  },
+  computed:{
+    nameState() {
+      return this.eventName.length > 20 || this.eventName.length < 2 ? false : true
+    },
+    availabilityState() {
+      return this.eventAvailability <= this.eventCapacity && this.eventCapacity >= 2 && this.eventAvailability <= 253 ? true : false
+    },
+    frontendState (){
+      return this.frontends.length <= 0  ? false : true
+    },
+    tagState (){
+      return this.eventTag == '' || this.eventTag.match(/^[a-zA-Z][A-Za-z0-9-]*[^-]$/g) == null || this.eventTag.length > 20 ? false : true
+    },
+    capacityState () {
+      return this.eventCapacity < this.eventAvailability || this.eventCapacity < 2  || this.eventCapacity > 253 || this.eventCapacity.toString().match(/^(?:(?:[1-9][0-9]*)|0)$/) == null ? false : true
     }
+  },
+  data: function () {
+    return {
+      error: null,
+      submitted: false,
+      eventName: '',
+      eventTag: '',
+      eventAvailability: 0,
+      eventCapacity: 0,
+      eventFinishTime: '', eventStartTime: Date.now(),
+      selectedChallenges: [],
+      enableChallenges: [],
+      disableChallenges: [],
+      selectAllChallenges: false,
+      frontends: [],
+      secretKey: '',
+      selectedFrontends: null,
+      challengesWE: [], challengesTextWE: [],
+      challengesB: [], challengesTextB: [],
+      challengesF: [], challengesTextF: [],
+      challengesRE: [], challengesTextRE: [],
+      challengesC: [], challengesTextC: [],
+      challengesS: [], challengesTextS: [],
+      cat: '', childrenChallenges: '', isDisabled: false,
+      disabledDates: {
+        to: new Date(Date.now() - 8640000)
+      },
+      isVPNON: false,
+    }
+  },
+  mounted: function(){
+    this.getChallenges();
+    this.getFrontends();
+    this.handleButtons();
+  },
+  watch: {
+    eventCapacity: function () {
+      this.eventAvailability = Math.ceil(this.eventCapacity / 7)
+      if (this.eventCapacity < 0) {
+        this.eventCapacity = 2
+      }
+    },
+  },
+  methods: {
+    disabledDatesFinishTime: function() {
+      return {
+        to: new Date(this.eventStartTime - 8640000)
+      }
+    },
+    handleButtons: function(){
+      if (this.memoryProp < 85) {
+        this.isDisabled = true
+      }
+    },
+    toggleAllChallenges: function(checked) {
+      this.selectedChallenges = checked ? this.challengesWE
+          .concat(this.challengesB)
+          .concat(this.challengesF)
+          .concat(this.challengesRE)
+          .concat(this.challengesS)
+          .concat(this.challengesC): []
+    },
+    encodeHTML: function(s) {
+      return s.replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+    },
+    get_date: function (string_date){
+      const date = new Date(string_date);
+      let month = date.getMonth() + 1
+      if (month < 10) {
+        month = "0" + month
+      }
+      const day = date.getDate().toString().length == 1 ? "0" + date.getDate() : date.getDate();
+      return date.getFullYear() + "-" + month + "-" + day + " 00:00:00"
+    },
+    handleSubmit() {
+      this.submitted = true;
+      if (!(this.eventName && this.eventTag)){
+        return true;
+      }else if (this.selectedFrontends == null || this.selectedChallenges.length == 0) {
+        return true;
+      }else if (this.eventCapacity == 0 || this.eventAvailability == 0 || this.eventFinishTime == ''){
+        return true;
+      }else{
+        this.eventName = this.encodeHTML(this.eventName);
+        this.secretKey = this.encodeHTML(this.secretKey);
+        this.eventTag = this.encodeHTML(this.eventTag.toLowerCase());
+        this.eventFinishTime = this.get_date(this.eventFinishTime);
+        this.eventStartTime = this.get_date(this.eventStartTime);
+        return false
+      }
+    },
+    createEvent: function () {
+
+      let getRequest = new CreateEventRequest();
+      getRequest.setName(this.eventName);
+      getRequest.setSecretevent(this.secretKey);
+      getRequest.setTag(this.eventTag.toLowerCase());
+      getRequest.setAvailable(this.eventAvailability);
+      getRequest.setCapacity(this.eventCapacity);
+      getRequest.setFinishtime(this.eventFinishTime);
+      getRequest.setStarttime(this.eventStartTime.toString());
+      this.selectedChallenges.forEach(function(challenge) {
+        getRequest.addExercises(challenge)
+      });
+      this.disableChallenges.forEach(function (challenge){
+        getRequest.addDisableexercises(challenge)
+      })
+      getRequest.addFrontends(this.selectedFrontends)
+      getRequest.setOnlyvpn(this.isVPNON)
+
+      this.$emit('createEvent', getRequest)
+
+    },
+    getChallenges: function () {
+      let getRequest = new Empty();
+      const that = this
+      daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+        this.error = err;
+        let exercisesListObj = response.getExercisesList();
+        exercisesListObj.forEach(function (element) {
+          let childrenChallengesObj = element.getExerciseinfoList();
+          that.childrenChallenges = "   (";
+
+          for (let i = 0; i < childrenChallengesObj.length; i++){
+            that.cat = childrenChallengesObj[i].getCategory();
+            that.childrenChallenges+= childrenChallengesObj[i].getName() + ", "
+          }
+          that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2)
+          that.childrenChallenges+= ")";
+          if (childrenChallengesObj.length == 1){
+            that.childrenChallenges = '';
+          }
+
+
+          let taglist = element.getTagsList();
+          let name = element.getName();
+          let parentChallenge = { text: name + that.childrenChallenges, value: taglist[0] };
+          switch (that.cat) {
+            case "Web exploitation":
+              that.challengesTextWE.push(parentChallenge);
+              that.challengesWE.push(taglist[0]);
+              break;
+            case "Forensics":
+              that.challengesTextF.push(parentChallenge);
+              that.challengesF.push(taglist[0]);
+              break;
+            case "Binary":
+              that.challengesTextB.push(parentChallenge);
+              that.challengesB.push(taglist[0]);
+              break;
+            case "Cryptography":
+              that.challengesTextC.push(parentChallenge);
+              that.challengesC.push(taglist[0]);
+              break;
+            case "Reverse Engineering":
+              that.challengesTextRE.push(parentChallenge);
+              that.challengesRE.push(taglist[0]);
+              break;
+            case "Starters":
+              that.challengesTextS.push(parentChallenge);
+              that.challengesS.push(taglist[0])
+
+          }
+
+        })
+      });
+    },
+    handlePrev : function () {
+      this.enableChallenges = []
+      this.disableChallenges = []
+      this.$refs.createEventCarousel.prev()
+    },
+    getExsByTags : function (tags) {
+      let getExsRequest = new GetExsByTagsReq()
+      const that = this
+      getExsRequest.setTagsList(tags)
+      daemonclient.getExercisesByTags(getExsRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+        this.error = err
+        let exercises  = response.getExercisesList()
+        exercises.forEach(function (element){
+          let challengeInfo = {text: element.getName(), value: element.getTag()}
+          that.enableChallenges.push(challengeInfo)
+        })
+      });
+
+      if (this.eventName == '' || this.eventTag == '') {
+        this.enableChallenges = []
+        this.disableChallenges = []
+        return
+      }else if (this.selectedChallenges.length == 0) {
+        this.enableChallenges = []
+        this.disableChallenges = []
+        return
+      }else if (this.eventAvailability == 0 && ( this.eventCapacity < 2 || this.eventCapacity == 0 || this.eventCapacity < this.eventAvailability)){
+        this.enableChallenges = []
+        this.disableChallenges = []
+        return
+      } else {
+        this.$refs.createEventCarousel.next()
+        return
+      }
+    },
+
+    getFrontends: function () {
+      let getRequest = new Empty();
+      daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+        this.error = err;
+        const that = this
+        let frontendsListObj = response.getFrontendsList()
+        frontendsListObj.forEach(function (element) {
+          if (!element.getImage().includes("vulnerability")){
+            that.frontends.push(element.getImage())
+          }
+        })
+      });
+
+    },
+    selectedVPNOption: function (isVPN) {
+      if (isVPN) {
+        this.frontends.push("VPN")
+      }
+      this.isVPNON = isVPN
+      this.$refs.createEventCarousel.next()
+    }
+  }
+}
 </script>
 
 <style scoped>
-    .carousel-height{
-      height: 650px;
-      width: 100%;
-    }
-    .selection-phase-div:hover{
-      background-color: #211a52!important;
-      color: #fff;
-      cursor: pointer;
-    }
-    .border-aau-color{
-      border-color: #211a52!important;
-    }
-    .bg-light-gray{
-      background-color: #ddd;
-    }
-    .challenges-field-modal {
-        height: 270px;
-        overflow-y: auto;
-    }
-    .frontends-field-modal{
-        border: 1px solid #ced4da;
-        border-radius: .35rem;
-    }
-    .my-is-invalid{
-        border: 2px solid rgba(220,53,69,0.9);
-        box-shadow: 1px 1px 2px rgba(220,53,69,0.7);
-    }
+.carousel-height{
+  height: 650px;
+  width: 100%;
+}
+.selection-phase-div:hover{
+  background-color: #211a52!important;
+  color: #fff;
+  cursor: pointer;
+}
+.border-aau-color{
+  border-color: #211a52!important;
+}
+.bg-light-gray{
+  background-color: #ddd;
+}
+.challenges-field-modal {
+  height: 270px;
+  overflow-y: auto;
+}
+.frontends-field-modal{
+  border: 1px solid #ced4da;
+  border-radius: .35rem;
+}
+.my-is-invalid{
+  border: 2px solid rgba(220,53,69,0.9);
+  box-shadow: 1px 1px 2px rgba(220,53,69,0.7);
+}
 
-    .myfrontends-field fieldset{
-        margin-bottom: 0px!important;
-    }
-    .vertical-center {
-        min-height: 127px;  /* Fallback for browsers do NOT support vh unit */
-        display: flex;
-        align-items: center;
-    }
-    .nav-link {
-        color: #211a52!important;
-    }
-    .nav-link.active{
-        color: #fff!important;
-        background-color: #211a52!important;
-        border-color: #211a52!important;
-    }
+.myfrontends-field fieldset{
+  margin-bottom: 0px!important;
+}
+.vertical-center {
+  min-height: 127px;  /* Fallback for browsers do NOT support vh unit */
+  display: flex;
+  align-items: center;
+}
+.nav-link {
+  color: #211a52!important;
+}
+.nav-link.active{
+  color: #fff!important;
+  background-color: #211a52!important;
+  border-color: #211a52!important;
+}
 </style>
