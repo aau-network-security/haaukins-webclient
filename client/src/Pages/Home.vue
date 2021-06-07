@@ -3,13 +3,14 @@
         <Navbar/>
         <div class="container" style="margin-top: 40px">
             <div class="row">
-              <div class="col-md-4 col-6">
-                <h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
+              <div class="col-md-4 col-6"><h3 class="float-left font-weight-bold text-gray-800 mb-1">Events List</h3>
+
               </div>
-              <div class="col-md-3 col-6">
-                <b-button id="show-btn" @click="showModal" class="btn-haaukins float-right">Create Event</b-button>
-              </div>
-              <div class="col-md-5 col-12 mt-1 mt-sm-0">
+              <div class="col">
+                <div class="btn-group">
+                  <button id="show-btn" @click="showModal" type="button" class="btn mr-2 btn-warning btn-secondary">Create Event</button>
+                  <button id="show-challenge-btn" @click="showChallengeModal" type="button" class="btn btn-haaukins  btn-secondary">Add Challenge</button>
+                </div>
                 <div class="dropdown">
                   <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownActionButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Actions
@@ -113,20 +114,25 @@
         </div>
         <Footer/>
         <EventModal @createEvent="createEvent" v-on:modalToHome="bookingValue" :memoryProp="this.memory"/>
-
+        <ChalModal @addChallenge="addChallenge" :events="this.events" />
     </div>
 </template>
 
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { ListEventsRequest, StopEventRequest, SuspendEventRequest, InviteUserRequest, Empty } from "daemon_pb";
+    import { ListEventsRequest,
+      StopEventRequest,
+      SuspendEventRequest,
+      InviteUserRequest,
+      Empty } from "daemon_pb";
     import { daemonclient } from "../App";
     import EventModal from "../components/EventModal";
+    import ChalModal from "../components/ChalModal";
 
     export default {
         name: "Home",
-        components: { EventModal, Footer, Navbar},
+        components: {ChalModal, EventModal, Footer, Navbar},
         data: function () {
             return {
                 //isInviteUserSuperUser: false,
@@ -179,6 +185,9 @@
                     j.className += "datepicker";
                 },100);
             },
+            showChallengeModal: function (){
+              this.$bvModal.show('add-challenge-modal')
+            },
             listEvent: function (status) {
                 let getRequest = new ListEventsRequest();
                 getRequest.setStatus(status)
@@ -193,6 +202,34 @@
                     }
                 });
             },
+
+           addChallenge: function (request) {
+             const that = this
+             that.loaderIsActive = true
+             that.loader_status = "Adding challenges to event ... "
+             this.$bvModal.hide('add-challenge-modal')
+             const call = daemonclient.addChallenge(request, {Token: localStorage.getItem("user")});
+             call.on('data', function (response) {
+               that.loader_status = response.getMessage()
+               // window.console.log(response)
+             });
+             call.on('error', function (error) {
+               that.loaderIsActive = false;
+               that.error = error
+               // window.console.log(error['message'])
+             });
+             call.on('end', function () {
+               that.loaderIsActive = false
+               if (that.error === null) {
+                  that.success = "Challenges are added to event successfully !"
+               }
+               window.console.log("enddd")
+             })
+             call.on('status', function () {
+               that.loaderIsActive = false;
+             });
+           },
+
             createEvent: function (request) {
                 const that = this
 
