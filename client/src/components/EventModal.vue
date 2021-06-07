@@ -271,7 +271,7 @@
         <b-carousel-slide class="carousel-height" >
           <template slot="img" class="h-100 text-center ">
             <div class="card" style="margin-bottom: 5px; ">
-              <h5 class="btn btn-warning">OPTIONAL</h5>
+              <h5 class="btn-warning">OPTIONAL</h5>
               <div class="card-body">
                 <h5 class="card-title">Choose challenges to disable at event start</h5>
                 <p class="card-text">By default, Haaukins platform will run all challenges choosen in previous step. If you would like to enable manual start for specific challenges select them below. </p>
