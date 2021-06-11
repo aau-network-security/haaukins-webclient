@@ -1322,6 +1322,80 @@ proto.daemon.DaemonPromiseClient.prototype.addChallenge =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.AddNotificationRequest,
+ *   !proto.daemon.AddNotificationResponse>}
+ */
+const methodDescriptor_Daemon_AddNotification = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/AddNotification',
+  grpc.web.MethodType.UNARY,
+  proto.daemon.AddNotificationRequest,
+  proto.daemon.AddNotificationResponse,
+  /** @param {!proto.daemon.AddNotificationRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.AddNotificationResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.AddNotificationRequest,
+ *   !proto.daemon.AddNotificationResponse>}
+ */
+const methodInfo_Daemon_AddNotification = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.AddNotificationResponse,
+  /** @param {!proto.daemon.AddNotificationRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.AddNotificationResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.AddNotificationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.daemon.AddNotificationResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.AddNotificationResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.addNotification =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/daemon.Daemon/AddNotification',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_AddNotification,
+      callback);
+};
+
+
+/**
+ * @param {!proto.daemon.AddNotificationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.daemon.AddNotificationResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.daemon.DaemonPromiseClient.prototype.addNotification =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/daemon.Daemon/AddNotification',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_AddNotification);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
  *   !proto.daemon.DeleteTeamRequest,
  *   !proto.daemon.DeleteTeamResponse>}
  */
