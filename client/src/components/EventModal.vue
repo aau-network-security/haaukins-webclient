@@ -186,22 +186,54 @@
                             <b-form-checkbox-group
                                 id="challengesS"
                                 v-model="selectedChallenges"
-                                :options="challengesTextS"
                                 name="challengesS"
                                 class="ml-4"
                                 stacked
-                            ></b-form-checkbox-group>
+                            >
+                              {{ selectedChallenges }}
+                              <div
+                                v-for="text in challengesTextS"
+                                :key="text"
+                              >
+                                <div @click="showTooltip()"  class="inline-icon"><b-icon icon="info-circle"></b-icon></div>
+                                <b-form-checkbox
+                                  :value="text.value"
+                                >
+                                  {{ text.text }}
+                                </b-form-checkbox>
+                                <div class="chalInfo">This is some challenge info
+                                  <ul>
+                                    <li>1</li>
+                                    <li>1</li>
+                                    <li>1</li>
+                                    <li>1</li>
+                                    <li>1</li>
+                                    <li>1</li>
+                                    <li>1</li>
+                                    <li>1</li>
+                                    <li>1</li>
+                                  </ul>
+                                </div>
+                              </div>
+
+                            </b-form-checkbox-group>
                           </div>
 
                           <div class="tab-pane fade" id="web-exploit" role="tabpanel" aria-labelledby="web-exploit-tab">
                             <b-form-checkbox-group
                                 id="challengesWE"
                                 v-model="selectedChallenges"
-                                :options="challengesTextWE"
                                 name="challengesWE"
                                 class="ml-4"
                                 stacked
-                            ></b-form-checkbox-group>
+                            >
+                              {{ selectedChallenges }}
+                              <b-form-checkbox
+                                  v-for="text in challengesTextWE"
+                                  :key="text"
+                                  :value="text.value"
+                              >{{ text.text }}</b-form-checkbox>
+                            </b-form-checkbox-group>
                           </div>
 
                           <div class="tab-pane fade" id="forensics" role="tabpanel" aria-labelledby="forensics-tab">
@@ -370,6 +402,9 @@ export default {
     },
   },
   methods: {
+    showTooltip: function() {
+      window.console.log("Showed tooltip")
+    },
     disabledDatesFinishTime: function() {
       return {
         to: new Date(this.eventStartTime - 8640000)
@@ -602,4 +637,36 @@ export default {
   background-color: #211a52!important;
   border-color: #211a52!important;
 }
+
+.inline-icon {
+  position: static;
+  transform: translate(0px, 50px);
+  z-index: 99999;
+}
+.chalInfo{
+  background-color: white;
+  position: static;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  border-color: blue;
+  border-style: solid;
+  border-width: 3px;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  transition: all .5s ease-in-out;
+  visibility: hidden;
+}
+.chalInfo.visible {
+  width: 500px;
+  height: 200px;
+  /*transform-origin: top-center;*/
+  transition: all .5s ease-in-out;
+  overflow-y: scroll;
+  visibility: visible;
+}
+
 </style>
