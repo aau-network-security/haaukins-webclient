@@ -192,9 +192,9 @@
                             >
                               <!--{{ selectedChallenges }}  Used for debugging-->
                               <div
-                                v-for="text in challengesTextS"
-                                :key="text"
-                                class="challenge-container"
+                                  v-for="text in challengesTextS"
+                                  :key="text"
+                                  class="challenge-container"
                               >
                                 <div class="checkbox-container">
                                   <b-form-checkbox
@@ -204,9 +204,9 @@
                                   </b-form-checkbox>
                                   <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
                                 </div>
-                                  <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}">
-                                    {{ text.text }} <!-- This is just dummy data for now-->
-                                  </div>
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
+                                </div>
                               </div>
 
                             </b-form-checkbox-group>
@@ -234,8 +234,8 @@
                                   </b-form-checkbox>
                                   <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}">
-                                  {{ text.text }} <!-- This is just dummy data for now-->
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
                                 </div>
                               </div>
                             </b-form-checkbox-group>
@@ -263,8 +263,8 @@
                                   </b-form-checkbox>
                                   <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}">
-                                  {{ text.text }} <!-- This is just dummy data for now-->
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
                                 </div>
                               </div>
                             </b-form-checkbox-group>
@@ -292,8 +292,8 @@
                                   </b-form-checkbox>
                                   <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}">
-                                  {{ text.text }} <!-- This is just dummy data for now-->
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
                                 </div>
                               </div>
                             </b-form-checkbox-group>
@@ -320,8 +320,8 @@
                                   </b-form-checkbox>
                                   <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}">
-                                  {{ text.text }} <!-- This is just dummy data for now-->
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
                                 </div>
                               </div>
                             </b-form-checkbox-group>
@@ -348,8 +348,8 @@
                                   </b-form-checkbox>
                                   <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}">
-                                  {{ text.text }} <!-- This is just dummy data for now-->
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
                                 </div>
                               </div>
                             </b-form-checkbox-group>
@@ -574,7 +574,8 @@ export default {
 
           let taglist = element.getTagsList();
           let name = element.getName();
-          let parentChallenge = { text: name + that.childrenChallenges, value: taglist[0], isInfoShown: false };
+          let orgDesc = element.getOrgdescription()
+          let parentChallenge = { text: name + that.childrenChallenges, value: taglist[0], orgDesc: orgDesc, isInfoShown: false };
           switch (that.cat) {
             case "Web exploitation":
               that.challengesTextWE.push(parentChallenge);
