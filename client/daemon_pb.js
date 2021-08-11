@@ -8182,7 +8182,8 @@ proto.daemon.ListExercisesResponse.Exercise.toObject = function(includeInstance,
     vboximagecount: jspb.Message.getFieldWithDefault(msg, 4, 0),
     secret: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
     exerciseinfoList: jspb.Message.toObjectList(msg.getExerciseinfoList(),
-    proto.daemon.ListExercisesResponse.Exercise.ExerciseInfo.toObject, includeInstance)
+    proto.daemon.ListExercisesResponse.Exercise.ExerciseInfo.toObject, includeInstance),
+    orgdescription: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
   if (includeInstance) {
@@ -8243,6 +8244,10 @@ proto.daemon.ListExercisesResponse.Exercise.deserializeBinaryFromReader = functi
       var value = new proto.daemon.ListExercisesResponse.Exercise.ExerciseInfo;
       reader.readMessage(value,proto.daemon.ListExercisesResponse.Exercise.ExerciseInfo.deserializeBinaryFromReader);
       msg.addExerciseinfo(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setOrgdescription(value);
       break;
     default:
       reader.skipField();
@@ -8314,6 +8319,13 @@ proto.daemon.ListExercisesResponse.Exercise.serializeBinaryToWriter = function(m
       5,
       f,
       proto.daemon.ListExercisesResponse.Exercise.ExerciseInfo.serializeBinaryToWriter
+    );
+  }
+  f = message.getOrgdescription();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
+      f
     );
   }
 };
@@ -8713,6 +8725,24 @@ proto.daemon.ListExercisesResponse.Exercise.prototype.addExerciseinfo = function
  */
 proto.daemon.ListExercisesResponse.Exercise.prototype.clearExerciseinfoList = function() {
   return this.setExerciseinfoList([]);
+};
+
+
+/**
+ * optional string orgdescription = 7;
+ * @return {string}
+ */
+proto.daemon.ListExercisesResponse.Exercise.prototype.getOrgdescription = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.daemon.ListExercisesResponse.Exercise} returns this
+ */
+proto.daemon.ListExercisesResponse.Exercise.prototype.setOrgdescription = function(value) {
+  return jspb.Message.setProto3StringField(this, 7, value);
 };
 
 

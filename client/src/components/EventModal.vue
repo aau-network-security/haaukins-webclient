@@ -186,64 +186,173 @@
                             <b-form-checkbox-group
                                 id="challengesS"
                                 v-model="selectedChallenges"
-                                :options="challengesTextS"
                                 name="challengesS"
                                 class="ml-4"
                                 stacked
-                            ></b-form-checkbox-group>
+                            >
+                              <!--{{ selectedChallenges }}  Used for debugging-->
+                              <div
+                                  v-for="text in challengesTextS"
+                                  :key="text"
+                                  class="challenge-container"
+                              >
+                                <div class="checkbox-container">
+                                  <b-form-checkbox
+                                      :value="text.value"
+                                  >
+                                    {{ text.text }}
+                                  </b-form-checkbox>
+                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                </div>
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
+                                </div>
+                              </div>
+
+                            </b-form-checkbox-group>
                           </div>
 
                           <div class="tab-pane fade" id="web-exploit" role="tabpanel" aria-labelledby="web-exploit-tab">
                             <b-form-checkbox-group
                                 id="challengesWE"
                                 v-model="selectedChallenges"
-                                :options="challengesTextWE"
                                 name="challengesWE"
                                 class="ml-4"
                                 stacked
-                            ></b-form-checkbox-group>
+                            >
+                              <!--{{ selectedChallenges }}  Used for debugging-->
+                              <div
+                                  v-for="text in challengesTextWE"
+                                  :key="text"
+                                  class="challenge-container"
+                              >
+                                <div class="checkbox-container">
+                                  <b-form-checkbox
+                                      :value="text.value"
+                                  >
+                                    {{ text.text }}
+                                  </b-form-checkbox>
+                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                </div>
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
+                                </div>
+                              </div>
+                            </b-form-checkbox-group>
                           </div>
 
                           <div class="tab-pane fade" id="forensics" role="tabpanel" aria-labelledby="forensics-tab">
                             <b-form-checkbox-group
                                 id="challengesF"
                                 v-model="selectedChallenges"
-                                :options="challengesTextF"
                                 name="challengesF"
                                 class="ml-4"
                                 stacked
-                            ></b-form-checkbox-group>
+                            >
+                              <!--{{ selectedChallenges }}  Used for debugging-->
+                              <div
+                                  v-for="text in challengesTextF"
+                                  :key="text"
+                                  class="challenge-container"
+                              >
+                                <div class="checkbox-container">
+                                  <b-form-checkbox
+                                      :value="text.value"
+                                  >
+                                    {{ text.text }}
+                                  </b-form-checkbox>
+                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                </div>
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
+                                </div>
+                              </div>
+                            </b-form-checkbox-group>
                           </div>
 
                           <div class="tab-pane fade" id="binary" role="tabpanel" aria-labelledby="binary-tab">
                             <b-form-checkbox-group
                                 id="challengesB"
                                 v-model="selectedChallenges"
-                                :options="challengesTextB"
-                                name="challengesWE"
+                                name="challengesB"
                                 class="ml-4"
                                 stacked
-                            ></b-form-checkbox-group>
+                            >
+                              <!--{{ selectedChallenges }}  Used for debugging-->
+                              <div
+                                  v-for="text in challengesTextB"
+                                  :key="text"
+                                  class="challenge-container"
+                              >
+                                <div class="checkbox-container">
+                                  <b-form-checkbox
+                                      :value="text.value"
+                                  >
+                                    {{ text.text }}
+                                  </b-form-checkbox>
+                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                </div>
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
+                                </div>
+                              </div>
+                            </b-form-checkbox-group>
                           </div>
                           <div class="tab-pane fade" id="reverse-eng" role="tabpanel" aria-labelledby="reverse-eng-tab">
                             <b-form-checkbox-group
                                 id="challengesRE"
                                 v-model="selectedChallenges"
-                                :options="challengesTextRE"
                                 name="challengesRE"
                                 class="ml-4"
                                 stacked
-                            ></b-form-checkbox-group>
+                            >
+                              <!--{{ selectedChallenges }}  Used for debugging-->
+                              <div
+                                  v-for="text in challengesTextRE"
+                                  :key="text"
+                                  class="challenge-container"
+                              >
+                                <div class="checkbox-container">
+                                  <b-form-checkbox
+                                      :value="text.value"
+                                  >
+                                    {{ text.text }}
+                                  </b-form-checkbox>
+                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                </div>
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
+                                </div>
+                              </div>
+                            </b-form-checkbox-group>
                           </div>
                           <div class="tab-pane fade" id="cryptography" role="tabpanel" aria-labelledby="cryptography-tab">
                             <b-form-checkbox-group
                                 id="challengesC"
                                 v-model="selectedChallenges"
-                                :options="challengesTextC"
                                 name="challengesC"
                                 class="ml-4"
                                 stacked
-                            ></b-form-checkbox-group>
+                            >
+                              <!--{{ selectedChallenges }}  Used for debugging-->
+                              <div
+                                  v-for="text in challengesTextC"
+                                  :key="text"
+                                  class="challenge-container"
+                              >
+                                <div class="checkbox-container">
+                                  <b-form-checkbox
+                                      :value="text.value"
+                                  >
+                                    {{ text.text }}
+                                  </b-form-checkbox>
+                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                </div>
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
+                                </div>
+                              </div>
+                            </b-form-checkbox-group>
                           </div>
                         </div>
                       </div>
@@ -465,7 +574,8 @@ export default {
 
           let taglist = element.getTagsList();
           let name = element.getName();
-          let parentChallenge = { text: name + that.childrenChallenges, value: taglist[0] };
+          let orgDesc = element.getOrgdescription()
+          let parentChallenge = { text: name + that.childrenChallenges, value: taglist[0], orgDesc: orgDesc, isInfoShown: false };
           switch (that.cat) {
             case "Web exploitation":
               that.challengesTextWE.push(parentChallenge);
@@ -602,4 +712,65 @@ export default {
   background-color: #211a52!important;
   border-color: #211a52!important;
 }
+
+.info-icon {
+  position: relative;
+  top: 1px;
+  left: -515px;
+  width: 16px;
+  padding: 0px;
+  margin: 0px;
+  z-index: 99999;
+}
+.chalInfo{
+  background-color: #221d52;
+  color: #ffffff;
+  position: relative;
+  margin: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 500px;
+  max-height: 0;
+  overflow: hidden;
+  transition: all .5s ease-in-out;
+  visibility: hidden;
+}
+.chalInfo.visible {
+  max-height: 200px;
+  /*transform-origin: top-center;*/
+  transition: all .5s ease-in-out;
+  padding: 10px;
+  overflow-y: auto;
+  box-shadow: 5px 5px 5px rgba(73, 80, 87, 0.83);
+  visibility: visible;
+}
+
+.checkbox-container {
+  display: flex;
+}
+
+.custom-control{
+  width: 100%;
+}
+
+.chalInfo::-webkit-scrollbar {
+  background-color: #221d52;
+  width: 5px;
+}
+
+.chalInfo::-webkit-scrollbar-track {
+  background-color: #221d52;
+}
+
+/* scrollbar itself */
+.chalInfo::-webkit-scrollbar-thumb {
+  background-color: #babac0;
+  border-radius: 16px;
+}
+
+/* set button(top and bottom of the scrollbar) */
+.chalInfo::-webkit-scrollbar-button {
+  display:none;
+}
+
 </style>
