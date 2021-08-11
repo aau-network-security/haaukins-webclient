@@ -1,5 +1,6 @@
 syntax = "proto3";
 package daemon;
+option go_package = "github.com/aau-network-security/haaukins/daemon/proto";
 service Daemon {
     rpc LoginUser (LoginUserRequest) returns (LoginUserResponse) {}
     rpc SignupUser (SignupUserRequest) returns (LoginUserResponse) {}
@@ -257,6 +258,7 @@ message ListExercisesResponse {
         int32 vboxImageCount = 4;
         bool secret = 6;
         repeated ExerciseInfo exerciseinfo = 5;
+        string orgdescription = 7;
     }
     repeated Exercise exercises = 1;
 }
