@@ -173,6 +173,7 @@
                       <div class="col-3">
                         <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
                           <a class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
+                          <a class="nav-link" id="cyber-championships-tab" data-toggle="pill" href="#cyber-championship" role="tab" aria-controls="cyber-championship" aria-selected="false">Cyber Champ.</a>
                           <a class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web Exploit.</a>
                           <a class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
                           <a class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
@@ -193,6 +194,36 @@
                               <!--{{ selectedChallenges }}  Used for debugging-->
                               <div
                                   v-for="text in challengesTextS"
+                                  :key="text"
+                                  class="challenge-container"
+                              >
+                                <div class="checkbox-container">
+                                  <b-form-checkbox
+                                      :value="text.value"
+                                  >
+                                    {{ text.text }}
+                                  </b-form-checkbox>
+                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                </div>
+                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
+                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
+                                </div>
+                              </div>
+
+                            </b-form-checkbox-group>
+                          </div>
+
+                          <div class="tab-pane fade active show" id="cyber-championship" role="tabpanel" aria-labelledby="cyber-championship">
+                            <b-form-checkbox-group
+                                id="challengesCS"
+                                v-model="selectedChallenges"
+                                name="challengesCS"
+                                class="ml-4"
+                                stacked
+                            >
+                              <!--{{ selectedChallenges }}  Used for debugging-->
+                              <div
+                                  v-for="text in challengesTextCS"
                                   :key="text"
                                   class="challenge-container"
                               >
@@ -458,6 +489,7 @@ export default {
       challengesRE: [], challengesTextRE: [],
       challengesC: [], challengesTextC: [],
       challengesS: [], challengesTextS: [],
+      challengesCS: [], challengesTextCS:[],
       cat: '', childrenChallenges: '', isDisabled: false,
       disabledDates: {
         to: new Date(Date.now() - 8640000)
@@ -495,6 +527,7 @@ export default {
           .concat(this.challengesF)
           .concat(this.challengesRE)
           .concat(this.challengesS)
+          .concat(this.challengesCS)
           .concat(this.challengesC): []
     },
     encodeHTML: function(s) {
@@ -600,7 +633,10 @@ export default {
             case "Starters":
               that.challengesTextS.push(parentChallenge);
               that.challengesS.push(taglist[0])
-
+              break;
+            case "Cybermesterskaberne":
+              that.challengesTextCS.push(parentChallenge);
+              that.challengesCS.push(taglist[0])
           }
 
         })
