@@ -213,7 +213,7 @@
                             </b-form-checkbox-group>
                           </div>
 
-                          <div class="tab-pane fade active show" id="cyber-championship" role="tabpanel" aria-labelledby="cyber-championship">
+                          <div class="tab-pane fade" id="cyber-championship" role="tabpanel" aria-labelledby="cyber-championship">
                             <b-form-checkbox-group
                                 id="challengesCS"
                                 v-model="selectedChallenges"
@@ -632,11 +632,12 @@ export default {
               break;
             case "Starters":
               that.challengesTextS.push(parentChallenge);
-              that.challengesS.push(taglist[0])
+              that.challengesS.push(taglist[0]);
               break;
             case "Cybermesterskaberne":
               that.challengesTextCS.push(parentChallenge);
-              that.challengesCS.push(taglist[0])
+              that.challengesCS.push(taglist[0]);
+              break;
           }
 
         })
