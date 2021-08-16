@@ -175,13 +175,13 @@
                       <div class="row">
                         <div class="col-4 customscroll" style="height: 240px; overflow-y: auto;">
                           <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
-                            <a v-on:click="showCatDescription(0)" class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
-                            <a v-on:click="showCatDescription(1)" class="nav-link" id="cyber-championships-tab" data-toggle="pill" href="#cyber-championship" role="tab" aria-controls="cyber-championship" aria-selected="false">Cyber Champ.</a>
-                            <a v-on:click="showCatDescription(2)" class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web Exploit.</a>
-                            <a v-on:click="showCatDescription(3)" class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
-                            <a v-on:click="showCatDescription(4)" class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
-                            <a v-on:click="showCatDescription(5)" class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse Eng.</a>
-                            <a v-on:click="showCatDescription(6)" class="nav-link" id="cryptography-tab" data-toggle="pill" href="#cryptography" role="tab" aria-controls="cryptography" aria-selected="false">Cryptography</a>
+                            <a v-on:click="showCatDescription('ST')" class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
+                            <a v-on:click="showCatDescription('CY')" class="nav-link" id="cyber-championships-tab" data-toggle="pill" href="#cyber-championship" role="tab" aria-controls="cyber-championship" aria-selected="false">Cyber Champ.</a>
+                            <a v-on:click="showCatDescription('WE')" class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web Exploit.</a>
+                            <a v-on:click="showCatDescription('FR')" class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
+                            <a v-on:click="showCatDescription('BN')" class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
+                            <a v-on:click="showCatDescription('RE')" class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse Eng.</a>
+                            <a v-on:click="showCatDescription('CRY')" class="nav-link" id="cryptography-tab" data-toggle="pill" href="#cryptography" role="tab" aria-controls="cryptography" aria-selected="false">Cryptography</a>
                           </div>
                         </div>
                         <div class="col-8 customscroll" style="height: 240px; overflow-y: auto;">
@@ -386,63 +386,12 @@
                 </b-col>
               </b-col>
               <b-col md="5">
-                <div class="description-container"><!-- v-html="challengesTextB[0].orgDesc" -->
-                  <div class="chalInfo customscroll fade" v-bind:class="{ visible: sShow, show: sShow}">
-                    <h3>The Starters Category</h3>
-                    <p>
-                      The Starters category holds all the exercises that are great for beginners to take on.<br>
-                      When holding an event for a beginner crowd, it is always a good idea to have at least one of these exercises present in the CTF.
-                    </p>
-                  </div>
-                  <div class="chalInfo customscroll fade" v-bind:class="{ visible: csShow, show: csShow}">
-                    <h3>The Cyber Championship Category</h3>
-                    <p>
-                      The Danish Cyber Championships are quite popular. Therefore we have added this category
-                      in order for people who might not have made the cut for the
-                      Regionals, Nationals and Bootcamp, to try out the challenges anyways.<br>
-                      The challenges will be named with their year and championship round respectively
-                    </p>
-                  </div>
-                  <div class="chalInfo customscroll fade" v-bind:class="{ visible: weShow, show: weShow }">
-                    <h3>The Web Exploitation Category</h3>
-                    <p>
-                      The Web Exploitation category holds all the exercises where the user
-                      has to use well known techniques such as Cross-site scripting, SQL injection, Cross-site request forgery and etc.
-                      to compromise the services that are available in these exercises.
-                    </p>
-                  </div>
-                  <div class="chalInfo customscroll fade" v-bind:class="{ visible: fShow, show: fShow}">
-                    <h3>The Forensics Category</h3>
-                    <p>
-                      Forensics typically covers a key point within pentesting, namely enumeration.
-                      Enumeration is all about finding information which could be useful for you to
-                      breach the security of a system. Some key elements are typically network scanning, network sniffing and dirbusting.
-                    </p>
-                  </div>
-                  <div class="chalInfo customscroll fade" v-bind:class="{ visible: bShow, show: bShow}">
-                    <h3>The Binary Category</h3>
-                    <p>
-                      Most binary challenges are typically pretty hardcore.
-                      An exercise usually consists of some vulnerable binary(Runnable program) which
-                      can be exploited in some way to get unauthorized access to a system.
-                    </p>
-                  </div>
-                  <div class="chalInfo customscroll fade" v-bind:class="{ visible: reShow, show: reShow}">
-                    <h3>The Reverse Engineering Category</h3>
-                    <p>
-                      Reverse engineering is all about disassembling software, in order to maybe find and exploit vulnerabilities
-                      or bypass authentication programs, by making that program think you have entered the correct password.
-                      You might also want to reverse a program in order to figure out how for an example some communication protocol works
-                      to gather a clear text message from bogus binary data. This category is usually also pretty tough.
-                    </p>
-                  </div>
-                  <div class="chalInfo customscroll fade" v-bind:class="{ visible: cShow, show: cShow}">
-                    <h3>The Cryptography Category</h3>
-                    <p>
-                      The Cryptography category is all the exercises that has to do with some kind of crypto in some form.
-                      Ex. cracking hashes, reversing or breaking bad crypto algorithms etc.<br>
-                      The difficulty varies quite a lot depending on the exercise.
-                    </p>
+                <div class="description-container">
+                  <div
+                      v-for="cat in categories"
+                      :key="cat"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: cat.isInfoShown, show: cat.isInfoShown }" v-html="cat.catDesc"></div>
                   </div>
                   <div
                       v-for="chal in challengesTextS"
@@ -569,13 +518,14 @@ export default {
       frontends: [],
       secretKey: '',
       selectedFrontends: null,
-      challengesWE: [], challengesTextWE: [], weShow: false,
-      challengesB: [], challengesTextB: [], bShow: false,
-      challengesF: [], challengesTextF: [], fShow: false,
-      challengesRE: [], challengesTextRE: [], reShow: false,
-      challengesC: [], challengesTextC: [], cShow: false,
-      challengesS: [], challengesTextS: [], sShow: true,
-      challengesCS: [], challengesTextCS:[], csShow: false,
+      categories: [],
+      challengesWE: [], challengesTextWE: [],
+      challengesB: [], challengesTextB: [],
+      challengesF: [], challengesTextF: [],
+      challengesRE: [], challengesTextRE: [],
+      challengesC: [], challengesTextC: [],
+      challengesS: [], challengesTextS: [],
+      challengesCS: [], challengesTextCS:[],
       cat: '', childrenChallenges: '', isDisabled: false,
       disabledDates: {
         to: new Date(Date.now() - 8640000)
@@ -586,6 +536,7 @@ export default {
   mounted: function(){
     this.getChallenges();
     this.getFrontends();
+    this.getCategories();
     this.handleButtons();
   },
   watch: {
@@ -597,40 +548,19 @@ export default {
     },
   },
   methods: {
-    showCatDescription: function(category) {
+    showCatDescription: function(cat) {
       // Emptying/resetting the description field
       this.showOrgDescription(null)
-      this.sShow = false
-      this.csShow = false
-      this.weShow = false
-      this.fShow = false
-      this.bShow = false
-      this.reShow = false
-      this.cShow = false
+      this.categories.forEach(function(category){
+        category.isInfoShown = false
+      })
+
       // Enable the corrosponding category description
-      switch (category) {
-        case 0:
-          this.sShow = true
-          break;
-        case 1:
-          this.csShow = true
-          break;
-        case 2:
-          this.weShow = true
-          break;
-        case 3:
-          this.fShow = true
-          break;
-        case 4:
-          this.bShow = true
-          break;
-        case 5:
-          this.reShow = true
-          break;
-        case 6:
-          this.cShow = true
-          break;
-      }
+      this.categories.forEach(function(category){
+        if (category.tag == cat) {
+          category.isInfoShown = true
+        }
+      })
     },
     showOrgDescription: function(challenge) {
       // Emptying/resetting the description field
@@ -655,13 +585,9 @@ export default {
       this.challengesTextC.forEach(function(chal){
         chal.isInfoShown = false
       })
-      this.sShow = false
-      this.csShow = false
-      this.weShow = false
-      this.fShow = false
-      this.bShow = false
-      this.reShow = false
-      this.cShow = false
+      this.categories.forEach(function (category){
+        category.isInfoShown = false
+      })
       // Showing the corrosponding organizer description or
       // hiding all of them if called from showCatDescription
       if (challenge == null) {
@@ -742,6 +668,27 @@ export default {
 
       this.$emit('createEvent', getRequest)
 
+    },
+    getCategories: function(){
+      let getRequest = new Empty();
+      const that = this
+      daemonclient.listCategories(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+        let categoryListObj = response.getCategoriesList();
+        categoryListObj.forEach(function (element){
+          let tag = element.getTag()
+          let name = element.getName()
+          let description = element.getCatdescription()
+          let category = {tag: tag, name: name, catDesc: description, isInfoShown: false}
+          if (tag == "ST") {
+            category.isInfoShown = true
+            that.categories.push(category)
+          } else
+          {
+            that.categories.push(category)
+          }
+
+        })
+      })
     },
     getChallenges: function () {
       let getRequest = new Empty();
