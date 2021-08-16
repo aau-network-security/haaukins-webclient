@@ -1,5 +1,5 @@
 <template>
-  <b-modal ref="modal" id="create-event-modal" size="lg" centered hide-footer>
+  <b-modal ref="modal" id="create-event-modal" size="xl" centered hide-footer>
     <template v-slot:modal-title>Create a new Event</template>
     <form ref="form" @submit.stop.prevent="createEvent()">
       <b-carousel ref="createEventCarousel" :interval=0>
@@ -24,383 +24,418 @@
         <b-carousel-slide class="carousel-height">
           <template slot="img" class="h-100">
             <b-row>
-              <b-col lg="7">
+              <b-col md="7">
                 <b-row>
-                  <b-col md="6">
-                    <b-form-group
-                        id="fieldset-eventName"
-                        label="Event Name (Max: 20)"
-                        label-for="eventName"
-                    >
-                      <b-form-input
-                          id="eventName"
-                          v-model="eventName"
-                          :state="nameState"
-                          type="text"
-                          min="2"
-                          max="20"
-                          required
-                      ></b-form-input>
-                    </b-form-group>
-                    <b-tooltip target="fieldset-eventName" triggers="hover">
-                      The event Name showed in the Home page
-                    </b-tooltip>
+                  <b-col lg="7">
+                    <b-row>
+                      <b-col md="6">
+                        <b-form-group
+                            id="fieldset-eventName"
+                            label="Event Name (Max: 20)"
+                            label-for="eventName"
+                        >
+                          <b-form-input
+                              id="eventName"
+                              v-model="eventName"
+                              :state="nameState"
+                              type="text"
+                              min="2"
+                              max="20"
+                              required
+                          ></b-form-input>
+                        </b-form-group>
+                        <b-tooltip target="fieldset-eventName" triggers="hover">
+                          The event Name showed in the Home page
+                        </b-tooltip>
+                      </b-col>
+                      <b-col md="6">
+                        <b-form-group
+                            id="fieldset-eventTag"
+                            label="Event Tag"
+                            label-for="eventTag"
+                        >
+                          <b-form-input
+                              id="eventTag"
+                              v-model="eventTag"
+                              :state="tagState"
+                              type="text"
+                              required
+                          ></b-form-input>
+                        </b-form-group>
+                        <b-tooltip target="fieldset-eventTag" triggers="hover">
+                          Sub domain in which the event will be available
+                        </b-tooltip>
+                      </b-col>
+                      <b-col md="6">
+                        <div class="form-group">
+                          <label for="eventStartTime">Expected Start Date</label>
+                          <datepicker v-model="eventStartTime" placeholder="Select Start Date" id="eventStartTime" :disabledDates="disabledDates"></datepicker>
+                          <b-tooltip target="eventStartTime" triggers="hover">
+                            Date in which the Event should be available online
+                          </b-tooltip>
+                        </div>
+                      </b-col>
+                      <b-col md="6">
+                        <div class="form-group">
+                          <label for="eventFinishTime">Expected Finish Date</label>
+                          <datepicker v-model="eventFinishTime" placeholder="Select Finish Date" id="eventFinishTime" :disabledDates="disabledDatesFinishTime()" :class="{ 'my-is-invalid': submitted && this.eventFinishTime == '' }"></datepicker>
+                          <b-tooltip target="eventFinishTime" triggers="hover">
+                            Date in which the Event is supposed to finish
+                          </b-tooltip>
+                        </div>
+                      </b-col>
+                      <b-col md="6">
+                        <b-form-group
+                            id="fieldset-eventAvailability"
+                            label="Event Availability"
+                            label-for="eventAvailability"
+                        >
+                          <b-form-input
+                              id="eventAvailability"
+                              v-model="eventAvailability"
+                              :state="availabilityState"
+                              type="number"
+                              min="1"
+                              step="1"
+                              required
+                          ></b-form-input>
+                        </b-form-group>
+                        <b-tooltip target="fieldset-eventAvailability" triggers="hover">
+                          Amount of labs to make available initially for the event
+                        </b-tooltip>
+                      </b-col>
+                      <b-col md="6">
+                        <b-form-group
+                            id="fieldset-eventCapacity"
+                            label="Event Capacity"
+                            label-for="eventCapacity"
+                        >
+                          <b-form-input
+                              id="eventCapacity"
+                              v-model="eventCapacity"
+                              type="number"
+                              :state="capacityState"
+                              min="2"
+                              step="1"
+                              required
+                          ></b-form-input>
+                        </b-form-group>
+                        <b-tooltip target="fieldset-eventCapacity" triggers="hover">
+                          Maximum amount of labs/teams
+                        </b-tooltip>
+                      </b-col>
+                    </b-row>
                   </b-col>
-                  <b-col md="6">
-                    <b-form-group
-                        id="fieldset-eventTag"
-                        label="Event Tag"
-                        label-for="eventTag"
-                    >
-                      <b-form-input
-                          id="eventTag"
-                          v-model="eventTag"
-                          :state="tagState"
-                          type="text"
-                          required
-                      ></b-form-input>
-                    </b-form-group>
-                    <b-tooltip target="fieldset-eventTag" triggers="hover">
-                      Sub domain in which the event will be available
-                    </b-tooltip>
-                  </b-col>
-                  <b-col md="6">
-                    <div class="form-group">
-                      <label for="eventStartTime">Expected Start Date</label>
-                      <datepicker v-model="eventStartTime" placeholder="Select Start Date" id="eventStartTime" :disabledDates="disabledDates"></datepicker>
-                      <b-tooltip target="eventStartTime" triggers="hover">
-                        Date in which the Event should be available online
+                  <b-col v-if="frontends" lg="5" class="myfrontends-field">
+                    <span>Frontends</span>
+                    <div class="frontends-field-modal p-2 mt-2 vertical-center" :class="{ 'my-is-invalid': submitted && this.selectedFrontends == null }">
+                      <b-form-group>
+                        <b-form-radio-group
+                            id="frontends"
+                            v-model="selectedFrontends"
+                            :options="frontends"
+                            :state="frontendState"
+                            name="frontends"
+                            class="ml-4"
+                            aria-label="Individual flavours"
+                            stacked
+                        ></b-form-radio-group>
+                      </b-form-group>
+                      <b-tooltip target="frontends" triggers="hover">
+                        List of available Frontends
                       </b-tooltip>
                     </div>
-                  </b-col>
-                  <b-col md="6">
-                    <div class="form-group">
-                      <label for="eventFinishTime">Expected Finish Date</label>
-                      <datepicker v-model="eventFinishTime" placeholder="Select Finish Date" id="eventFinishTime" :disabledDates="disabledDatesFinishTime()" :class="{ 'my-is-invalid': submitted && this.eventFinishTime == '' }"></datepicker>
-                      <b-tooltip target="eventFinishTime" triggers="hover">
-                        Date in which the Event is supposed to finish
-                      </b-tooltip>
+                    <b-row>
+                      <b-col md="9">
+                        <b-form-group
+                            id="fieldset-secretKey"
+                            label="Secret Key (Optional)"
+                            label-for="secretKey"
+                        >
+                          <b-form-input
+                              id="secretKey"
+                              v-model="secretKey"
+                              type="text"
+                          ></b-form-input>
+                        </b-form-group>
+                        <b-tooltip target="fieldset-secretKey" triggers="hover">
+                          OPTIONAL: Users will need this key to signup to the event.
+                        </b-tooltip>
+                      </b-col>
+                    </b-row>
+                    <div class="custom-control custom-switch mt-2 mt-sm-2 mt-md-0">
+                      <input type="checkbox" class="custom-control-input" id="isVPNON" v-model="isVPNON" name="isVPNON">
+                      <label class="custom-control-label" for="isVPNON">Enable VPN</label>
                     </div>
-                  </b-col>
-                  <b-col md="6">
-                    <b-form-group
-                        id="fieldset-eventAvailability"
-                        label="Event Availability"
-                        label-for="eventAvailability"
-                    >
-                      <b-form-input
-                          id="eventAvailability"
-                          v-model="eventAvailability"
-                          :state="availabilityState"
-                          type="number"
-                          min="1"
-                          step="1"
-                          required
-                      ></b-form-input>
-                    </b-form-group>
-                    <b-tooltip target="fieldset-eventAvailability" triggers="hover">
-                      Amount of labs to make available initially for the event
-                    </b-tooltip>
-                  </b-col>
-                  <b-col md="6">
-                    <b-form-group
-                        id="fieldset-eventCapacity"
-                        label="Event Capacity"
-                        label-for="eventCapacity"
-                    >
-                      <b-form-input
-                          id="eventCapacity"
-                          v-model="eventCapacity"
-                          type="number"
-                          :state="capacityState"
-                          min="2"
-                          step="1"
-                          required
-                      ></b-form-input>
-                    </b-form-group>
-                    <b-tooltip target="fieldset-eventCapacity" triggers="hover">
-                      Maximum amount of labs/teams
-                    </b-tooltip>
                   </b-col>
                 </b-row>
-              </b-col>
-              <b-col v-if="frontends" lg="5" class="myfrontends-field">
-                <span>Frontends</span>
-                <div class="frontends-field-modal p-2 mt-2 vertical-center" :class="{ 'my-is-invalid': submitted && this.selectedFrontends == null }">
+                <b-col md="12" class="mt-3 mt-lg-0" style="z-index: 2">
                   <b-form-group>
-                    <b-form-radio-group
-                        id="frontends"
-                        v-model="selectedFrontends"
-                        :options="frontends"
-                        :state="frontendState"
-                        name="frontends"
-                        class="ml-4"
-                        aria-label="Individual flavours"
-                        stacked
-                    ></b-form-radio-group>
-                  </b-form-group>
-                  <b-tooltip target="frontends" triggers="hover">
-                    List of available Frontends
-                  </b-tooltip>
-                </div>
-                <b-row>
-                  <b-col md="9">
-                    <b-form-group
-                        id="fieldset-secretKey"
-                        label="Secret Key (Optional)"
-                        label-for="secretKey"
-                    >
-                      <b-form-input
-                          id="secretKey"
-                          v-model="secretKey"
-                          type="text"
-                      ></b-form-input>
-                    </b-form-group>
-                    <b-tooltip target="fieldset-secretKey" triggers="hover">
-                      OPTIONAL: Users will need this key to signup to the event.
-                    </b-tooltip>
-                  </b-col>
-                </b-row>
-                <div class="custom-control custom-switch mt-2 mt-sm-2 mt-md-0">
-                  <input type="checkbox" class="custom-control-input" id="isVPNON" v-model="isVPNON" name="isVPNON">
-                  <label class="custom-control-label" for="isVPNON">Enable VPN</label>
-                </div>
-              </b-col>
-              <b-col md="12" class="mt-3 mt-lg-0" style="z-index: 2">
-                <b-form-group>
-                  <div class="challenges-field-modal frontends-field-modal p-3 mt-0" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
-                    <div class="row">
-                      <div class="col-3">
-                        <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
-                          <a class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
-                          <a class="nav-link" id="cyber-championships-tab" data-toggle="pill" href="#cyber-championship" role="tab" aria-controls="cyber-championship" aria-selected="false">Cyber Champ.</a>
-                          <a class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web Exploit.</a>
-                          <a class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
-                          <a class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
-                          <a class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse Eng.</a>
-                          <a class="nav-link" id="cryptography-tab" data-toggle="pill" href="#cryptography" role="tab" aria-controls="cryptography" aria-selected="false">Cryptography</a>
+                    <div class="challenges-field-modal frontends-field-modal p-3 mt-0" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
+                      <div class="row">
+                        <div class="col-4 customscroll" style="height: 240px; overflow-y: auto;">
+                          <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
+                            <a v-on:click="showCatDescription('ST')" class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
+                            <a v-on:click="showCatDescription('CY')" class="nav-link" id="cyber-championships-tab" data-toggle="pill" href="#cyber-championship" role="tab" aria-controls="cyber-championship" aria-selected="false">Cyber Champ.</a>
+                            <a v-on:click="showCatDescription('WE')" class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web Exploit.</a>
+                            <a v-on:click="showCatDescription('FR')" class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
+                            <a v-on:click="showCatDescription('BN')" class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
+                            <a v-on:click="showCatDescription('RE')" class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse Eng.</a>
+                            <a v-on:click="showCatDescription('CRY')" class="nav-link" id="cryptography-tab" data-toggle="pill" href="#cryptography" role="tab" aria-controls="cryptography" aria-selected="false">Cryptography</a>
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-9">
-                        <div class="tab-content" id="v-pills-tabContent">
-                          <div class="tab-pane fade active show" id="starters" role="tabpanel" aria-labelledby="starters-tab">
-                            <b-form-checkbox-group
-                                id="challengesS"
-                                v-model="selectedChallenges"
-                                name="challengesS"
-                                class="ml-4"
-                                stacked
-                            >
-                              <!--{{ selectedChallenges }}  Used for debugging-->
-                              <div
-                                  v-for="text in challengesTextS"
-                                  :key="text"
-                                  class="challenge-container"
+                        <div class="col-8 customscroll" style="height: 240px; overflow-y: auto;">
+                          <div class="tab-content" id="v-pills-tabContent">
+                            <div class="tab-pane fade active show" id="starters" role="tabpanel" aria-labelledby="starters-tab">
+                              <b-form-checkbox-group
+                                  id="challengesS"
+                                  v-model="selectedChallenges"
+                                  name="challengesS"
+                                  class="ml-4"
+                                  stacked
                               >
-                                <div class="checkbox-container">
-                                  <b-form-checkbox
-                                      :value="text.value"
-                                  >
-                                    {{ text.text }}
-                                  </b-form-checkbox>
-                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                <!--{{ selectedChallenges }}  Used for debugging-->
+                                <div
+                                    v-for="text in challengesTextS"
+                                    :key="text"
+                                    class="challenge-container"
+                                >
+                                  <div class="checkbox-container">
+                                    <b-form-checkbox
+                                        :value="text.value"
+                                    >
+                                      {{ text.text }}
+                                    </b-form-checkbox>
+                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                  </div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
-                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
-                                </div>
-                              </div>
 
-                            </b-form-checkbox-group>
-                          </div>
+                              </b-form-checkbox-group>
+                            </div>
 
-                          <div class="tab-pane fade" id="cyber-championship" role="tabpanel" aria-labelledby="cyber-championship">
-                            <b-form-checkbox-group
-                                id="challengesCS"
-                                v-model="selectedChallenges"
-                                name="challengesCS"
-                                class="ml-4"
-                                stacked
-                            >
-                              <!--{{ selectedChallenges }}  Used for debugging-->
-                              <div
-                                  v-for="text in challengesTextCS"
-                                  :key="text"
-                                  class="challenge-container"
+                            <div class="tab-pane fade" id="cyber-championship" role="tabpanel" aria-labelledby="cyber-championship">
+                              <b-form-checkbox-group
+                                  id="challengesCS"
+                                  v-model="selectedChallenges"
+                                  name="challengesCS"
+                                  class="ml-4"
+                                  stacked
                               >
-                                <div class="checkbox-container">
-                                  <b-form-checkbox
-                                      :value="text.value"
-                                  >
-                                    {{ text.text }}
-                                  </b-form-checkbox>
-                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                <!--{{ selectedChallenges }}  Used for debugging-->
+                                <div
+                                    v-for="text in challengesTextCS"
+                                    :key="text"
+                                    class="challenge-container"
+                                >
+                                  <div class="checkbox-container">
+                                    <b-form-checkbox
+                                        :value="text.value"
+                                    >
+                                      {{ text.text }}
+                                    </b-form-checkbox>
+                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                  </div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
-                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
-                                </div>
-                              </div>
 
-                            </b-form-checkbox-group>
-                          </div>
+                              </b-form-checkbox-group>
+                            </div>
 
-                          <div class="tab-pane fade" id="web-exploit" role="tabpanel" aria-labelledby="web-exploit-tab">
-                            <b-form-checkbox-group
-                                id="challengesWE"
-                                v-model="selectedChallenges"
-                                name="challengesWE"
-                                class="ml-4"
-                                stacked
-                            >
-                              <!--{{ selectedChallenges }}  Used for debugging-->
-                              <div
-                                  v-for="text in challengesTextWE"
-                                  :key="text"
-                                  class="challenge-container"
+                            <div class="tab-pane fade" id="web-exploit" role="tabpanel" aria-labelledby="web-exploit-tab">
+                              <b-form-checkbox-group
+                                  id="challengesWE"
+                                  v-model="selectedChallenges"
+                                  name="challengesWE"
+                                  class="ml-4"
+                                  stacked
                               >
-                                <div class="checkbox-container">
-                                  <b-form-checkbox
-                                      :value="text.value"
-                                  >
-                                    {{ text.text }}
-                                  </b-form-checkbox>
-                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                <!--{{ selectedChallenges }}  Used for debugging-->
+                                <div
+                                    v-for="text in challengesTextWE"
+                                    :key="text"
+                                    class="challenge-container"
+                                >
+                                  <div class="checkbox-container">
+                                    <b-form-checkbox
+                                        :value="text.value"
+                                    >
+                                      {{ text.text }}
+                                    </b-form-checkbox>
+                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                  </div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
-                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
-                                </div>
-                              </div>
-                            </b-form-checkbox-group>
-                          </div>
+                              </b-form-checkbox-group>
+                            </div>
 
-                          <div class="tab-pane fade" id="forensics" role="tabpanel" aria-labelledby="forensics-tab">
-                            <b-form-checkbox-group
-                                id="challengesF"
-                                v-model="selectedChallenges"
-                                name="challengesF"
-                                class="ml-4"
-                                stacked
-                            >
-                              <!--{{ selectedChallenges }}  Used for debugging-->
-                              <div
-                                  v-for="text in challengesTextF"
-                                  :key="text"
-                                  class="challenge-container"
+                            <div class="tab-pane fade" id="forensics" role="tabpanel" aria-labelledby="forensics-tab">
+                              <b-form-checkbox-group
+                                  id="challengesF"
+                                  v-model="selectedChallenges"
+                                  name="challengesF"
+                                  class="ml-4"
+                                  stacked
                               >
-                                <div class="checkbox-container">
-                                  <b-form-checkbox
-                                      :value="text.value"
-                                  >
-                                    {{ text.text }}
-                                  </b-form-checkbox>
-                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                <!--{{ selectedChallenges }}  Used for debugging-->
+                                <div
+                                    v-for="text in challengesTextF"
+                                    :key="text"
+                                    class="challenge-container"
+                                >
+                                  <div class="checkbox-container">
+                                    <b-form-checkbox
+                                        :value="text.value"
+                                    >
+                                      {{ text.text }}
+                                    </b-form-checkbox>
+                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                  </div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
-                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
-                                </div>
-                              </div>
-                            </b-form-checkbox-group>
-                          </div>
+                              </b-form-checkbox-group>
+                            </div>
 
-                          <div class="tab-pane fade" id="binary" role="tabpanel" aria-labelledby="binary-tab">
-                            <b-form-checkbox-group
-                                id="challengesB"
-                                v-model="selectedChallenges"
-                                name="challengesB"
-                                class="ml-4"
-                                stacked
-                            >
-                              <!--{{ selectedChallenges }}  Used for debugging-->
-                              <div
-                                  v-for="text in challengesTextB"
-                                  :key="text"
-                                  class="challenge-container"
+                            <div class="tab-pane fade" id="binary" role="tabpanel" aria-labelledby="binary-tab">
+                              <b-form-checkbox-group
+                                  id="challengesB"
+                                  v-model="selectedChallenges"
+                                  name="challengesB"
+                                  class="ml-4"
+                                  stacked
                               >
-                                <div class="checkbox-container">
-                                  <b-form-checkbox
-                                      :value="text.value"
-                                  >
-                                    {{ text.text }}
-                                  </b-form-checkbox>
-                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                <!--{{ selectedChallenges }}  Used for debugging-->
+                                <div
+                                    v-for="text in challengesTextB"
+                                    :key="text"
+                                    class="challenge-container"
+                                >
+                                  <div class="checkbox-container">
+                                    <b-form-checkbox
+                                        :value="text.value"
+                                    >
+                                      {{ text.text }}
+                                    </b-form-checkbox>
+                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                  </div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
-                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
-                                </div>
-                              </div>
-                            </b-form-checkbox-group>
-                          </div>
-                          <div class="tab-pane fade" id="reverse-eng" role="tabpanel" aria-labelledby="reverse-eng-tab">
-                            <b-form-checkbox-group
-                                id="challengesRE"
-                                v-model="selectedChallenges"
-                                name="challengesRE"
-                                class="ml-4"
-                                stacked
-                            >
-                              <!--{{ selectedChallenges }}  Used for debugging-->
-                              <div
-                                  v-for="text in challengesTextRE"
-                                  :key="text"
-                                  class="challenge-container"
+                              </b-form-checkbox-group>
+                            </div>
+                            <div class="tab-pane fade" id="reverse-eng" role="tabpanel" aria-labelledby="reverse-eng-tab">
+                              <b-form-checkbox-group
+                                  id="challengesRE"
+                                  v-model="selectedChallenges"
+                                  name="challengesRE"
+                                  class="ml-4"
+                                  stacked
                               >
-                                <div class="checkbox-container">
-                                  <b-form-checkbox
-                                      :value="text.value"
-                                  >
-                                    {{ text.text }}
-                                  </b-form-checkbox>
-                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                <!--{{ selectedChallenges }}  Used for debugging-->
+                                <div
+                                    v-for="text in challengesTextRE"
+                                    :key="text"
+                                    class="challenge-container"
+                                >
+                                  <div class="checkbox-container">
+                                    <b-form-checkbox
+                                        :value="text.value"
+                                    >
+                                      {{ text.text }}
+                                    </b-form-checkbox>
+                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                  </div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
-                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
-                                </div>
-                              </div>
-                            </b-form-checkbox-group>
-                          </div>
-                          <div class="tab-pane fade" id="cryptography" role="tabpanel" aria-labelledby="cryptography-tab">
-                            <b-form-checkbox-group
-                                id="challengesC"
-                                v-model="selectedChallenges"
-                                name="challengesC"
-                                class="ml-4"
-                                stacked
-                            >
-                              <!--{{ selectedChallenges }}  Used for debugging-->
-                              <div
-                                  v-for="text in challengesTextC"
-                                  :key="text"
-                                  class="challenge-container"
+                              </b-form-checkbox-group>
+                            </div>
+                            <div class="tab-pane fade" id="cryptography" role="tabpanel" aria-labelledby="cryptography-tab">
+                              <b-form-checkbox-group
+                                  id="challengesC"
+                                  v-model="selectedChallenges"
+                                  name="challengesC"
+                                  class="ml-4"
+                                  stacked
                               >
-                                <div class="checkbox-container">
-                                  <b-form-checkbox
-                                      :value="text.value"
-                                  >
-                                    {{ text.text }}
-                                  </b-form-checkbox>
-                                  <div class="info-icon" v-on:click="text.isInfoShown = !text.isInfoShown"><b-icon icon="info-circle"></b-icon></div>
+                                <!--{{ selectedChallenges }}  Used for debugging-->
+                                <div
+                                    v-for="text in challengesTextC"
+                                    :key="text"
+                                    class="challenge-container"
+                                >
+                                  <div class="checkbox-container">
+                                    <b-form-checkbox
+                                        :value="text.value"
+                                    >
+                                      {{ text.text }}
+                                    </b-form-checkbox>
+                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                  </div>
                                 </div>
-                                <div class="chalInfo" v-bind:class="{ visible: text.isInfoShown}" v-html="text.orgDesc">
-                                  <!--{{ text.orgDesc }}  This is just dummy data for now-->
-                                </div>
-                              </div>
-                            </b-form-checkbox-group>
+                              </b-form-checkbox-group>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <template v-slot:label>
+                      <b>Choose your Challenges:</b>
+                      <b-form-checkbox
+                          v-model="selectAllChallenges"
+                          aria-describedby="challengesTag"
+                          aria-controls="challengesTag"
+                          @change="toggleAllChallenges"
+                      >
+                        {{ selectAllChallenges ? 'Un-select All' : 'Select All' }}
+                      </b-form-checkbox>
+                    </template>
+                  </b-form-group>
+                </b-col>
+              </b-col>
+              <b-col md="5">
+                <div class="description-container">
+                  <div
+                      v-for="cat in categories"
+                      :key="cat"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: cat.isInfoShown, show: cat.isInfoShown }" v-html="cat.catDesc"></div>
                   </div>
-                  <template v-slot:label>
-                    <b>Choose your Challenges:</b>
-                    <b-form-checkbox
-                        v-model="selectAllChallenges"
-                        aria-describedby="challengesTag"
-                        aria-controls="challengesTag"
-                        @change="toggleAllChallenges"
-                    >
-                      {{ selectAllChallenges ? 'Un-select All' : 'Select All' }}
-                    </b-form-checkbox>
-                  </template>
-                </b-form-group>
+                  <div
+                      v-for="chal in challengesTextS"
+                      :key="chal"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown }" v-html="chal.orgDesc"></div>
+                  </div>
+                  <div
+                      v-for="chal in challengesTextCS"
+                      :key="chal"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
+                  </div>
+                  <div
+                      v-for="chal in challengesTextWE"
+                      :key="chal"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
+                  </div>
+                  <div
+                      v-for="chal in challengesTextF"
+                      :key="chal"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
+                  </div>
+                  <div
+                      v-for="chal in challengesTextB"
+                      :key="chal"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
+                  </div>
+                  <div
+                      v-for="chal in challengesTextRE"
+                      :key="chal"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
+                  </div>
+                  <div
+                      v-for="chal in challengesTextC"
+                      :key="chal"
+                  >
+                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
+                  </div>
+                </div>
               </b-col>
             </b-row>
             <b-button variant="secondary" @click="$bvModal.hide('create-event-modal')">Close</b-button>
@@ -483,6 +518,7 @@ export default {
       frontends: [],
       secretKey: '',
       selectedFrontends: null,
+      categories: [],
       challengesWE: [], challengesTextWE: [],
       challengesB: [], challengesTextB: [],
       challengesF: [], challengesTextF: [],
@@ -500,6 +536,7 @@ export default {
   mounted: function(){
     this.getChallenges();
     this.getFrontends();
+    this.getCategories();
     this.handleButtons();
   },
   watch: {
@@ -511,6 +548,54 @@ export default {
     },
   },
   methods: {
+    showCatDescription: function(cat) {
+      // Emptying/resetting the description field
+      this.showOrgDescription(null)
+      this.categories.forEach(function(category){
+        category.isInfoShown = false
+      })
+
+      // Enable the corrosponding category description
+      this.categories.forEach(function(category){
+        if (category.tag == cat) {
+          category.isInfoShown = true
+        }
+      })
+    },
+    showOrgDescription: function(challenge) {
+      // Emptying/resetting the description field
+      this.challengesTextS.forEach(function(chal){
+        chal.isInfoShown = false
+      })
+      this.challengesTextCS.forEach(function(chal){
+        chal.isInfoShown = false
+      })
+      this.challengesTextWE.forEach(function(chal){
+        chal.isInfoShown = false
+      })
+      this.challengesTextF.forEach(function(chal){
+        chal.isInfoShown = false
+      })
+      this.challengesTextB.forEach(function(chal){
+        chal.isInfoShown = false
+      })
+      this.challengesTextRE.forEach(function(chal){
+        chal.isInfoShown = false
+      })
+      this.challengesTextC.forEach(function(chal){
+        chal.isInfoShown = false
+      })
+      this.categories.forEach(function (category){
+        category.isInfoShown = false
+      })
+      // Showing the corrosponding organizer description or
+      // hiding all of them if called from showCatDescription
+      if (challenge == null) {
+        // Keep the organizer descriptions hidden to display cat description
+      } else {
+        challenge.isInfoShown = true
+      }
+    },
     disabledDatesFinishTime: function() {
       return {
         to: new Date(this.eventStartTime - 8640000)
@@ -583,6 +668,27 @@ export default {
 
       this.$emit('createEvent', getRequest)
 
+    },
+    getCategories: function(){
+      let getRequest = new Empty();
+      const that = this
+      daemonclient.listCategories(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+        let categoryListObj = response.getCategoriesList();
+        categoryListObj.forEach(function (element){
+          let tag = element.getTag()
+          let name = element.getName()
+          let description = element.getCatdescription()
+          let category = {tag: tag, name: name, catDesc: description, isInfoShown: false}
+          if (tag == "ST") {
+            category.isInfoShown = true
+            that.categories.push(category)
+          } else
+          {
+            that.categories.push(category)
+          }
+
+        })
+      })
     },
     getChallenges: function () {
       let getRequest = new Empty();
@@ -720,10 +826,7 @@ export default {
 .bg-light-gray{
   background-color: #ddd;
 }
-.challenges-field-modal {
-  height: 270px;
-  overflow-y: auto;
-}
+
 .frontends-field-modal{
   border: 1px solid #ced4da;
   border-radius: .35rem;
@@ -753,33 +856,11 @@ export default {
 .info-icon {
   position: relative;
   top: 1px;
-  left: -515px;
+  left: -350px;
   width: 16px;
   padding: 0px;
   margin: 0px;
   z-index: 99999;
-}
-.chalInfo{
-  background-color: #221d52;
-  color: #ffffff;
-  position: relative;
-  margin: auto;
-  padding-left: 10px;
-  padding-right: 10px;
-  width: 500px;
-  max-height: 0;
-  overflow: hidden;
-  transition: all .5s ease-in-out;
-  visibility: hidden;
-}
-.chalInfo.visible {
-  max-height: 200px;
-  /*transform-origin: top-center;*/
-  transition: all .5s ease-in-out;
-  padding: 10px;
-  overflow-y: auto;
-  box-shadow: 5px 5px 5px rgba(73, 80, 87, 0.83);
-  visibility: visible;
 }
 
 .checkbox-container {
@@ -790,23 +871,35 @@ export default {
   width: 100%;
 }
 
-.chalInfo::-webkit-scrollbar {
-  background-color: #221d52;
+.chalInfo{
+  overflow: hidden;
+  max-height: 0;
+  padding-right: 5px;
+  visibility: hidden;
+}
+
+.chalInfo.visible{
+  overflow-y: auto;
+  visibility: visible;
+  max-height: 600px;
+}
+.customscroll::-webkit-scrollbar {
+  background-color: #d8d8d8;
   width: 5px;
 }
 
-.chalInfo::-webkit-scrollbar-track {
-  background-color: #221d52;
+.customscroll::-webkit-scrollbar-track {
+  background-color: #d8d8d8;
 }
 
 /* scrollbar itself */
-.chalInfo::-webkit-scrollbar-thumb {
-  background-color: #babac0;
+.customscroll::-webkit-scrollbar-thumb {
+  background-color: #221d52;
   border-radius: 16px;
 }
 
 /* set button(top and bottom of the scrollbar) */
-.chalInfo::-webkit-scrollbar-button {
+.customscroll::-webkit-scrollbar-button {
   display:none;
 }
 
