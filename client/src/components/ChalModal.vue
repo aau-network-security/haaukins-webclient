@@ -14,7 +14,7 @@
           <b-form-group>
             <div class="challenges-field-modal frontends-field-modal p-3 mt-0" :class="{ 'my-is-invalid': submitted && this.selectedChallenges.length == 0 }">
               <div class="row">
-                <div class="col-4 customscroll" style="height: 240px; overflow-y: auto;">
+                <div class="col-4 customscroll" style="height: 235px; overflow-y: auto;">
                   <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
                     <a v-on:click="showCatDescription('ST')" class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
                     <a v-on:click="showCatDescription('CY')" class="nav-link" id="cyber-championships-tab" data-toggle="pill" href="#cyber-championship" role="tab" aria-controls="cyber-championship" aria-selected="false">Cyber Champ.</a>
@@ -25,7 +25,7 @@
                     <a v-on:click="showCatDescription('CRY')" class="nav-link" id="cryptography-tab" data-toggle="pill" href="#cryptography" role="tab" aria-controls="cryptography" aria-selected="false">Cryptography</a>
                   </div>
                 </div>
-                <div class="col-8 customscroll" style="height: 240px; overflow-y: auto;">
+                <div class="col-8 customscroll" style="height: 235px; overflow-y: auto;">
                   <div class="tab-content" id="v-pills-tabContent">
                     <div class="tab-pane fade active show" id="starters" role="tabpanel" aria-labelledby="starters-tab">
                       <b-form-checkbox-group
@@ -512,8 +512,8 @@ export default {
 
 .info-icon {
   position: relative;
-  top: 1px;
-  left: -360px;
+  top: 0px;
+  left: -370px;
   width: 16px;
   padding: 0px;
   margin: 0px;
@@ -530,7 +530,7 @@ export default {
 .chalInfo.visible{
   overflow-y: auto;
   visibility: visible;
-  max-height: 400px;
+  max-height: 410px;
 }
 .customscroll::-webkit-scrollbar {
   background-color: #d8d8d8;
