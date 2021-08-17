@@ -6,18 +6,28 @@
         <b-carousel-slide class="carousel-height">
           <template slot="img" class="h-100 text-center">
             <div class="row h-50">
-              <div class="col-6 carousel-height d-table">
-                <div class="card card-body d-table-cell align-middle text-center border-aau-color selection-phase-div" v-on:click="selectedVPNOption(true)">
-                  <h3 class="font-weight-bold">VPN ONLY</h3>
-                  <p>Allows the users to connect the Lab using the VPN. Kali Linux machine on the browser will be not available.</p>
-                </div>
-              </div>
-              <div class="col-6 carousel-height d-table">
-                <div class="card card-body d-table-cell align-middle text-center border-aau-color bg-light-gray selection-phase-div" v-on:click="selectedVPNOption(false)">
+
+              <div class="col-4 carousel-height d-table">
+                <div class="card card-body d-table-cell align-middle text-center border-aau-color  selection-phase-div" v-on:click="selectedVPNOption(0)">
                   <h3 class="font-weight-bold">NO VPN</h3>
                   <p>Allows the user to connect Kali Linux machine on the browser.</p>
                 </div>
               </div>
+
+              <div class="col-4 carousel-height d-table">
+                <div class="card card-body d-table-cell align-middle text-center border-aau-color selection-phase-div" v-on:click="selectedVPNOption(2)">
+                  <h3 class="font-weight-bold">VPN + BROWSER</h3>
+                  <p>Allows the user to connect Kali Linux machine on the browser and provide VPN connection.</p>
+                </div>
+              </div>
+
+              <div class="col-4 carousel-height d-table">
+                <div class="card card-body d-table-cell align-middle text-center border-aau-color selection-phase-div" v-on:click="selectedVPNOption(1)">
+                  <h3 class="font-weight-bold">VPN ONLY</h3>
+                  <p>Allows the users to connect the Lab using the VPN. Kali Linux machine on the browser will be not available.</p>
+                </div>
+              </div>
+
             </div>
           </template>
         </b-carousel-slide>
@@ -163,10 +173,6 @@
                         </b-tooltip>
                       </b-col>
                     </b-row>
-                    <div class="custom-control custom-switch mt-2 mt-sm-2 mt-md-0">
-                      <input type="checkbox" class="custom-control-input" id="isVPNON" v-model="isVPNON" name="isVPNON">
-                      <label class="custom-control-label" for="isVPNON">Enable VPN</label>
-                    </div>
                   </b-col>
                 </b-row>
                 <b-col md="12" class="mt-3 mt-lg-0" style="z-index: 2">
@@ -530,7 +536,7 @@ export default {
       disabledDates: {
         to: new Date(Date.now() - 8640000)
       },
-      isVPNON: false,
+      isVPNON: 4,
     }
   },
   mounted: function(){
@@ -800,9 +806,6 @@ export default {
 
     },
     selectedVPNOption: function (isVPN) {
-      if (isVPN) {
-        this.frontends.push("VPN")
-      }
       this.isVPNON = isVPN
       this.$refs.createEventCarousel.next()
     }
