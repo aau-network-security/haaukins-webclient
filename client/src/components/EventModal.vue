@@ -858,7 +858,7 @@ export default {
 
 .info-icon {
   position: relative;
-  top: 1px;
+  top: 0.3px;
   left: -350px;
   width: 16px;
   padding: 0px;
