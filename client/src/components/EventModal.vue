@@ -1,5 +1,5 @@
 <template>
-  <b-modal ref="modal" id="create-event-modal" size="xl" centered hide-footer>
+  <b-modal @shown="resetDescriptionWindow()" ref="modal" id="create-event-modal" size="xl" centered hide-footer>
     <template v-slot:modal-title>Create a new Event</template>
     <form ref="form" @submit.stop.prevent="createEvent()">
       <b-carousel ref="createEventCarousel" :interval=0>
@@ -181,198 +181,106 @@
                       <div class="row">
                         <div class="col-4 customscroll" style="height: 240px; overflow-y: auto;">
                           <div class="nav flex-column nav-pills sticky-top" id="challengesCategory" role="tablist" aria-orientation="vertical">
-                            <a v-on:click="showCatDescription('ST')" class="nav-link active show" id="starters-tab" data-toggle="pill" href="#starters" role="tab" aria-controls="starters" aria-selected="true">Starters</a>
-                            <a v-on:click="showCatDescription('CY')" class="nav-link" id="cyber-championships-tab" data-toggle="pill" href="#cyber-championship" role="tab" aria-controls="cyber-championship" aria-selected="false">Cyber Champ.</a>
-                            <a v-on:click="showCatDescription('WE')" class="nav-link" id="web-exploit-tab" data-toggle="pill" href="#web-exploit" role="tab" aria-controls="web-exploit" aria-selected="false">Web Exploit.</a>
-                            <a v-on:click="showCatDescription('FR')" class="nav-link" id="forensics-tab" data-toggle="pill" href="#forensics" role="tab" aria-controls="forensics" aria-selected="false">Forensics</a>
-                            <a v-on:click="showCatDescription('BN')" class="nav-link" id="binary-tab" data-toggle="pill" href="#binary" role="tab" aria-controls="binary" aria-selected="false">Binary</a>
-                            <a v-on:click="showCatDescription('RE')" class="nav-link" id="reverse-eng-tab" data-toggle="pill" href="#reverse-eng" role="tab" aria-controls="reverse-eng" aria-selected="false">Reverse Eng.</a>
-                            <a v-on:click="showCatDescription('CRY')" class="nav-link" id="cryptography-tab" data-toggle="pill" href="#cryptography" role="tab" aria-controls="cryptography" aria-selected="false">Cryptography</a>
+                            <template v-for="(category, index) in categories">
+                              <template v-if="index === 0">
+                                <a :key="category"
+                                   v-on:click="showCatDescription(category.tag)"
+                                   class="nav-link active show"
+                                   :id="category.tag+'-tab'"
+                                   data-toggle="pill"
+                                   :href="'#'+category.tag"
+                                   :aria-controls="category.tag"
+                                   aria-selected="true"
+                                >
+                                  {{ category.name }}
+                                </a>
+                              </template>
+                              <template v-else>
+                                <a :key="category"
+                                   v-on:click="showCatDescription(category.tag)"
+                                   class="nav-link"
+                                   :id="category.tag+'-tab'"
+                                   data-toggle="pill"
+                                   :href="'#'+category.tag"
+                                   :aria-controls="category.tag"
+                                   aria-selected="false"
+                                >
+                                  {{ category.name }}
+                                </a>
+                              </template>
+                            </template>
                           </div>
                         </div>
                         <div class="col-8 customscroll" style="height: 240px; overflow-y: auto;">
                           <div class="tab-content" id="v-pills-tabContent">
-                            <div class="tab-pane fade active show" id="starters" role="tabpanel" aria-labelledby="starters-tab">
-                              <b-form-checkbox-group
-                                  id="challengesS"
-                                  v-model="selectedChallenges"
-                                  name="challengesS"
-                                  class="ml-4"
-                                  stacked
-                              >
-                                <!--{{ selectedChallenges }}  Used for debugging-->
+                            <template v-for="(category, index) in categories">
+                              <template v-if="index === 0">
                                 <div
-                                    v-for="text in challengesTextS"
-                                    :key="text"
-                                    class="challenge-container"
+                                    v-bind:key="category"
+                                    class="tab-pane fade active show"
+                                    :id="category.tag"
+                                    role="tabpanel"
+                                    :aria-labelledby="category.tag+'-tab'"
                                 >
-                                  <div class="checkbox-container">
-                                    <b-form-checkbox
-                                        :value="text.value"
+                                  <b-form-checkbox-group
+                                      :id="category.tag"
+                                      v-model="selectedChallenges"
+                                      :name="category.tag"
+                                      class="ml-4"
+                                      stacked
+                                  >
+                                    {{ selectedChallenges }}
+                                    <div
+                                        v-for="text in category.challenges"
+                                        :key="text"
+                                        class="challenge-container"
                                     >
-                                      {{ text.text }}
-                                    </b-form-checkbox>
-                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
-                                  </div>
+                                      <div class="checkbox-container">
+                                        <b-form-checkbox
+                                            :value="text.value"
+                                        >
+                                          {{ text.text }}
+                                        </b-form-checkbox>
+                                        <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                      </div>
+                                    </div>
+                                  </b-form-checkbox-group>
                                 </div>
-
-                              </b-form-checkbox-group>
-                            </div>
-
-                            <div class="tab-pane fade" id="cyber-championship" role="tabpanel" aria-labelledby="cyber-championship">
-                              <b-form-checkbox-group
-                                  id="challengesCS"
-                                  v-model="selectedChallenges"
-                                  name="challengesCS"
-                                  class="ml-4"
-                                  stacked
-                              >
-                                <!--{{ selectedChallenges }}  Used for debugging-->
+                              </template>
+                              <template v-else>
                                 <div
-                                    v-for="text in challengesTextCS"
-                                    :key="text"
-                                    class="challenge-container"
+                                    v-bind:key="category"
+                                    class="tab-pane fade"
+                                    :id="category.tag"
+                                    role="tabpanel"
+                                    :aria-labelledby="category.tag+'-tab'"
                                 >
-                                  <div class="checkbox-container">
-                                    <b-form-checkbox
-                                        :value="text.value"
+                                  <b-form-checkbox-group
+                                    :id="category.tag"
+                                    v-model="selectedChallenges"
+                                    :name="category.tag"
+                                    class="ml-4"
+                                    stacked
+                                  >
+                                    {{ selectedChallenges }}
+                                    <div
+                                        v-for="text in category.challenges"
+                                        :key="text"
+                                        class="challenge-container"
                                     >
-                                      {{ text.text }}
-                                    </b-form-checkbox>
-                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
-                                  </div>
+                                      <div class="checkbox-container">
+                                        <b-form-checkbox
+                                            :value="text.value"
+                                        >
+                                          {{ text.text }}
+                                        </b-form-checkbox>
+                                        <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
+                                      </div>
+                                    </div>
+                                  </b-form-checkbox-group>
                                 </div>
-
-                              </b-form-checkbox-group>
-                            </div>
-
-                            <div class="tab-pane fade" id="web-exploit" role="tabpanel" aria-labelledby="web-exploit-tab">
-                              <b-form-checkbox-group
-                                  id="challengesWE"
-                                  v-model="selectedChallenges"
-                                  name="challengesWE"
-                                  class="ml-4"
-                                  stacked
-                              >
-                                <!--{{ selectedChallenges }}  Used for debugging-->
-                                <div
-                                    v-for="text in challengesTextWE"
-                                    :key="text"
-                                    class="challenge-container"
-                                >
-                                  <div class="checkbox-container">
-                                    <b-form-checkbox
-                                        :value="text.value"
-                                    >
-                                      {{ text.text }}
-                                    </b-form-checkbox>
-                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
-                                  </div>
-                                </div>
-                              </b-form-checkbox-group>
-                            </div>
-
-                            <div class="tab-pane fade" id="forensics" role="tabpanel" aria-labelledby="forensics-tab">
-                              <b-form-checkbox-group
-                                  id="challengesF"
-                                  v-model="selectedChallenges"
-                                  name="challengesF"
-                                  class="ml-4"
-                                  stacked
-                              >
-                                <!--{{ selectedChallenges }}  Used for debugging-->
-                                <div
-                                    v-for="text in challengesTextF"
-                                    :key="text"
-                                    class="challenge-container"
-                                >
-                                  <div class="checkbox-container">
-                                    <b-form-checkbox
-                                        :value="text.value"
-                                    >
-                                      {{ text.text }}
-                                    </b-form-checkbox>
-                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
-                                  </div>
-                                </div>
-                              </b-form-checkbox-group>
-                            </div>
-
-                            <div class="tab-pane fade" id="binary" role="tabpanel" aria-labelledby="binary-tab">
-                              <b-form-checkbox-group
-                                  id="challengesB"
-                                  v-model="selectedChallenges"
-                                  name="challengesB"
-                                  class="ml-4"
-                                  stacked
-                              >
-                                <!--{{ selectedChallenges }}  Used for debugging-->
-                                <div
-                                    v-for="text in challengesTextB"
-                                    :key="text"
-                                    class="challenge-container"
-                                >
-                                  <div class="checkbox-container">
-                                    <b-form-checkbox
-                                        :value="text.value"
-                                    >
-                                      {{ text.text }}
-                                    </b-form-checkbox>
-                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
-                                  </div>
-                                </div>
-                              </b-form-checkbox-group>
-                            </div>
-                            <div class="tab-pane fade" id="reverse-eng" role="tabpanel" aria-labelledby="reverse-eng-tab">
-                              <b-form-checkbox-group
-                                  id="challengesRE"
-                                  v-model="selectedChallenges"
-                                  name="challengesRE"
-                                  class="ml-4"
-                                  stacked
-                              >
-                                <!--{{ selectedChallenges }}  Used for debugging-->
-                                <div
-                                    v-for="text in challengesTextRE"
-                                    :key="text"
-                                    class="challenge-container"
-                                >
-                                  <div class="checkbox-container">
-                                    <b-form-checkbox
-                                        :value="text.value"
-                                    >
-                                      {{ text.text }}
-                                    </b-form-checkbox>
-                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
-                                  </div>
-                                </div>
-                              </b-form-checkbox-group>
-                            </div>
-                            <div class="tab-pane fade" id="cryptography" role="tabpanel" aria-labelledby="cryptography-tab">
-                              <b-form-checkbox-group
-                                  id="challengesC"
-                                  v-model="selectedChallenges"
-                                  name="challengesC"
-                                  class="ml-4"
-                                  stacked
-                              >
-                                <!--{{ selectedChallenges }}  Used for debugging-->
-                                <div
-                                    v-for="text in challengesTextC"
-                                    :key="text"
-                                    class="challenge-container"
-                                >
-                                  <div class="checkbox-container">
-                                    <b-form-checkbox
-                                        :value="text.value"
-                                    >
-                                      {{ text.text }}
-                                    </b-form-checkbox>
-                                    <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
-                                  </div>
-                                </div>
-                              </b-form-checkbox-group>
-                            </div>
+                              </template>
+                            </template>
                           </div>
                         </div>
                       </div>
@@ -399,48 +307,14 @@
                   >
                     <div class="chalInfo customscroll fade" v-bind:class="{ visible: cat.isInfoShown, show: cat.isInfoShown }" v-html="cat.catDesc"></div>
                   </div>
-                  <div
-                      v-for="chal in challengesTextS"
-                      :key="chal"
-                  >
-                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown }" v-html="chal.orgDesc"></div>
-                  </div>
-                  <div
-                      v-for="chal in challengesTextCS"
-                      :key="chal"
-                  >
-                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
-                  </div>
-                  <div
-                      v-for="chal in challengesTextWE"
-                      :key="chal"
-                  >
-                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
-                  </div>
-                  <div
-                      v-for="chal in challengesTextF"
-                      :key="chal"
-                  >
-                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
-                  </div>
-                  <div
-                      v-for="chal in challengesTextB"
-                      :key="chal"
-                  >
-                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
-                  </div>
-                  <div
-                      v-for="chal in challengesTextRE"
-                      :key="chal"
-                  >
-                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
-                  </div>
-                  <div
-                      v-for="chal in challengesTextC"
-                      :key="chal"
-                  >
-                    <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown}" v-html="chal.orgDesc"></div>
-                  </div>
+                  <template v-for="category in categories">
+                    <div
+                        v-for="chal in category.challenges"
+                        :key="chal"
+                    >
+                      <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown }" v-html="chal.orgDesc"></div>
+                    </div>
+                  </template>
                 </div>
               </b-col>
             </b-row>
@@ -540,9 +414,10 @@ export default {
     }
   },
   mounted: function(){
-    this.getChallenges();
+    //this.getChallenges();
     this.getFrontends();
-    this.getCategories();
+    //this.getCategories();
+    this.getData();
     this.handleButtons();
   },
   watch: {
@@ -554,6 +429,17 @@ export default {
     },
   },
   methods: {
+    resetDescriptionWindow: function() {
+      window.console.log("Resetting description window")
+      // Emptying/resetting the description field
+      this.showOrgDescription(null)
+      this.categories.forEach(function(category){
+        category.isInfoShown = false
+      })
+
+      // Enable the corrosponding category description
+      this.categories[0].isInfoShown = true
+    },
     showCatDescription: function(cat) {
       // Emptying/resetting the description field
       this.showOrgDescription(null)
@@ -570,29 +456,11 @@ export default {
     },
     showOrgDescription: function(challenge) {
       // Emptying/resetting the description field
-      this.challengesTextS.forEach(function(chal){
-        chal.isInfoShown = false
-      })
-      this.challengesTextCS.forEach(function(chal){
-        chal.isInfoShown = false
-      })
-      this.challengesTextWE.forEach(function(chal){
-        chal.isInfoShown = false
-      })
-      this.challengesTextF.forEach(function(chal){
-        chal.isInfoShown = false
-      })
-      this.challengesTextB.forEach(function(chal){
-        chal.isInfoShown = false
-      })
-      this.challengesTextRE.forEach(function(chal){
-        chal.isInfoShown = false
-      })
-      this.challengesTextC.forEach(function(chal){
-        chal.isInfoShown = false
-      })
-      this.categories.forEach(function (category){
+      this.categories.forEach(function(category){
         category.isInfoShown = false
+        category.challenges.forEach(function(chal){
+          chal.isInfoShown = false
+        })
       })
       // Showing the corrosponding organizer description or
       // hiding all of them if called from showCatDescription
@@ -613,13 +481,16 @@ export default {
       }
     },
     toggleAllChallenges: function(checked) {
-      this.selectedChallenges = checked ? this.challengesWE
-          .concat(this.challengesB)
-          .concat(this.challengesF)
-          .concat(this.challengesRE)
-          .concat(this.challengesS)
-          .concat(this.challengesCS)
-          .concat(this.challengesC): []
+      if (checked) {
+        this.selectedChallenges = []
+        let allChallenges = []
+        this.categories.forEach(function(category){
+          allChallenges = allChallenges.concat(category.taglist)
+        })
+        this.selectedChallenges = allChallenges
+      } else {
+        this.selectedChallenges = []
+      }
     },
     encodeHTML: function(s) {
       return s.replace(/&/g, '&amp;')
@@ -654,7 +525,6 @@ export default {
       }
     },
     createEvent: function () {
-
       let getRequest = new CreateEventRequest();
       getRequest.setName(this.eventName);
       getRequest.setSecretevent(this.secretKey);
@@ -675,7 +545,8 @@ export default {
       this.$emit('createEvent', getRequest)
 
     },
-    getCategories: function(){
+    getData: function(){
+      // Getting categories first.
       let getRequest = new Empty();
       const that = this
       daemonclient.listCategories(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
@@ -684,7 +555,8 @@ export default {
           let tag = element.getTag()
           let name = element.getName()
           let description = element.getCatdescription()
-          let category = {tag: tag, name: name, catDesc: description, isInfoShown: false}
+          let category = {tag: tag, name: name, catDesc: description, isInfoShown: false, challenges: [], taglist: []}
+          //window.console.log(category)
           if (tag == "ST") {
             category.isInfoShown = true
             that.categories.push(category)
@@ -692,13 +564,24 @@ export default {
           {
             that.categories.push(category)
           }
-
         })
+        // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
+        if (that.categories[0].tag != "ST") {
+          that.categories.forEach(function(category, index){
+            if (category.tag == "ST") {
+              let tempCat = that.categories[0]
+              window.console.log("Found Starters category. Rearranging array to display starters first")
+              window.console.log("0 index category is: ", that.categories[0].name," and ST category has index: ",index)
+              that.categories[0] = []
+              that.categories[0] = that.categories[index]
+              that.categories[index] = []
+              that.categories[index] = tempCat
+            }
+          })
+        }
       })
-    },
-    getChallenges: function () {
-      let getRequest = new Empty();
-      const that = this
+      //Inserting exercises into categories list
+      window.console.log("Getting exercises")
       daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
         this.error = err;
         let exercisesListObj = response.getExercisesList();
@@ -715,43 +598,16 @@ export default {
           if (childrenChallengesObj.length == 1){
             that.childrenChallenges = '';
           }
-
-
           let taglist = element.getTagsList();
           let name = element.getName();
           let orgDesc = element.getOrgdescription()
           let parentChallenge = { text: name + that.childrenChallenges, value: taglist[0], orgDesc: orgDesc, isInfoShown: false };
-          switch (that.cat) {
-            case "Web exploitation":
-              that.challengesTextWE.push(parentChallenge);
-              that.challengesWE.push(taglist[0]);
-              break;
-            case "Forensics":
-              that.challengesTextF.push(parentChallenge);
-              that.challengesF.push(taglist[0]);
-              break;
-            case "Binary":
-              that.challengesTextB.push(parentChallenge);
-              that.challengesB.push(taglist[0]);
-              break;
-            case "Cryptography":
-              that.challengesTextC.push(parentChallenge);
-              that.challengesC.push(taglist[0]);
-              break;
-            case "Reverse Engineering":
-              that.challengesTextRE.push(parentChallenge);
-              that.challengesRE.push(taglist[0]);
-              break;
-            case "Starters":
-              that.challengesTextS.push(parentChallenge);
-              that.challengesS.push(taglist[0]);
-              break;
-            case "Cybermesterskaberne":
-              that.challengesTextCS.push(parentChallenge);
-              that.challengesCS.push(taglist[0]);
-              break;
-          }
-
+          that.categories.forEach(function(category) {
+            if (that.cat == category.name) {
+              category.challenges.push(parentChallenge)
+              category.taglist.push(taglist[0])
+            }
+          })
         })
       });
     },
@@ -849,6 +705,10 @@ export default {
 }
 .nav-link {
   color: #211a52!important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 165px;
 }
 .nav-link.active{
   color: #fff!important;

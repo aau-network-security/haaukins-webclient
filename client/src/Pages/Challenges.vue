@@ -68,7 +68,7 @@ export default {
   },
   created: function () {
     this.listChallenges();
-    this.getAll();
+    //this.getAll();
   },
   methods: {
     getAll: function () {
