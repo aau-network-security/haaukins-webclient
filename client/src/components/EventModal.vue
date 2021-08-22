@@ -408,7 +408,7 @@ export default {
   },
   mounted: function(){
     this.getFrontends();
-    this.getData();
+    this.getCategories();
     this.handleButtons();
   },
   watch: {
@@ -536,7 +536,7 @@ export default {
       this.$emit('createEvent', getRequest)
 
     },
-    getData: function(){
+    getCategories: function(){
       // Getting categories first.
       let getRequest = new Empty();
       const that = this
@@ -548,13 +548,7 @@ export default {
           let description = element.getCatdescription()
           let category = {tag: tag, name: name, catDesc: description, isInfoShown: false, challenges: [], taglist: []}
           //window.console.log(category)
-          if (tag == "ST") {
-            category.isInfoShown = true
-            that.categories.push(category)
-          } else
-          {
-            that.categories.push(category)
-          }
+          that.categories.push(category)
         })
         // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
         if (that.categories[0].tag != "ST") {
@@ -570,8 +564,15 @@ export default {
             }
           })
         }
+        //First category info always shown when modal is opened
+        that.categories[0].isInfoShown = true
+        //Inserting exercises into categories list
+        that.getExercises()
       })
-      //Inserting exercises into categories list
+    },
+    getExercises: function(){
+      let getRequest = new Empty();
+      const that = this
       daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
         this.error = err;
         let exercisesListObj = response.getExercisesList();
@@ -599,6 +600,7 @@ export default {
             }
           })
         })
+        window.console.log(that.categories)
       });
     },
     handlePrev : function () {
