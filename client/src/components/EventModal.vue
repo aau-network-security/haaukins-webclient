@@ -229,7 +229,7 @@
                                       class="ml-4"
                                       stacked
                                   >
-                                    {{ selectedChallenges }}
+                                    <!-- {{ selectedChallenges }} Debugging -->
                                     <div
                                         v-for="text in category.challenges"
                                         :key="text"
@@ -262,7 +262,7 @@
                                     class="ml-4"
                                     stacked
                                   >
-                                    {{ selectedChallenges }}
+                                    <!-- {{ selectedChallenges }} Debugging -->
                                     <div
                                         v-for="text in category.challenges"
                                         :key="text"
@@ -327,10 +327,10 @@
           <template slot="img" class="h-100 text-center ">
             <div class="card" style="margin-bottom: 5px; ">
               <h5 class="btn-warning">OPTIONAL</h5>
-              <div class="card-body">
+              <div class="card-body customscroll" style="max-height: 570px;">
                 <h5 class="card-title">Choose challenges to disable at event start</h5>
                 <p class="card-text">By default, Haaukins platform will run all challenges choosen in previous step. If you would like to enable manual start for specific challenges select them below. </p>
-                <b-input-group >
+                <b-input-group :class="'customscroll'" style="max-height: 435px; overflow: auto;">
                   <b-form-checkbox-group
                       id="disableChallenge"
                       v-model="disableChallenges"
@@ -399,13 +399,6 @@ export default {
       secretKey: '',
       selectedFrontends: null,
       categories: [],
-      challengesWE: [], challengesTextWE: [],
-      challengesB: [], challengesTextB: [],
-      challengesF: [], challengesTextF: [],
-      challengesRE: [], challengesTextRE: [],
-      challengesC: [], challengesTextC: [],
-      challengesS: [], challengesTextS: [],
-      challengesCS: [], challengesTextCS:[],
       cat: '', childrenChallenges: '', isDisabled: false,
       disabledDates: {
         to: new Date(Date.now() - 8640000)
@@ -414,9 +407,7 @@ export default {
     }
   },
   mounted: function(){
-    //this.getChallenges();
     this.getFrontends();
-    //this.getCategories();
     this.getData();
     this.handleButtons();
   },
@@ -430,7 +421,7 @@ export default {
   },
   methods: {
     resetDescriptionWindow: function() {
-      window.console.log("Resetting description window")
+      // window.console.log("Resetting description window")  // Debugging
       // Emptying/resetting the description field
       this.showOrgDescription(null)
       this.categories.forEach(function(category){
@@ -570,8 +561,8 @@ export default {
           that.categories.forEach(function(category, index){
             if (category.tag == "ST") {
               let tempCat = that.categories[0]
-              window.console.log("Found Starters category. Rearranging array to display starters first")
-              window.console.log("0 index category is: ", that.categories[0].name," and ST category has index: ",index)
+              //window.console.log("Found Starters category. Rearranging array to display starters first") // Debugging
+              //window.console.log("0 index category is: ", that.categories[0].name," and ST category has index: ",index) // Debugging
               that.categories[0] = []
               that.categories[0] = that.categories[index]
               that.categories[index] = []
@@ -581,7 +572,6 @@ export default {
         }
       })
       //Inserting exercises into categories list
-      window.console.log("Getting exercises")
       daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
         this.error = err;
         let exercisesListObj = response.getExercisesList();
@@ -646,7 +636,6 @@ export default {
         return
       }
     },
-
     getFrontends: function () {
       let getRequest = new Empty();
       daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
@@ -744,7 +733,7 @@ export default {
 .chalInfo.visible{
   overflow-y: auto;
   visibility: visible;
-  max-height: 600px;
+  max-height: 585px;
 }
 .customscroll::-webkit-scrollbar {
   background-color: #d8d8d8;
