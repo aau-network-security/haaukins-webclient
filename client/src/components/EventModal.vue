@@ -7,21 +7,21 @@
           <template slot="img" class="h-100 text-center">
             <div class="row h-50">
 
-              <div class="col-4 carousel-height d-table">
+              <div class="col-6 carousel-height d-table">
                 <div class="card card-body d-table-cell align-middle text-center border-aau-color  selection-phase-div" v-on:click="selectedVPNOption(0)">
                   <h3 class="font-weight-bold">NO VPN</h3>
                   <p>Allows the user to connect Kali Linux machine on the browser.</p>
                 </div>
               </div>
 
-              <div class="col-4 carousel-height d-table">
-                <div class="card card-body d-table-cell align-middle text-center border-aau-color selection-phase-div" v-on:click="selectedVPNOption(2)">
-                  <h3 class="font-weight-bold">VPN + BROWSER</h3>
-                  <p>Allows the user to connect Kali Linux machine on the browser and provide VPN connection.</p>
-                </div>
-              </div>
+<!--              <div class="col-4 carousel-height d-table">-->
+<!--                <div class="card card-body d-table-cell align-middle text-center border-aau-color selection-phase-div" v-on:click="selectedVPNOption(2)">-->
+<!--                  <h3 class="font-weight-bold">VPN + BROWSER</h3>-->
+<!--                  <p>Allows the user to connect Kali Linux machine on the browser and provide VPN connection.</p>-->
+<!--                </div>-->
+<!--              </div>-->
 
-              <div class="col-4 carousel-height d-table">
+              <div class="col-6 carousel-height d-table">
                 <div class="card card-body d-table-cell align-middle text-center border-aau-color selection-phase-div" v-on:click="selectedVPNOption(1)">
                   <h3 class="font-weight-bold">VPN ONLY</h3>
                   <p>Allows the users to connect the Lab using the VPN. Kali Linux machine on the browser will be not available.</p>
