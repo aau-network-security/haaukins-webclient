@@ -55,33 +55,54 @@
                       <b-col class="text-center" md="12" v-html="category.catDesc"></b-col>
                     </b-row>
                     <b-row class="text-center difficulties">
-                      <b-col class="difficulty"><p>Very Easy</p></b-col>
-                      <b-col class="difficulty"><p>Easy</p></b-col>
-                      <b-col class="difficulty"><p>Medium</p></b-col>
-                      <b-col class="difficulty"><p>Hard</p></b-col>
-                      <b-col class="difficulty"><p>Very Hard</p></b-col>
+                      <b-col class="difficulty" v-bind:class="{ active: difficulty.enabled }" v-on:click="filterItems(category, difficulty)" v-for="difficulty in category.difficulties" :key="difficulty"><p>{{ difficulty.name }}</p></b-col>
                     </b-row>
                     <b-row class="info-container">
                       <b-col md="5" class="challenges customscroll">
-                        <div
-                            v-for="challenge in category.challenges"
-                            :key="challenge"
-                            class="challenge"
-                        >
-                          <b-row>
-                            <b-col md="1">
-                              <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
-                            </b-col>
-                            <template v-if="challenge.secret">
+                        <template v-if="!category.filterOn">
+                          <div
+                              v-for="(challenge, index) in category.challenges"
+                              :key="challenge"
+                              class="challenge"
+                          >
+                            <b-row>
                               <b-col md="1">
-                                <div class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
                               </b-col>
-                            </template>
-                            <b-col md="9">
-                              {{ challenge.text }}
-                            </b-col>
-                          </b-row>
-                        </div>
+                              <template v-if="challenge.secret">
+                                <b-col md="1">
+                                  <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                  <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                </b-col>
+                              </template>
+                              <b-col md="9">
+                                {{ challenge.text }}
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </template>
+                        <template v-else>
+                          <div
+                              v-for="(challenge, index) in category.filteredItems"
+                              :key="challenge"
+                              class="challenge"
+                          >
+                            <b-row>
+                              <b-col md="1">
+                                <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
+                              </b-col>
+                              <template v-if="challenge.secret">
+                                <b-col md="1">
+                                  <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                  <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                </b-col>
+                              </template>
+                              <b-col md="9">
+                                {{ challenge.text }}
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </template>
                       </b-col>
                       <b-col md="7" class="chaldescs">
                         <template v-for="category in categories">
@@ -110,33 +131,54 @@
                       <b-col class="text-center" md="12" v-html="category.catDesc"></b-col>
                     </b-row>
                     <b-row class="text-center difficulties">
-                      <b-col class="difficulty"><p>Very Easy</p></b-col>
-                      <b-col class="difficulty"><p>Easy</p></b-col>
-                      <b-col class="difficulty"><p>Medium</p></b-col>
-                      <b-col class="difficulty"><p>Hard</p></b-col>
-                      <b-col class="difficulty"><p>Very Hard</p></b-col>
+                      <b-col class="difficulty" v-bind:class="{ active: difficulty.enabled }" v-on:click="filterItems(category, difficulty)" v-for="difficulty in category.difficulties" :key="difficulty"><p>{{ difficulty.name }}</p></b-col>
                     </b-row>
                     <b-row class="info-container">
                       <b-col md="5" class="challenges customscroll">
-                        <div
-                            v-for="challenge in category.challenges"
-                            :key="challenge"
-                            class="challenge"
-                        >
-                          <b-row>
-                            <b-col md="1">
-                              <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
-                            </b-col>
-                            <template v-if="challenge.secret">
+                        <template v-if="!category.filterOn">
+                          <div
+                              v-for="(challenge, index) in category.challenges"
+                              :key="challenge"
+                              class="challenge"
+                          >
+                            <b-row>
                               <b-col md="1">
-                                <div class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
                               </b-col>
-                            </template>
-                            <b-col md="10">
-                              {{ challenge.text }}
-                            </b-col>
-                          </b-row>
-                        </div>
+                              <template v-if="challenge.secret">
+                                <b-col md="1">
+                                  <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                  <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                </b-col>
+                              </template>
+                              <b-col md="9">
+                                {{ challenge.text }}
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </template>
+                        <template v-else>
+                          <div
+                              v-for="(challenge, index) in category.filteredItems"
+                              :key="challenge"
+                              class="challenge"
+                          >
+                            <b-row>
+                              <b-col md="1">
+                                <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
+                              </b-col>
+                              <template v-if="challenge.secret">
+                                <b-col md="1">
+                                  <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                  <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                </b-col>
+                              </template>
+                              <b-col md="9">
+                                {{ challenge.text }}
+                              </b-col>
+                            </b-row>
+                          </div>
+                        </template>
                       </b-col>
                       <b-col md="7" class="chaldescs">
                         <template v-for="category in categories">
@@ -183,6 +225,41 @@ export default {
     this.getCategories();
   },
   methods: {
+    removeItem: function(array, key, value) {
+      const index = array.findIndex(obj => obj[key] === value)
+      return index >= 0 ? [
+          ...array.slice(0, index),
+          ...array.slice(index+1)
+      ] : array;
+    },
+    filterItems: function(category, difficulty) {
+      difficulty.enabled = !difficulty.enabled
+      const that = this
+      if (difficulty.enabled) {
+        category.challenges.forEach( function(challenge) {
+          if (challenge.difficulty == difficulty.name){
+            category.filteredItems.push(challenge)
+          }
+        })
+      } else {
+        category.filteredItems.forEach(function(challenge){
+          //window.console.log(challenge, index)
+          if (challenge.difficulty == difficulty.name){
+            //window.console.log(challenge.difficulty, " Equals ", difficulty.name)
+            //window.console.log("Removing challenge from filter: ", challenge.text)
+            category.filteredItems = that.removeItem(category.filteredItems, "difficulty", difficulty.name)
+          }
+        })
+      }
+      category.filterOn = false
+      category.difficulties.forEach(function(difficulty){
+        if (difficulty.enabled) {
+          category.filterOn = true
+        }
+      })
+      //window.console.log(category.filteredItems)
+      //window.console.log(category, difficulty)
+    },
     showOrgDescription: function(challenge) {
       window.console.log("Showing org description")
       // Emptying/resetting the description field
@@ -212,7 +289,23 @@ export default {
           let name = element.getName()
 
           let description = element.getCatdescription()
-          let category = {tag: tag, name: name, catDesc: description, isInfoShown: false, challenges: [], taglist: []}
+          let category = {
+            tag: tag,
+            name: name,
+            catDesc: description,
+            isInfoShown: false,
+            challenges: [],
+            taglist: [],
+            filteredItems: [],
+            filterOn: false,
+            difficulties: [
+              {name: "Very Easy", enabled: false},
+              {name: "Easy", enabled: false},
+              {name: "Medium", enabled: false},
+              {name: "Hard", enabled: false},
+              {name: "Very Hard", enabled: false}
+            ]
+          }
           //window.console.log(category)
           that.categories.push(category)
         })
@@ -245,11 +338,31 @@ export default {
         exercisesListObj.forEach(function (element) {
           let childrenChallengesObj = element.getExerciseinfoList();
           that.childrenChallenges = "   (";
-
+          let totalPoints = 0;
           for (let i = 0; i < childrenChallengesObj.length; i++) {
             that.cat = childrenChallengesObj[i].getCategory();
             that.childrenChallenges += childrenChallengesObj[i].getName() + ", "
+            totalPoints += childrenChallengesObj[i].getPoints();
           }
+          let averagePoints = totalPoints / childrenChallengesObj.length
+          let averageDifficulty = ''
+          if (averagePoints < 21) {
+            averageDifficulty = "Very Easy"
+            //window.console.log("Challenge was very easy")
+          } else if (averagePoints >= 21 && averagePoints < 41) {
+            averageDifficulty = "Easy"
+            //window.console.log("Challenge was easy")
+          } else if (averagePoints >= 41 && averagePoints < 61) {
+            averageDifficulty = "Medium"
+            //window.console.log("Challenge was Medium")
+          } else if (averagePoints >= 61 && averagePoints < 81) {
+            averageDifficulty = "Hard"
+            //window.console.log("Challenge was Hard")
+          } else if (averagePoints >= 81 && averagePoints <= 100) {
+            averageDifficulty = "Very Hard"
+            //window.console.log("Challenge was Very Hard")
+          }
+          //window.console.log("Average difficulty: ", averageDifficulty, averagePoints)
           that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2)
           that.childrenChallenges += ")";
           if (childrenChallengesObj.length == 1) {
@@ -264,7 +377,8 @@ export default {
             value: taglist[0],
             orgDesc: orgDesc,
             isInfoShown: false,
-            secret: secret
+            secret: secret,
+            difficulty: averageDifficulty
           };
           that.categories.forEach(function (category) {
             if (that.cat == category.name) {
