@@ -408,7 +408,7 @@ export default {
   border-width: 1px;
   border-style: solid;
   border-color: #211a52 !important;
-  margin: 0 40px 0 40px;
+  margin: 0 20px 0 20px;
   cursor: pointer;
 }
 
