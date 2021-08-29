@@ -268,9 +268,9 @@
                     });
                     call.on('status', function(status) {
                         that.loaderIsActive = false;
-                        if (status['metadata']['grpc-message'] == "") {
+                        if (!status['metadata']['grpc-message']) {
                             that.success = "Event Successfully Created!"
-                            that.listEvent()
+                            that.listEvent();
                         }else{
                             that.error = status['metadata']['grpc-message']
                           if (status.details === 'token contains an invalid number of segments') {
@@ -302,7 +302,7 @@
                 });
                 call.on('status', function(status) {
                     that.loaderIsActive = false
-                    if (status['metadata']['grpc-message'] == "") {
+                    if (!status['metadata']['grpc-message']) {
                         that.success = "Action successfully completed!"
                         that.listEvent()
                     }else{
@@ -335,8 +335,8 @@
                 });
                 call.on('status', function(status) {
                     that.loaderIsActive = false
-                    if (status['metadata']['grpc-message'] == "") {
-                        that.success = "Event Successfully Stop!"
+                    if (!status['metadata']['grpc-message']) {
+                        that.success = "Event Successfully Stopped!"
                         that.listEvent()
                     }else{
                         that.error = status['metadata']['grpc-message']
