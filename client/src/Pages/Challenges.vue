@@ -57,62 +57,130 @@
                     <b-row class="text-center difficulties">
                       <b-col class="difficulty" v-bind:class="{ active: difficulty.enabled }" v-on:click="filterItems(category, difficulty)" v-for="difficulty in category.difficulties" :key="difficulty"><p>{{ difficulty.name }}</p></b-col>
                     </b-row>
+                    <template v-if="profile.selectedChallenges.length > 0">
+                      <b-row>
+                        <b-col md="4" style="margin-top: 15px">
+                          Save selected challenges as a profile?
+                        </b-col>
+                        <b-col md="1" style="margin-top: 15px; padding-left: 0px; left: -15px">
+                          <div class="danger-icon"><b-icon :id="category.tag+'profileinfo'" icon="info-circle"></b-icon></div>
+                          <b-tooltip :target="category.tag+'profileinfo'" triggers="hover">You can select saved profiles when creating a new event</b-tooltip>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col md="4">
+                          <b-input v-model="profile.name" placeholder="Name of profile"></b-input>
+                        </b-col>
+                        <b-col md="2" style="padding: 0; max-width: 130px;">
+                          <b-button class="btn-haaukins" :disabled="profile.name==''" @click="saveProfile">Save Profile</b-button>
+                        </b-col>
+                        <b-col style="padding: 0;">
+                          <b-button class="btn-haaukins" @click="profile.selectedChallenges = []">Deselect All</b-button>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col md="12" class="text-center" style="margin-top: 15px">
+                          <b-alert
+                              :show="dismissCountDown"
+                              dismissible
+                              :variant="variant"
+                              fade
+                              @dismissed="dismissCountDown=0"
+                              @dismiss-count-down="countDownChanged"
+                          >
+                            {{ alert }}
+                          </b-alert>
+                        </b-col>
+                      </b-row>
+                    </template>
                     <b-row class="info-container">
                       <b-col md="5" class="challenges customscroll">
                         <template v-if="!category.filterOn">
-                          <div
-                              v-for="(challenge, index) in category.challenges"
-                              :key="challenge"
-                              class="challenge"
+                          <b-form-checkbox-group
+                              :id="category.tag"
+                              v-model="profile.selectedChallenges"
+                              :name="category.tag"
+                              class="ml-4"
+                              stacked
                           >
-                            <b-row>
-                              <b-col md="1">
-                                <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
-                              </b-col>
-                              <template v-if="challenge.secret">
+                            <div
+                                v-for="(challenge, index) in category.challenges"
+                                :key="challenge"
+                                class="challenge"
+                            >
+                              <b-row>
                                 <b-col md="1">
-                                  <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
-                                  <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                  <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
                                 </b-col>
-                              </template>
-                              <b-col md="9">
-                                {{ challenge.text }}
-                              </b-col>
-                            </b-row>
-                          </div>
+                                <template v-if="challenge.secret">
+                                  <b-col md="1">
+                                    <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                    <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                  </b-col>
+                                </template>
+                                <b-col md="9">
+                                  <b-form-checkbox :value="{tag: challenge.value, name: challenge.name}">
+                                    {{ challenge.text }}
+                                  </b-form-checkbox>
+                                </b-col>
+                              </b-row>
+                            </div>
+                          </b-form-checkbox-group>
                         </template>
                         <template v-else>
-                          <div
-                              v-for="(challenge, index) in category.filteredItems"
-                              :key="challenge"
-                              class="challenge"
+                          <b-form-checkbox-group
+                              :id="category.tag"
+                              v-model="profile.selectedChallenges"
+                              :name="category.tag"
+                              class="ml-4"
+                              stacked
                           >
-                            <b-row>
-                              <b-col md="1">
-                                <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
-                              </b-col>
-                              <template v-if="challenge.secret">
+                            <div
+                                v-for="(challenge, index) in category.filteredItems"
+                                :key="challenge"
+                                class="challenge"
+                            >
+                              <b-row>
                                 <b-col md="1">
-                                  <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
-                                  <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                  <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
                                 </b-col>
-                              </template>
-                              <b-col md="9">
-                                {{ challenge.text }}
-                              </b-col>
-                            </b-row>
-                          </div>
+                                <template v-if="challenge.secret">
+                                  <b-col md="1">
+                                    <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                    <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                  </b-col>
+                                </template>
+                                <b-col md="9">
+                                  <b-form-checkbox :value="{tag: challenge.value, name: challenge.name}">
+                                    {{ challenge.text }}
+                                  </b-form-checkbox>
+                                </b-col>
+                              </b-row>
+                            </div>
+                          </b-form-checkbox-group>
                         </template>
                       </b-col>
                       <b-col md="7" class="chaldescs">
-                        <template v-for="category in categories">
-                          <div
-                              v-for="chal in category.challenges"
-                              :key="chal"
-                          >
-                            <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown }" v-html="chal.orgDesc"></div>
-                          </div>
+                        <template v-if="!showSelected || profile.selectedChallenges.length == 0">
+                          <template v-for="category in categories">
+                            <div
+                                v-for="chal in category.challenges"
+                                :key="chal"
+                            >
+                              <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown }" v-html="chal.orgDesc"></div>
+                            </div>
+                          </template>
                         </template>
+                        <tempalte v-else>
+                          <b-row>
+                            <b-col md="12" class="text-center">
+                              <h3>Selected challenges</h3>
+                            </b-col>
+                          </b-row>
+                          <b-row class="customscroll text-center" style="max-height: 372px; overflow-y: auto;">
+                            <b-col class="profile-chal" md="10" v-for="challenge in profile.selectedChallenges" :key="challenge">{{challenge.name}}</b-col>
+                          </b-row>
+                        </tempalte>
                       </b-col>
                     </b-row>
                   </b-container>
@@ -133,61 +201,129 @@
                     <b-row class="text-center difficulties">
                       <b-col class="difficulty" v-bind:class="{ active: difficulty.enabled }" v-on:click="filterItems(category, difficulty)" v-for="difficulty in category.difficulties" :key="difficulty"><p>{{ difficulty.name }}</p></b-col>
                     </b-row>
+                    <template v-if="profile.selectedChallenges.length > 0">
+                      <b-row>
+                        <b-col md="4" style="margin-top: 15px">
+                          Save selected challenges as a profile?
+                        </b-col>
+                        <b-col md="1" style="margin-top: 15px; padding-left: 0px; left: -15px">
+                          <div class="danger-icon"><b-icon :id="category.tag+'profileinfo'" icon="info-circle"></b-icon></div>
+                          <b-tooltip :target="category.tag+'profileinfo'" triggers="hover">You can select saved profiles when creating a new event</b-tooltip>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col md="4">
+                          <b-input v-model="profile.name" placeholder="Name of profile"></b-input>
+                        </b-col>
+                        <b-col md="2" style="padding: 0; max-width: 130px;">
+                          <b-button class="btn-haaukins" :disabled="profile.name==''" @click="saveProfile">Save Profile</b-button>
+                        </b-col>
+                        <b-col style="padding: 0;">
+                          <b-button class="btn-haaukins" @click="profile.selectedChallenges = []">Deselect All</b-button>
+                        </b-col>
+                      </b-row>
+                      <b-row>
+                        <b-col md="12" class="text-center" style="margin-top: 15px">
+                          <b-alert
+                              :show="dismissCountDown"
+                              dismissible
+                              :variant="variant"
+                              fade
+                              @dismissed="dismissCountDown=0"
+                              @dismiss-count-down="countDownChanged"
+                          >
+                            {{ alert }}
+                          </b-alert>
+                        </b-col>
+                      </b-row>
+                    </template>
                     <b-row class="info-container">
                       <b-col md="5" class="challenges customscroll">
                         <template v-if="!category.filterOn">
-                          <div
-                              v-for="(challenge, index) in category.challenges"
-                              :key="challenge"
-                              class="challenge"
+                          <b-form-checkbox-group
+                              :id="category.tag"
+                              v-model="profile.selectedChallenges"
+                              :name="category.tag"
+                              class="ml-4"
+                              stacked
                           >
-                            <b-row>
-                              <b-col md="1">
-                                <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
-                              </b-col>
-                              <template v-if="challenge.secret">
+                            <div
+                                v-for="(challenge, index) in category.challenges"
+                                :key="challenge"
+                                class="challenge"
+                            >
+                              <b-row>
                                 <b-col md="1">
-                                  <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
-                                  <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                  <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
                                 </b-col>
-                              </template>
-                              <b-col md="9">
-                                {{ challenge.text }}
-                              </b-col>
-                            </b-row>
-                          </div>
+                                <template v-if="challenge.secret">
+                                  <b-col md="1">
+                                    <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                    <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                  </b-col>
+                                </template>
+                                <b-col md="9">
+                                  <b-form-checkbox :value="{tag: challenge.value, name: challenge.name}">
+                                    {{ challenge.text }}
+                                  </b-form-checkbox>
+                                </b-col>
+                              </b-row>
+                            </div>
+                          </b-form-checkbox-group>
                         </template>
                         <template v-else>
-                          <div
-                              v-for="(challenge, index) in category.filteredItems"
-                              :key="challenge"
-                              class="challenge"
+                          <b-form-checkbox-group
+                              :id="category.tag"
+                              v-model="profile.selectedChallenges"
+                              :name="category.tag"
+                              class="ml-4"
+                              stacked
                           >
-                            <b-row>
-                              <b-col md="1">
-                                <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
-                              </b-col>
-                              <template v-if="challenge.secret">
+                            <div
+                                v-for="(challenge, index) in category.filteredItems"
+                                :key="challenge"
+                                class="challenge"
+                            >
+                              <b-row>
                                 <b-col md="1">
-                                  <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
-                                  <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                  <div class="info-icon" v-on:click="showOrgDescription(challenge)"><b-icon icon="info-circle"></b-icon></div>
                                 </b-col>
-                              </template>
-                              <b-col md="9">
-                                {{ challenge.text }}
-                              </b-col>
-                            </b-row>
-                          </div>
+                                <template v-if="challenge.secret">
+                                  <b-col md="1">
+                                    <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                    <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
+                                  </b-col>
+                                </template>
+                                <b-col md="9">
+                                  <b-form-checkbox :value="{tag: challenge.value, name: challenge.name}">
+                                    {{ challenge.text }}
+                                  </b-form-checkbox>
+                                </b-col>
+                              </b-row>
+                            </div>
+                          </b-form-checkbox-group>
                         </template>
                       </b-col>
                       <b-col md="7" class="chaldescs">
-                        <template v-for="category in categories">
-                          <div
-                              v-for="chal in category.challenges"
-                              :key="chal"
-                          >
-                            <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown }" v-html="chal.orgDesc"></div>
-                          </div>
+                        <template v-if="!showSelected || profile.selectedChallenges.length == 0">
+                          <template v-for="category in categories">
+                            <div
+                                v-for="chal in category.challenges"
+                                :key="chal"
+                            >
+                              <div class="chalInfo customscroll fade" v-bind:class="{ visible: chal.isInfoShown, show: chal.isInfoShown }" v-html="chal.orgDesc"></div>
+                            </div>
+                          </template>
+                        </template>
+                        <template v-else>
+                          <b-row>
+                            <b-col md="12" class="text-center">
+                              <h3>Selected challenges</h3>
+                            </b-col>
+                          </b-row>
+                          <b-row class="customscroll text-center" style="max-height: 372px; overflow-y: auto;">
+                            <b-col class="profile-chal" md="10" v-for="challenge in profile.selectedChallenges" :key="challenge">{{challenge.name}}</b-col>
+                          </b-row>
                         </template>
                       </b-col>
                     </b-row>
@@ -198,7 +334,6 @@
           </div>
         </div>
       </b-row>
-      <div v-if="error" class="alert alert-danger">{{ error }}</div>
     </div>
     <Footer/>
   </div>
@@ -207,7 +342,7 @@
 <script>
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {Empty} from "daemon_pb";
+import {Empty, SaveProfileRequest} from "daemon_pb";
 import {daemonclient} from "../App";
 
 export default {
@@ -215,16 +350,89 @@ export default {
   components: {Footer, Navbar},
   data: function () {
     return {
-      error: null,
+      alert: null,
+      variant: null,
+      dismissCountDown: 0,
+      dismissSecs: 5,
       categories: [],
       cat: '',
       childrenChallenges: '',
+      profile: {name: "", selectedChallenges: []},
+      profiles: [],
+      showSelected: true,
     }
   },
   created: function () {
     this.getCategories();
+    this.getProfiles();
   },
   methods: {
+    countDownChanged: function(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
+    showAlert: function(variant) {
+      this.variant = variant
+      this.dismissCountDown = this.dismissSecs
+    },
+    getProfiles: function() {
+      const that = this
+      let getRequest = new Empty
+      daemonclient.listProfiles(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+        window.console.log(err)
+        let profileListObj = response.getProfilesList();
+        profileListObj.forEach(function (element){
+          let name = element.getName()
+          let challengesListObj = element.getChallengesList()
+          let challenges = []
+          challengesListObj.forEach(function (element){
+            let tag = element.getTag()
+            let name = element.getName()
+            let challenge = {tag: tag, name: name}
+            challenges.push(challenge)
+          })
+          let profile = {name: name, challenges: challenges}
+          window.console.log("Got profile", profile)
+          that.profiles.push(profile)
+        })
+      })
+    },
+    saveProfile: function() {
+      window.console.log("Saving profile")
+      const that = this
+      const index = this.profiles.findIndex(obj => obj['name'] === this.profile.name)
+      window.console.log("Seing it profile exists:",index)
+      if (index < 0) {
+        let getRequest = new SaveProfileRequest();
+        getRequest.setName(this.profile.name)
+        this.profile.selectedChallenges.forEach(function(chal) {
+          let challenge = new SaveProfileRequest.Challenge()
+          challenge.setTag(chal.tag)
+          challenge.setName(chal.name)
+          getRequest.addChallenges(challenge)
+        })
+        const call = daemonclient.saveProfile(getRequest, {Token: localStorage.getItem("user")});
+
+        call.on('data', function(response){
+          window.console.log("Data response: ", response)
+        });
+        call.on('error', function(response){
+          that.alert = response.message
+          that.showAlert("danger")
+          window.console.log("Error response: ", response)
+        });
+        call.on('status', function(response){
+          window.console.log("Status response: ", response)
+          if (response.details == "") {
+            that.getProfiles()
+            that.alert = "Profile successfully saved"
+            that.showAlert("success")
+          }
+        });
+      } else {
+        this.alert = "Profile already exists"
+        this.showAlert("danger")
+      }
+    },
     removeItem: function(array, key, value) {
       const index = array.findIndex(obj => obj[key] === value)
       return index >= 0 ? [
@@ -262,20 +470,32 @@ export default {
     },
     showOrgDescription: function(challenge) {
       window.console.log("Showing org description")
+      const that = this
       // Emptying/resetting the description field
-      this.categories.forEach(function(category){
-        category.isInfoShown = false
-        category.challenges.forEach(function(chal){
-          chal.isInfoShown = false
+      if (challenge != null) {
+        this.categories.forEach(function(category){
+          category.challenges.forEach(function(chal){
+            if (chal.value == challenge.value) {
+              challenge.isInfoShown = !challenge.isInfoShown
+            } else {
+              chal.isInfoShown = false
+            }
+          })
         })
-      })
-      // Showing the corrosponding organizer description or
-      // hiding all of them if called from showCatDescription
-      if (challenge == null) {
-        // Keep the organizer descriptions hidden to display cat description
+        if (challenge.isInfoShown) {
+          this.showSelected = false
+        } else {
+          this.showSelected = true
+        }
       } else {
-        challenge.isInfoShown = true
+        this.categories.forEach(function(category){
+              category.challenges.forEach(function(chal) {
+                chal.isInfoShown = false
+                that.showSelected = true
+              })
+        })
       }
+
     },
     getCategories: function () {
       // Getting categories first.
@@ -293,7 +513,6 @@ export default {
             tag: tag,
             name: name,
             catDesc: description,
-            isInfoShown: false,
             challenges: [],
             taglist: [],
             filteredItems: [],
@@ -324,7 +543,6 @@ export default {
           })
         }
         //First category info always shown when modal is opened
-        that.categories[0].isInfoShown = true
         //Inserting exercises into categories list
         that.getExercises()
       })
@@ -375,6 +593,7 @@ export default {
           let parentChallenge = {
             text: name + that.childrenChallenges,
             value: taglist[0],
+            name: name,
             orgDesc: orgDesc,
             isInfoShown: false,
             secret: secret,
@@ -491,6 +710,17 @@ export default {
   overflow-y: auto;
   visibility: visible;
   max-height: 410px;
+}
+
+.profile-chal{
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(206, 212, 218);
+  border-image: initial;
+  border-radius: 0.35rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5px;
 }
 
 h3 {
