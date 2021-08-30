@@ -286,15 +286,32 @@
                       </div>
                     </div>
                     <template v-slot:label>
-                      <b>Choose your Challenges:</b>
-                      <b-form-checkbox
-                          v-model="selectAllChallenges"
-                          aria-describedby="challengesTag"
-                          aria-controls="challengesTag"
-                          @change="toggleAllChallenges"
-                      >
-                        {{ selectAllChallenges ? 'Un-select All' : 'Select All' }}
-                      </b-form-checkbox>
+                      <b-row>
+                        <b-col>
+                          <b>Choose your Challenges:</b>
+                          <b-form-checkbox
+                              v-model="selectAllChallenges"
+                              aria-describedby="challengesTag"
+                              aria-controls="challengesTag"
+                              @change="toggleAllChallenges"
+                          >
+                            {{ selectAllChallenges ? 'Un-select All' : 'Select All' }}
+                          </b-form-checkbox>
+                        </b-col>
+                        <b-col>
+                          <b-col md="12" style="padding-left: 0;"><b>Choose a profile:</b></b-col>
+                          <b-form-select @change="onProfileSelect()" v-model="selectedProfile">
+                            <b-form-select-option :value="null">No profile</b-form-select-option>
+                            <b-form-select-option
+                              v-for="profile in profiles"
+                              :key="profile"
+                              :value="profile"
+                            >
+                              {{ profile.name }}
+                            </b-form-select-option>
+                          </b-form-select>
+                        </b-col>
+                      </b-row>
                     </template>
                   </b-form-group>
                 </b-col>
@@ -399,6 +416,8 @@ export default {
       secretKey: '',
       selectedFrontends: null,
       categories: [],
+      profiles: [],
+      selectedProfile: null,
       cat: '', childrenChallenges: '', isDisabled: false,
       disabledDates: {
         to: new Date(Date.now() - 8640000)
@@ -410,6 +429,7 @@ export default {
     this.getFrontends();
     this.getCategories();
     this.handleButtons();
+    this.getProfiles();
   },
   watch: {
     eventCapacity: function () {
@@ -420,6 +440,38 @@ export default {
     },
   },
   methods: {
+    onProfileSelect: function() {
+      this.selectedChallenges = []
+      const that = this
+      if (this.selectedProfile != null) {
+        this.selectedProfile.challenges.forEach(function(challenge){
+          that.selectedChallenges.push(challenge.tag)
+        })
+      }
+      window.console.log("Profile selected is", this.selectedProfile)
+    },
+    getProfiles: function() {
+      const that = this
+      let getRequest = new Empty
+      daemonclient.listProfiles(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+        window.console.log(err)
+        let profileListObj = response.getProfilesList();
+        profileListObj.forEach(function (element){
+          let name = element.getName()
+          let challengesListObj = element.getChallengesList()
+          let challenges = []
+          challengesListObj.forEach(function (element){
+            let tag = element.getTag()
+            let name = element.getName()
+            let challenge = {tag: tag, name: name}
+            challenges.push(challenge)
+          })
+          let profile = {name: name, challenges: challenges}
+          window.console.log("Got profile", profile)
+          that.profiles.push(profile)
+        })
+      })
+    },
     resetDescriptionWindow: function() {
       // window.console.log("Resetting description window")  // Debugging
       // Emptying/resetting the description field

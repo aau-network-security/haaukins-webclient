@@ -114,7 +114,7 @@
                                 </b-col>
                                 <template v-if="challenge.secret">
                                   <b-col md="1">
-                                    <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                    <div class="danger-icon"><b-icon :id="category.tag+'-'+index" icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
                                     <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
                                   </b-col>
                                 </template>
@@ -146,7 +146,7 @@
                                 </b-col>
                                 <template v-if="challenge.secret">
                                   <b-col md="1">
-                                    <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                    <div class="danger-icon"><b-icon :id="category.tag+'-'+index" icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
                                     <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
                                   </b-col>
                                 </template>
@@ -178,7 +178,7 @@
                             </b-col>
                           </b-row>
                           <b-row class="customscroll text-center" style="max-height: 372px; overflow-y: auto;">
-                            <b-col class="profile-chal" md="10" v-for="challenge in profile.selectedChallenges" :key="challenge">{{challenge.name}}</b-col>
+                            <b-col v-on:click="removeFromProfile(challenge)" class="profile-chal" md="10" v-for="challenge in profile.selectedChallenges" :key="challenge">{{challenge.name}}</b-col>
                           </b-row>
                         </tempalte>
                       </b-col>
@@ -258,7 +258,7 @@
                                 </b-col>
                                 <template v-if="challenge.secret">
                                   <b-col md="1">
-                                    <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                    <div class="danger-icon"><b-icon :id="category.tag+'-'+index" icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
                                     <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
                                   </b-col>
                                 </template>
@@ -290,7 +290,7 @@
                                 </b-col>
                                 <template v-if="challenge.secret">
                                   <b-col md="1">
-                                    <div :id="category.tag+'-'+index" class="danger-icon"><b-icon icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
+                                    <div class="danger-icon"><b-icon :id="category.tag+'-'+index" icon="exclamation-triangle-fill" variant="danger"></b-icon></div>
                                     <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret</b-tooltip>
                                   </b-col>
                                 </template>
@@ -322,7 +322,7 @@
                             </b-col>
                           </b-row>
                           <b-row class="customscroll text-center" style="max-height: 372px; overflow-y: auto;">
-                            <b-col class="profile-chal" md="10" v-for="challenge in profile.selectedChallenges" :key="challenge">{{challenge.name}}</b-col>
+                            <b-col v-on:click="removeFromProfile(challenge)" class="profile-chal" md="10" v-for="challenge in profile.selectedChallenges" :key="challenge">{{challenge.name}}</b-col>
                           </b-row>
                         </template>
                       </b-col>
@@ -374,6 +374,9 @@ export default {
       this.variant = variant
       this.dismissCountDown = this.dismissSecs
     },
+    removeFromProfile: function(challenge) {
+      this.profile.selectedChallenges = this.removeItem(this.profile.selectedChallenges, "tag", challenge.tag)
+    },
     getProfiles: function() {
       const that = this
       let getRequest = new Empty
@@ -399,7 +402,7 @@ export default {
     saveProfile: function() {
       window.console.log("Saving profile")
       const that = this
-      const index = this.profiles.findIndex(obj => obj['name'] === this.profile.name)
+      let index = this.profiles.findIndex(obj => obj['name'] === this.profile.name)
       window.console.log("Seing it profile exists:",index)
       if (index < 0) {
         let getRequest = new SaveProfileRequest();
@@ -429,7 +432,7 @@ export default {
           }
         });
       } else {
-        this.alert = "Profile already exists"
+        this.alert = "Profile already exists, you can edit existing profiles from the profiles page"
         this.showAlert("danger")
       }
     },
@@ -721,6 +724,11 @@ export default {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 5px;
+}
+
+.profile-chal:hover {
+  background-color: #ced4da;
+  cursor: pointer;
 }
 
 h3 {
