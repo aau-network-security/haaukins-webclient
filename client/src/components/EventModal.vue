@@ -448,7 +448,7 @@ export default {
           that.selectedChallenges.push(challenge.tag)
         })
       }
-      window.console.log("Profile selected is", this.selectedProfile)
+      //window.console.log("Profile selected is", this.selectedProfile)
     },
     getProfiles: function() {
       const that = this
@@ -468,7 +468,7 @@ export default {
             challenges.push(challenge)
           })
           let profile = {name: name, secret: secret, challenges: challenges}
-          window.console.log("Got profile", profile)
+          //window.console.log("Got profile", profile)
           that.profiles.push(profile)
         })
       })
@@ -653,7 +653,7 @@ export default {
             }
           })
         })
-        window.console.log(that.categories)
+        //window.console.log(that.categories)
       });
     },
     handlePrev : function () {

@@ -381,13 +381,13 @@ export default {
       this.profileForUpdate.secret = false
       const that = this
       this.profileForUpdate.challenges.forEach(function (challenge) {
-        window.console.log("Checking if", challenge.tag, "is in secretchallenges")
+        //window.console.log("Checking if", challenge.tag, "is in secretchallenges")
         let secret = that.secretChallenges.get(challenge.tag)
         if (secret) {
           that.profileForUpdate.secret = true
         }
       })
-      window.console.log("profile secret is now", this.profileForUpdate.secret)
+      //window.console.log("profile secret is now", this.profileForUpdate.secret)
     },
     removeItem: function(array, key, value) {
       const index = array.findIndex(obj => obj[key] === value)
@@ -404,7 +404,7 @@ export default {
       this.dismissCountDown = this.dismissSecs
     },
     deleteProfile: function() {
-      window.console.log("Deleting profile", this.profileForUpdate.name)
+      //window.console.log("Deleting profile", this.profileForUpdate.name)
       const that = this
       let getRequest = new DeleteProfileRequest()
       getRequest.setName(this.profileForUpdate.name)
@@ -412,15 +412,15 @@ export default {
       const call = daemonclient.deleteProfile(getRequest, {Token: localStorage.getItem("user")});
 
       call.on('data', function(response){
-        window.console.log("Data response: ", response)
+        //window.console.log("Data response: ", response)
       });
       call.on('error', function(response){
         that.alert = response.message
         that.showAlert("danger")
-        window.console.log("Error response: ", response)
+        //window.console.log("Error response: ", response)
       });
       call.on('status', function(response){
-        window.console.log("Status response: ", response)
+        //window.console.log("Status response: ", response)
         if (response.details == "") {
           that.profiles = that.removeItem(that.profiles, 'name', that.profileForUpdate.name)
           that.areYouSure = false
@@ -431,7 +431,7 @@ export default {
       });
     },
     updateProfile: function() {
-      window.console.log("Updating profile", this.profileForUpdate.name)
+      //window.console.log("Updating profile", this.profileForUpdate.name)
       const that = this
       let getRequest = new SaveProfileRequest()
       getRequest.setName(this.profileForUpdate.name)
@@ -446,15 +446,15 @@ export default {
       const call = daemonclient.editProfile(getRequest, {Token: localStorage.getItem("user")});
 
       call.on('data', function(response){
-        window.console.log("Data response: ", response)
+        //window.console.log("Data response: ", response)
       });
       call.on('error', function(response){
         that.alert = response.message
         that.showAlert("danger")
-        window.console.log("Error response: ", response)
+        //window.console.log("Error response: ", response)
       });
       call.on('status', function(response){
-        window.console.log("Status response: ", response)
+        //window.console.log("Status response: ", response)
         if (response.details == "") {
           let index = that.profiles.findIndex(obj => obj['name'] === that.profileForUpdate.name)
           that.profiles[index].challenges = that.profileForUpdate.challenges
@@ -472,7 +472,7 @@ export default {
       let identical = true
       let index = this.profiles.findIndex(obj => obj["name"] === that.profileForUpdate.name)
       if (index >= 0) {
-        window.console.log("Found profile at index", index)
+        //window.console.log("Found profile at index", index)
         that.profileForUpdate.challenges.forEach(function(challenge){
           let i = that.profiles[index].challenges.findIndex(obj => obj['tag'] === challenge.tag)
           if (i < 0) {
@@ -487,7 +487,7 @@ export default {
       }
     },
     addToProfile: function(challenge){
-      window.console.log("Adding challenge", challenge, "to profile", this.profileForUpdate.name)
+      //window.console.log("Adding challenge", challenge, "to profile", this.profileForUpdate.name)
       const that = this
       let chal = {tag: challenge.value, secret: challenge.secret, name: challenge.name}
       this.profileForUpdate.challenges.push(chal)
@@ -500,10 +500,10 @@ export default {
       })
       this.checkIfUpdateAvailable()
       this.updateSecret()
-      window.console.log("Profile for update is now: ",this.profileForUpdate)
+      //window.console.log("Profile for update is now: ",this.profileForUpdate)
     },
     removeFromProfile: function(challenge) {
-      window.console.log("Remove Challenge", challenge, "from profile", this.profileForUpdate.name)
+      //window.console.log("Remove Challenge", challenge, "from profile", this.profileForUpdate.name)
       const that = this
       this.categories.forEach(function(category, catIndex){
         let index = category.challenges.findIndex(obj => obj['value'] === challenge.tag)
@@ -515,7 +515,7 @@ export default {
       this.profileForUpdate.challenges = this.removeItem(this.profileForUpdate.challenges, 'tag', challenge.tag)
       this.checkIfUpdateAvailable()
       this.updateSecret()
-      window.console.log("Profile for update is now: ",this.profileForUpdate)
+      //window.console.log("Profile for update is now: ",this.profileForUpdate)
     },
     setProfileForUpdate: function(profile) {
       //window.console.log("Setting profileForUpdate to", profile)
@@ -544,7 +544,7 @@ export default {
       this.profiles = []
       let getRequest = new Empty
       daemonclient.listProfiles(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        window.console.log(err)
+        //window.console.log(err)
         let profileListObj = response.getProfilesList();
         profileListObj.forEach(function (element) {
           let name = element.getName()
@@ -686,7 +686,7 @@ export default {
             }
           })
         })
-        window.console.log(that.categories)
+        //window.console.log(that.categories)
         that.getProfiles()
       });
     },

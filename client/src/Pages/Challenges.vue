@@ -466,13 +466,13 @@ export default {
       this.profile.secret = false
       const that = this
       this.profile.selectedChallenges.forEach(function (challenge) {
-        window.console.log("Checking if", challenge.tag, "is in secretchallenges")
+        //window.console.log("Checking if", challenge.tag, "is in secretchallenges")
         let secret = that.secretChallenges.get(challenge.tag)
         if (secret) {
           that.profile.secret = true
         }
       })
-      window.console.log("profile secret is now", this.profile.secret)
+      //window.console.log("profile secret is now", this.profile.secret)
     },
     countDownChanged: function (dismissCountDown) {
       this.dismissCountDown = dismissCountDown
@@ -503,16 +503,16 @@ export default {
             challenges.push(challenge)
           })
           let profile = {name: name, secret: secret, challenges: challenges}
-          window.console.log("Got profile", profile)
+          //window.console.log("Got profile", profile)
           that.profiles.push(profile)
         })
       })
     },
     saveProfile: function () {
-      window.console.log("Saving profile")
+      //window.console.log("Saving profile")
       const that = this
       let index = this.profiles.findIndex(obj => obj['name'] === this.profile.name.trim())
-      window.console.log("Seing it profile exists:", index)
+      //window.console.log("Seing it profile exists:", index)
       if (index < 0) {
         let getRequest = new SaveProfileRequest();
         getRequest.setName(this.profile.name.trim())
@@ -526,15 +526,15 @@ export default {
         const call = daemonclient.saveProfile(getRequest, {Token: localStorage.getItem("user")});
 
         call.on('data', function (response) {
-          window.console.log("Data response: ", response)
+          //window.console.log("Data response: ", response)
         });
         call.on('error', function (response) {
           that.alert = response.message
           that.showAlert("danger")
-          window.console.log("Error response: ", response)
+          //window.console.log("Error response: ", response)
         });
         call.on('status', function (response) {
-          window.console.log("Status response: ", response)
+          //window.console.log("Status response: ", response)
           if (response.details == "") {
             that.getProfiles()
             that.alert = "Profile successfully saved"
@@ -722,8 +722,8 @@ export default {
             }
           })
         })
-        window.console.log("Secret challenges", that.secretChallenges)
-        window.console.log(that.categories)
+        //window.console.log("Secret challenges", that.secretChallenges)
+        //window.console.log(that.categories)
         that.getProfiles();
       });
     },
