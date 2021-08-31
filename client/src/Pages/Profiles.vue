@@ -20,6 +20,10 @@
                    aria-selected="true"
                    v-on:click="setProfileForUpdate(profile)"
                 >
+                  <template v-if="profile.secret">
+                    <b-icon :id="'profile'+index" icon="exclamation-triangle-fill" variant="danger"></b-icon>
+                    <b-tooltip :target="'profile'+index" triggers="hover">Profile is secret</b-tooltip>
+                  </template>
                   {{ profile.name }}
                 </a>
               </template>
@@ -33,6 +37,10 @@
                    aria-selected="false"
                    v-on:click="setProfileForUpdate(profile)"
                 >
+                  <template v-if="profile.secret">
+                    <b-icon :id="'profile'+index" icon="exclamation-triangle-fill" variant="danger"></b-icon>
+                    <b-tooltip :target="'profile'+index" triggers="hover">Profile is secret</b-tooltip>
+                  </template>
                   {{ profile.name }}
                 </a>
               </template>
@@ -41,6 +49,18 @@
         </div>
         <div class="col-10">
           <div class="tab-content" id="v-pills-tabContent">
+            <b-col md="12" class="text-center" style="margin-top: 15px">
+              <b-alert
+                  :show="dismissCountDown"
+                  dismissible
+                  :variant="variant"
+                  fade
+                  @dismissed="dismissCountDown=0"
+                  @dismiss-count-down="countDownChanged"
+              >
+                {{ alert }}
+              </b-alert>
+            </b-col>
             <template v-for="(profile, profileIndex) in profiles">
               <template v-if="profileIndex === 0">
                 <div
@@ -72,18 +92,6 @@
                           </b-row>
                         </b-col>
                       </b-col>
-                      <b-col md="12" class="text-center" style="margin-top: 15px">
-                        <b-alert
-                            :show="dismissCountDown"
-                            dismissible
-                            :variant="variant"
-                            fade
-                            @dismissed="dismissCountDown=0"
-                            @dismiss-count-down="countDownChanged"
-                        >
-                          {{ alert }}
-                        </b-alert>
-                      </b-col>
                     </b-row>
                     <b-row class="info-container">
                       <b-col md="4">
@@ -93,11 +101,15 @@
                         <div class="challenges customscroll">
                           <b-col
                               md="10"
-                              v-for="challenge in profileForUpdate.challenges"
+                              v-for="(challenge, index) in profileForUpdate.challenges"
                               :key="challenge"
                               class="profile-chal text-center"
                               v-on:click="removeFromProfile(challenge)"
                           >
+                            <template v-if="challenge.secret">
+                              <b-icon :id="challenge.tag+index+profileIndex" icon="exclamation-triangle-fill" variant="danger"></b-icon>
+                              <b-tooltip :target="challenge.tag+index+profileIndex" triggers="hover">Challenge is secret</b-tooltip>
+                            </template>
                             {{ challenge.name }}
                           </b-col>
                         </div>
@@ -218,18 +230,6 @@
                           </b-row>
                         </b-col>
                       </b-col>
-                      <b-col md="12" class="text-center" style="margin-top: 15px">
-                        <b-alert
-                            :show="dismissCountDown"
-                            dismissible
-                            :variant="variant"
-                            fade
-                            @dismissed="dismissCountDown=0"
-                            @dismiss-count-down="countDownChanged"
-                        >
-                          {{ alert }}
-                        </b-alert>
-                      </b-col>
                     </b-row>
                     <b-row class="info-container">
                       <b-col md="4">
@@ -239,11 +239,15 @@
                         <div class="challenges customscroll">
                           <b-col
                               md="10"
-                              v-for="challenge in profileForUpdate.challenges"
+                              v-for="(challenge, index) in profileForUpdate.challenges"
                               :key="challenge"
                               class="profile-chal text-center"
                               v-on:click="removeFromProfile(challenge)"
                           >
+                            <template v-if="challenge.secret">
+                              <b-icon :id="challenge.tag+index+profileIndex" icon="exclamation-triangle-fill" variant="danger"></b-icon>
+                              <b-tooltip :target="challenge.tag+index+profileIndex" triggers="hover">Challenge is secret</b-tooltip>
+                            </template>
                             {{ challenge.name }}
                           </b-col>
                         </div>
@@ -366,12 +370,25 @@ export default {
       profiles: [],
       areYouSure: false,
       showSelected: true,
+      secretChallenges: null,
     }
   },
   created: function () {
     this.getCategories();
   },
   methods: {
+    updateSecret: function () {
+      this.profileForUpdate.secret = false
+      const that = this
+      this.profileForUpdate.challenges.forEach(function (challenge) {
+        window.console.log("Checking if", challenge.tag, "is in secretchallenges")
+        let secret = that.secretChallenges.get(challenge.tag)
+        if (secret) {
+          that.profileForUpdate.secret = true
+        }
+      })
+      window.console.log("profile secret is now", this.profileForUpdate.secret)
+    },
     removeItem: function(array, key, value) {
       const index = array.findIndex(obj => obj[key] === value)
       return index >= 0 ? [
@@ -418,6 +435,7 @@ export default {
       const that = this
       let getRequest = new SaveProfileRequest()
       getRequest.setName(this.profileForUpdate.name)
+      getRequest.setSecret(this.profileForUpdate.secret)
       this.profileForUpdate.challenges.forEach(function(chal){
         let challenge = new SaveProfileRequest.Challenge()
         challenge.setTag(chal.tag)
@@ -440,6 +458,8 @@ export default {
         if (response.details == "") {
           let index = that.profiles.findIndex(obj => obj['name'] === that.profileForUpdate.name)
           that.profiles[index].challenges = that.profileForUpdate.challenges
+          that.profiles[index].secret = that.profileForUpdate.secret
+          that.setProfileForUpdate(that.profiles[index])
           that.checkIfUpdateAvailable()
           that.alert = "Profile successfully updated"
           that.showAlert("success")
@@ -469,7 +489,7 @@ export default {
     addToProfile: function(challenge){
       window.console.log("Adding challenge", challenge, "to profile", this.profileForUpdate.name)
       const that = this
-      let chal = {tag: challenge.value, name: challenge.name}
+      let chal = {tag: challenge.value, secret: challenge.secret, name: challenge.name}
       this.profileForUpdate.challenges.push(chal)
       this.profileForUpdate.categories.forEach(function(category){
         category.challenges.forEach(function(chal){
@@ -479,6 +499,7 @@ export default {
         })
       })
       this.checkIfUpdateAvailable()
+      this.updateSecret()
       window.console.log("Profile for update is now: ",this.profileForUpdate)
     },
     removeFromProfile: function(challenge) {
@@ -493,6 +514,7 @@ export default {
       })
       this.profileForUpdate.challenges = this.removeItem(this.profileForUpdate.challenges, 'tag', challenge.tag)
       this.checkIfUpdateAvailable()
+      this.updateSecret()
       window.console.log("Profile for update is now: ",this.profileForUpdate)
     },
     setProfileForUpdate: function(profile) {
@@ -502,8 +524,9 @@ export default {
       let categories = JSON.parse(JSON.stringify(that.categories)) // Creates a copy of this.categories
       let challenges = JSON.parse(JSON.stringify(profile.challenges)) // Creates a copy of this.categories
       let name = JSON.parse(JSON.stringify(profile.name))
+      let secret = JSON.parse(JSON.stringify(profile.secret))
       this.profileForUpdate = []
-      this.profileForUpdate = {name: name, challenges: challenges, categories: categories}
+      this.profileForUpdate = {name: name, secret: secret, challenges: challenges, categories: categories}
       this.profileForUpdate.challenges.forEach(function(pchallenge){
         that.profileForUpdate.categories.forEach(function(category){
           let index = category.challenges.findIndex(obj => obj['name'] === pchallenge.name)
@@ -525,19 +548,28 @@ export default {
         let profileListObj = response.getProfilesList();
         profileListObj.forEach(function (element) {
           let name = element.getName()
+          let secret = element.getSecret()
           let challengesListObj = element.getChallengesList()
           let challenges = []
           challengesListObj.forEach(function (element) {
             let tag = element.getTag()
             let name = element.getName()
-            let challenge = {tag: tag, name: name}
+            let challenge = {tag: tag, secret: false, name: name}
             challenges.push(challenge)
           })
-          let profile = {name: name, challenges: challenges}
+          let profile = {name: name, secret: secret, challenges: challenges}
           //window.console.log("Got profile", profile)
           that.profiles.push(profile)
         })
         //window.console.log(that.categories)
+        that.profiles.forEach(function(profile){
+          profile.challenges.forEach(function(challenge){
+            let secret = that.secretChallenges.get(challenge.tag)
+            if (secret) {
+              challenge.secret = true
+            }
+          })
+        })
         that.setProfileForUpdate(that.profiles[0])
       })
     },
@@ -594,6 +626,7 @@ export default {
     getExercises: function () {
       let getRequest = new Empty();
       const that = this
+      this.secretChallenges = new Map()
       daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
         this.error = err;
         let exercisesListObj = response.getExercisesList();
@@ -643,6 +676,9 @@ export default {
             secret: secret,
             difficulty: averageDifficulty
           };
+          if (secret) {
+            that.secretChallenges.set(taglist[0], true)
+          }
           that.categories.forEach(function (category) {
             if (that.cat == category.name) {
               category.challenges.push(parentChallenge)

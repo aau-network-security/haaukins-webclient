@@ -8679,7 +8679,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.daemon.ListProfilesResponse.Profile.repeatedFields_ = [2];
+proto.daemon.ListProfilesResponse.Profile.repeatedFields_ = [3];
 
 
 
@@ -8711,6 +8711,7 @@ proto.daemon.ListProfilesResponse.Profile.prototype.toObject = function(opt_incl
 proto.daemon.ListProfilesResponse.Profile.toObject = function(includeInstance, msg) {
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    secret: jspb.Message.getFieldWithDefault(msg, 2, false),
     challengesList: jspb.Message.toObjectList(msg.getChallengesList(),
     proto.daemon.ListProfilesResponse.Profile.Challenge.toObject, includeInstance)
   };
@@ -8754,6 +8755,10 @@ proto.daemon.ListProfilesResponse.Profile.deserializeBinaryFromReader = function
       msg.setName(value);
       break;
     case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSecret(value);
+      break;
+    case 3:
       var value = new proto.daemon.ListProfilesResponse.Profile.Challenge;
       reader.readMessage(value,proto.daemon.ListProfilesResponse.Profile.Challenge.deserializeBinaryFromReader);
       msg.addChallenges(value);
@@ -8794,10 +8799,17 @@ proto.daemon.ListProfilesResponse.Profile.serializeBinaryToWriter = function(mes
       f
     );
   }
+  f = message.getSecret();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
   f = message.getChallengesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      2,
+      3,
       f,
       proto.daemon.ListProfilesResponse.Profile.Challenge.serializeBinaryToWriter
     );
@@ -8990,18 +9002,35 @@ proto.daemon.ListProfilesResponse.Profile.prototype.setName = function(value) {
 
 
 /**
- * repeated Challenge challenges = 2;
+ * optional bool secret = 2;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.daemon.ListProfilesResponse.Profile.prototype.getSecret = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
+};
+
+
+/** @param {boolean} value */
+proto.daemon.ListProfilesResponse.Profile.prototype.setSecret = function(value) {
+  jspb.Message.setProto3BooleanField(this, 2, value);
+};
+
+
+/**
+ * repeated Challenge challenges = 3;
  * @return {!Array<!proto.daemon.ListProfilesResponse.Profile.Challenge>}
  */
 proto.daemon.ListProfilesResponse.Profile.prototype.getChallengesList = function() {
   return /** @type{!Array<!proto.daemon.ListProfilesResponse.Profile.Challenge>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.daemon.ListProfilesResponse.Profile.Challenge, 2));
+    jspb.Message.getRepeatedWrapperField(this, proto.daemon.ListProfilesResponse.Profile.Challenge, 3));
 };
 
 
 /** @param {!Array<!proto.daemon.ListProfilesResponse.Profile.Challenge>} value */
 proto.daemon.ListProfilesResponse.Profile.prototype.setChallengesList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 2, value);
+  jspb.Message.setRepeatedWrapperField(this, 3, value);
 };
 
 
@@ -9011,7 +9040,7 @@ proto.daemon.ListProfilesResponse.Profile.prototype.setChallengesList = function
  * @return {!proto.daemon.ListProfilesResponse.Profile.Challenge}
  */
 proto.daemon.ListProfilesResponse.Profile.prototype.addChallenges = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.daemon.ListProfilesResponse.Profile.Challenge, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.daemon.ListProfilesResponse.Profile.Challenge, opt_index);
 };
 
 
@@ -9074,7 +9103,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.daemon.SaveProfileRequest.repeatedFields_ = [2];
+proto.daemon.SaveProfileRequest.repeatedFields_ = [3];
 
 
 
@@ -9106,6 +9135,7 @@ proto.daemon.SaveProfileRequest.prototype.toObject = function(opt_includeInstanc
 proto.daemon.SaveProfileRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    secret: jspb.Message.getFieldWithDefault(msg, 2, false),
     challengesList: jspb.Message.toObjectList(msg.getChallengesList(),
     proto.daemon.SaveProfileRequest.Challenge.toObject, includeInstance)
   };
@@ -9149,6 +9179,10 @@ proto.daemon.SaveProfileRequest.deserializeBinaryFromReader = function(msg, read
       msg.setName(value);
       break;
     case 2:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSecret(value);
+      break;
+    case 3:
       var value = new proto.daemon.SaveProfileRequest.Challenge;
       reader.readMessage(value,proto.daemon.SaveProfileRequest.Challenge.deserializeBinaryFromReader);
       msg.addChallenges(value);
@@ -9189,10 +9223,17 @@ proto.daemon.SaveProfileRequest.serializeBinaryToWriter = function(message, writ
       f
     );
   }
+  f = message.getSecret();
+  if (f) {
+    writer.writeBool(
+      2,
+      f
+    );
+  }
   f = message.getChallengesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
-      2,
+      3,
       f,
       proto.daemon.SaveProfileRequest.Challenge.serializeBinaryToWriter
     );
@@ -9385,18 +9426,35 @@ proto.daemon.SaveProfileRequest.prototype.setName = function(value) {
 
 
 /**
- * repeated Challenge challenges = 2;
+ * optional bool secret = 2;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.daemon.SaveProfileRequest.prototype.getSecret = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 2, false));
+};
+
+
+/** @param {boolean} value */
+proto.daemon.SaveProfileRequest.prototype.setSecret = function(value) {
+  jspb.Message.setProto3BooleanField(this, 2, value);
+};
+
+
+/**
+ * repeated Challenge challenges = 3;
  * @return {!Array<!proto.daemon.SaveProfileRequest.Challenge>}
  */
 proto.daemon.SaveProfileRequest.prototype.getChallengesList = function() {
   return /** @type{!Array<!proto.daemon.SaveProfileRequest.Challenge>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.daemon.SaveProfileRequest.Challenge, 2));
+    jspb.Message.getRepeatedWrapperField(this, proto.daemon.SaveProfileRequest.Challenge, 3));
 };
 
 
 /** @param {!Array<!proto.daemon.SaveProfileRequest.Challenge>} value */
 proto.daemon.SaveProfileRequest.prototype.setChallengesList = function(value) {
-  jspb.Message.setRepeatedWrapperField(this, 2, value);
+  jspb.Message.setRepeatedWrapperField(this, 3, value);
 };
 
 
@@ -9406,7 +9464,7 @@ proto.daemon.SaveProfileRequest.prototype.setChallengesList = function(value) {
  * @return {!proto.daemon.SaveProfileRequest.Challenge}
  */
 proto.daemon.SaveProfileRequest.prototype.addChallenges = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.daemon.SaveProfileRequest.Challenge, opt_index);
+  return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.daemon.SaveProfileRequest.Challenge, opt_index);
 };
 
 

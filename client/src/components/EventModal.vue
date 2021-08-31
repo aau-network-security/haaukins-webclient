@@ -303,11 +303,11 @@
                           <b-form-select @change="onProfileSelect()" v-model="selectedProfile">
                             <b-form-select-option :value="null">No profile</b-form-select-option>
                             <b-form-select-option
-                              v-for="profile in profiles"
+                              v-for="(profile) in profiles"
                               :key="profile"
                               :value="profile"
                             >
-                              {{ profile.name }}
+                              {{ profile.name }} <template v-if="profile.secret">(Secret)</template>
                             </b-form-select-option>
                           </b-form-select>
                         </b-col>
@@ -458,6 +458,7 @@ export default {
         let profileListObj = response.getProfilesList();
         profileListObj.forEach(function (element){
           let name = element.getName()
+          let secret = element.getSecret()
           let challengesListObj = element.getChallengesList()
           let challenges = []
           challengesListObj.forEach(function (element){
@@ -466,7 +467,7 @@ export default {
             let challenge = {tag: tag, name: name}
             challenges.push(challenge)
           })
-          let profile = {name: name, challenges: challenges}
+          let profile = {name: name, secret: secret, challenges: challenges}
           window.console.log("Got profile", profile)
           that.profiles.push(profile)
         })
