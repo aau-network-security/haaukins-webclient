@@ -412,7 +412,7 @@ export default {
       const call = daemonclient.deleteProfile(getRequest, {Token: localStorage.getItem("user")});
 
       call.on('data', function(response){
-        //window.console.log("Data response: ", response)
+        window.console.log("Data response: ", response)
       });
       call.on('error', function(response){
         that.alert = response.message
@@ -446,7 +446,7 @@ export default {
       const call = daemonclient.editProfile(getRequest, {Token: localStorage.getItem("user")});
 
       call.on('data', function(response){
-        //window.console.log("Data response: ", response)
+        window.console.log("Data response: ", response)
       });
       call.on('error', function(response){
         that.alert = response.message
