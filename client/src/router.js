@@ -5,6 +5,7 @@ import HomePage from './Pages/Home'
 import LoginPage from './Pages/Login'
 import Teams from "./Pages/Teams";
 import Challenges from "./Pages/Challenges";
+import Profiles from "./Pages/Profiles";
 import VMs from "./Pages/VMs";
 import TeamFlags from "./Pages/TeamFlags";
 import TeamAction from "./Pages/TeamAction";
@@ -25,6 +26,7 @@ export const router = new Router({
         { name: 'flags',path: '/events/:tag/:id/flags', component: TeamFlags},
         { name: 'team', path: '/events/:tag/:id', component: TeamAction },
         { name: 'challenges', path: '/challenges', component: Challenges},
+        { name: 'profiles', path: '/profiles', component: Profiles},
         { name: 'users', path: '/users', component: Users},
         { name: 'vms', path: '/vms', component: VMs },
         { name: 'graphs', path: '/graphs', component: Graphs},
