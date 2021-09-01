@@ -220,8 +220,8 @@
                               <template v-if="challenge.secret">
                                 <b-icon :id="category.tag+'chalsecret'+'-'+index" icon="exclamation-triangle-fill"
                                         variant="danger"></b-icon>
-                                <b-tooltip :target="category.tag+'chalsecret'+'-'+index" triggers="hover">Profile will
-                                  be saved as secret
+                                <b-tooltip :target="category.tag+'chalsecret'+'-'+index" triggers="hover">
+                                  Challenge is secret
                                 </b-tooltip>
                               </template>
                               {{ challenge.name }}
@@ -411,8 +411,8 @@
                               <template v-if="challenge.secret">
                                 <b-icon :id="category.tag+'chalsecret'+'-'+index" icon="exclamation-triangle-fill"
                                         variant="danger"></b-icon>
-                                <b-tooltip :target="category.tag+'chalsecret'+'-'+index" triggers="hover">Profile will
-                                  be saved as secret
+                                <b-tooltip :target="category.tag+'chalsecret'+'-'+index" triggers="hover">
+                                  Challenge is secret
                                 </b-tooltip>
                               </template>
                               {{ challenge.name }}
