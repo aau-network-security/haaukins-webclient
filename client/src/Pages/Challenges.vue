@@ -154,8 +154,8 @@
                                   </template>
                                 </template>
                                 <b-col md="1" style="padding: 0; max-width: 25px;">
-                                  <div class="info-icon" v-on:click="showOrgDescription(challenge)">
-                                    <b-icon icon="info-circle"></b-icon>
+                                  <div v-on:click="showOrgDescription(challenge)">
+                                    <b-icon class="info-icon" icon="info-circle"></b-icon>
                                   </div>
                                 </b-col>
                                 <b-col md="9" style="padding: 0;">
@@ -201,8 +201,8 @@
                                   </template>
                                 </template>
                                 <b-col md="1" style="padding: 0; max-width: 25px;">
-                                  <div class="info-icon" v-on:click="showOrgDescription(challenge)">
-                                    <b-icon icon="info-circle"></b-icon>
+                                  <div v-on:click="showOrgDescription(challenge)">
+                                    <b-icon class="info-icon" icon="info-circle"></b-icon>
                                   </div>
                                 </b-col>
                                 <b-col md="9" style="padding: 0;">
@@ -367,8 +367,8 @@
                                   </template>
                                 </template>
                                 <b-col md="1" style="padding: 0; max-width: 25px;">
-                                  <div class="info-icon" v-on:click="showOrgDescription(challenge)">
-                                    <b-icon icon="info-circle"></b-icon>
+                                  <div v-on:click="showOrgDescription(challenge)">
+                                    <b-icon class="info-icon" icon="info-circle"></b-icon>
                                   </div>
                                 </b-col>
                                 <b-col md="9" style="padding: 0;">
@@ -414,8 +414,8 @@
                                   </template>
                                 </template>
                                 <b-col md="1" style="padding: 0; max-width: 25px;">
-                                  <div class="info-icon" v-on:click="showOrgDescription(challenge)">
-                                    <b-icon icon="info-circle"></b-icon>
+                                  <div v-on:click="showOrgDescription(challenge)">
+                                    <b-icon class="info-icon" icon="info-circle"></b-icon>
                                   </div>
                                 </b-col>
                                 <b-col md="9" style="padding: 0;">
@@ -943,5 +943,9 @@ h3 {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+}
+
+.info-icon{
+  cursor: pointer;
 }
 </style>

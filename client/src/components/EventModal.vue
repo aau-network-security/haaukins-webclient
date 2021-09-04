@@ -254,8 +254,8 @@
                                           </template>
                                         </template>
                                         <b-col md="1" style="padding: 0; max-width: 25px;">
-                                          <div class="info-icon" v-on:click="showOrgDescription(text)">
-                                            <b-icon icon="info-circle"></b-icon>
+                                          <div v-on:click="showOrgDescription(text)">
+                                            <b-icon class="info-icon" icon="info-circle"></b-icon>
                                           </div>
                                         </b-col>
                                         <b-form-checkbox
@@ -309,8 +309,8 @@
                                           </template>
                                         </template>
                                         <b-col md="1" style="padding: 0; max-width: 25px;">
-                                          <div class="info-icon" v-on:click="showOrgDescription(text)">
-                                            <b-icon icon="info-circle"></b-icon>
+                                          <div v-on:click="showOrgDescription(text)">
+                                            <b-icon class="info-icon" icon="info-circle"></b-icon>
                                           </div>
                                         </b-col>
                                         <b-form-checkbox
@@ -911,4 +911,7 @@ export default {
   background-color: #d35819;
 }
 
+.info-icon{
+  cursor: pointer;
+}
 </style>
