@@ -61,7 +61,6 @@
                         <p>
                           <span class="dot" :class="difficulty.tag"></span>
                           {{ difficulty.name }}
-                          <span class="dot" :class="difficulty.tag"></span>
                         </p>
                       </b-col>
                     </b-row>
@@ -274,7 +273,6 @@
                         <p>
                           <span class="dot" :class="difficulty.tag"></span>
                           {{ difficulty.name }}
-                          <span class="dot" :class="difficulty.tag"></span>
                         </p>
                       </b-col>
                     </b-row>
