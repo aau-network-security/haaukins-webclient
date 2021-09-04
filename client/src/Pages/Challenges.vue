@@ -57,7 +57,13 @@
                     <b-row class="text-center difficulties">
                       <b-col class="difficulty noselect" v-bind:class="{ active: difficulty.enabled }"
                              v-on:click="filterItems(category, difficulty)" v-for="difficulty in category.difficulties"
-                             :key="difficulty"><p>{{ difficulty.name }}</p></b-col>
+                             :key="difficulty">
+                        <p>
+                          <span class="dot" :class="difficulty.tag"></span>
+                          {{ difficulty.name }}
+                          <span class="dot" :class="difficulty.tag"></span>
+                        </p>
+                      </b-col>
                     </b-row>
                     <template v-if="profile.selectedChallenges.length > 0">
                       <b-row>
@@ -264,7 +270,13 @@
                     <b-row class="text-center difficulties">
                       <b-col class="difficulty noselect" v-bind:class="{ active: difficulty.enabled }"
                              v-on:click="filterItems(category, difficulty)" v-for="difficulty in category.difficulties"
-                             :key="difficulty"><p>{{ difficulty.name }}</p></b-col>
+                             :key="difficulty">
+                        <p>
+                          <span class="dot" :class="difficulty.tag"></span>
+                          {{ difficulty.name }}
+                          <span class="dot" :class="difficulty.tag"></span>
+                        </p>
+                      </b-col>
                     </b-row>
                     <template v-if="profile.selectedChallenges.length > 0">
                       <b-row>
@@ -663,11 +675,11 @@ export default {
             filteredItems: [],
             filterOn: false,
             difficulties: [
-              {name: "Very Easy", enabled: false},
-              {name: "Easy", enabled: false},
-              {name: "Medium", enabled: false},
-              {name: "Hard", enabled: false},
-              {name: "Very Hard", enabled: false}
+              {name: "Very Easy", tag: "veryeasy", enabled: false},
+              {name: "Easy", tag: "easy", enabled: false},
+              {name: "Medium", tag: "medium", enabled: false},
+              {name: "Hard", tag: "hard", enabled: false},
+              {name: "Very Hard", tag: "veryhard", enabled: false}
             ]
           }
           //window.console.log(category)
@@ -787,6 +799,12 @@ export default {
   border-color: #211a52 !important;
   margin: 0 20px 0 20px;
   cursor: pointer;
+}
+
+@media only screen and (max-width: 1200px) {
+  .difficulty {
+    margin: 0 10px 0 10px;
+  }
 }
 
 .difficulty.active {
