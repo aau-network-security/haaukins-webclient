@@ -227,21 +227,43 @@
                                       v-model="selectedChallenges"
                                       :name="category.tag"
                                       class="ml-4"
+                                      style="margin-left: 0px!important"
                                       stacked
                                   >
                                     <!-- {{ selectedChallenges }} Debugging -->
                                     <div
-                                        v-for="text in category.challenges"
+                                        v-for="(text, index) in category.challenges"
                                         :key="text"
                                         class="challenge-container"
                                     >
                                       <div class="checkbox-container">
+                                        <template v-if="secretChallenges.size">
+                                          <template v-if="text.secret">
+                                            <b-col md="1" style="padding: 0; max-width: 25px;">
+                                              <div class="danger-icon">
+                                                <b-icon :id="category.tag+'-'+index" icon="exclamation-triangle-fill"
+                                                        variant="danger"></b-icon>
+                                              </div>
+                                              <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret
+                                              </b-tooltip>
+                                            </b-col>
+                                          </template>
+                                          <template v-else>
+                                            <b-col md="1" style="padding: 0; max-width: 25px;">
+                                            </b-col>
+                                          </template>
+                                        </template>
+                                        <b-col md="1" style="padding: 0; max-width: 25px;">
+                                          <div v-on:click="showOrgDescription(text)">
+                                            <b-icon class="info-icon" icon="info-circle"></b-icon>
+                                          </div>
+                                        </b-col>
                                         <b-form-checkbox
                                             :value="text.value"
                                         >
+                                          <span class="dot" :class="text.difficultytag"></span>
                                           {{ text.text }}
                                         </b-form-checkbox>
-                                        <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
                                       </div>
                                     </div>
                                   </b-form-checkbox-group>
@@ -260,21 +282,43 @@
                                     v-model="selectedChallenges"
                                     :name="category.tag"
                                     class="ml-4"
+                                    style="margin-left: 0px!important"
                                     stacked
                                   >
                                     <!-- {{ selectedChallenges }} Debugging -->
                                     <div
-                                        v-for="text in category.challenges"
+                                        v-for="(text, index) in category.challenges"
                                         :key="text"
                                         class="challenge-container"
                                     >
                                       <div class="checkbox-container">
+                                        <template v-if="secretChallenges.size">
+                                          <template v-if="text.secret">
+                                            <b-col md="1" style="padding: 0; max-width: 25px;">
+                                              <div class="danger-icon">
+                                                <b-icon :id="category.tag+'-'+index" icon="exclamation-triangle-fill"
+                                                        variant="danger"></b-icon>
+                                              </div>
+                                              <b-tooltip :target="category.tag+'-'+index" triggers="hover">Challenge is secret
+                                              </b-tooltip>
+                                            </b-col>
+                                          </template>
+                                          <template v-else>
+                                            <b-col md="1" style="padding: 0; max-width: 25px;">
+                                            </b-col>
+                                          </template>
+                                        </template>
+                                        <b-col md="1" style="padding: 0; max-width: 25px;">
+                                          <div v-on:click="showOrgDescription(text)">
+                                            <b-icon class="info-icon" icon="info-circle"></b-icon>
+                                          </div>
+                                        </b-col>
                                         <b-form-checkbox
                                             :value="text.value"
                                         >
+                                          <span class="dot" :class="text.difficultytag"></span>
                                           {{ text.text }}
                                         </b-form-checkbox>
-                                        <div class="info-icon" v-on:click="showOrgDescription(text)"><b-icon icon="info-circle"></b-icon></div>
                                       </div>
                                     </div>
                                   </b-form-checkbox-group>
@@ -423,6 +467,7 @@ export default {
         to: new Date(Date.now() - 8640000)
       },
       isVPNON: 4,
+      secretChallenges: null,
     }
   },
   mounted: function(){
@@ -626,17 +671,44 @@ export default {
     getExercises: function(){
       let getRequest = new Empty();
       const that = this
+      this.secretChallenges = new Map()
       daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
         this.error = err;
         let exercisesListObj = response.getExercisesList();
         exercisesListObj.forEach(function (element) {
           let childrenChallengesObj = element.getExerciseinfoList();
           that.childrenChallenges = "   (";
-
+          let totalPoints = 0;
           for (let i = 0; i < childrenChallengesObj.length; i++){
             that.cat = childrenChallengesObj[i].getCategory();
             that.childrenChallenges+= childrenChallengesObj[i].getName() + ", "
+            totalPoints += childrenChallengesObj[i].getPoints();
           }
+          let averagePoints = totalPoints / childrenChallengesObj.length
+          let averageDifficulty = ''
+          let difficultytag = ''
+          if (averagePoints < 21) {
+            averageDifficulty = "Very Easy"
+            difficultytag = "veryeasy"
+            //window.console.log("Challenge was very easy")
+          } else if (averagePoints >= 21 && averagePoints < 41) {
+            averageDifficulty = "Easy"
+            difficultytag = "easy"
+            //window.console.log("Challenge was easy")
+          } else if (averagePoints >= 41 && averagePoints < 61) {
+            averageDifficulty = "Medium"
+            difficultytag = "medium"
+            //window.console.log("Challenge was Medium")
+          } else if (averagePoints >= 61 && averagePoints < 81) {
+            averageDifficulty = "Hard"
+            difficultytag = "hard"
+            //window.console.log("Challenge was Hard")
+          } else if (averagePoints >= 81 && averagePoints <= 100) {
+            averageDifficulty = "Very Hard"
+            difficultytag = "veryhard"
+            //window.console.log("Challenge was Very Hard")
+          }
+
           that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2)
           that.childrenChallenges+= ")";
           if (childrenChallengesObj.length == 1){
@@ -645,7 +717,19 @@ export default {
           let taglist = element.getTagsList();
           let name = element.getName();
           let orgDesc = element.getOrgdescription()
-          let parentChallenge = { text: name + that.childrenChallenges, value: taglist[0], orgDesc: orgDesc, isInfoShown: false };
+          let secret = element.getSecret()
+          let parentChallenge = {
+            text: name + that.childrenChallenges,
+            value: taglist[0],
+            orgDesc: orgDesc,
+            isInfoShown: false,
+            secret: secret,
+            difficulty:averageDifficulty,
+            difficultytag: difficultytag
+          };
+          if (secret) {
+            that.secretChallenges.set(taglist[0], true)
+          }
           that.categories.forEach(function(category) {
             if (that.cat == category.name) {
               category.challenges.push(parentChallenge)
@@ -760,16 +844,6 @@ export default {
   border-color: #211a52!important;
 }
 
-.info-icon {
-  position: relative;
-  top: 0.3px;
-  left: -350px;
-  width: 16px;
-  padding: 0px;
-  margin: 0px;
-  z-index: 99999;
-}
-
 .checkbox-container {
   display: flex;
 }
@@ -810,4 +884,34 @@ export default {
   display:none;
 }
 
+.dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.veryeasy{
+  background-color: #42bf18;
+}
+
+.dot.easy{
+  background-color: #97c019;
+}
+
+.dot.medium{
+  background-color: #d0c219;
+}
+
+.dot.hard{
+  background-color: #d27d19;
+}
+
+.dot.veryhard{
+  background-color: #d35819;
+}
+
+.info-icon{
+  cursor: pointer;
+}
 </style>
