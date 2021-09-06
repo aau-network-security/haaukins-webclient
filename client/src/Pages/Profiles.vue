@@ -5,7 +5,8 @@
       <b-row style="margin-bottom: 20px">
         <h3 class="float-left font-weight-bold text-gray-800 mb-1">Available Challenge Profiles</h3>
       </b-row>
-      <b-row>
+      <template v-if="!noProfiles && !loaderIsActive">
+        <b-row>
         <div class="col-2 customscroll">
           <div class="nav flex-column nav-pills sticky-top" id="profiles" role="tablist"
                aria-orientation="vertical">
@@ -342,6 +343,27 @@
           </div>
         </div>
       </b-row>
+      </template>
+      <template v-else-if="loaderIsActive">
+        <div v-if="true" class="alert myalert-loading alert-dismissible">
+          <div class="d-inline mr-2">
+            <img class="loading-logo" src="../assets/bluelogo.png" width="50" height="50">
+          </div>
+          <div class="d-inline mr-2">Loading profiles</div>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="top: 13px;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </template>
+      <template v-else-if="noProfiles">
+        <b-row class="text-center">
+          <b-col md="12">
+            <b-alert variant="danger" show>
+              No profiles are currently available. To add a challenge profile, please visit the challenges page. You can select the challenges you like for your profile and afterwards save it.
+            </b-alert>
+          </b-col>
+        </b-row>
+      </template>
     </div>
     <Footer/>
   </div>
@@ -371,6 +393,8 @@ export default {
       areYouSure: false,
       showSelected: true,
       secretChallenges: null,
+      loaderIsActive: true,
+      noProfiles: false,
     }
   },
   created: function () {
@@ -427,6 +451,11 @@ export default {
           that.alert = "Profile \"" + that.profileForUpdate.name + "\" successfully deleted"
           that.setProfileForUpdate(that.profiles[0])
           that.showAlert("success")
+          setTimeout(function (){
+            if(!that.profiles.length){
+              that.noProfiles = true
+            }
+          }.bind(that), 5000)
         }
       });
     },
@@ -519,25 +548,26 @@ export default {
     },
     setProfileForUpdate: function(profile) {
       //window.console.log("Setting profileForUpdate to", profile)
-      this.areYouSure = false
-      const that = this
-      let categories = JSON.parse(JSON.stringify(that.categories)) // Creates a copy of this.categories
-      let challenges = JSON.parse(JSON.stringify(profile.challenges)) // Creates a copy of this.categories
-      let name = JSON.parse(JSON.stringify(profile.name))
-      let secret = JSON.parse(JSON.stringify(profile.secret))
-      this.profileForUpdate = []
-      this.profileForUpdate = {name: name, secret: secret, challenges: challenges, categories: categories}
-      this.profileForUpdate.challenges.forEach(function(pchallenge){
-        that.profileForUpdate.categories.forEach(function(category){
-          let index = category.challenges.findIndex(obj => obj['name'] === pchallenge.name)
-          if (index >= 0) {
-            //window.console.log("Found", pchallenge.name, "in category",category,"removing them from Challenges not in profile")
-            category.challenges = that.removeItem(category.challenges, 'value', pchallenge.tag)
-          }
+      if(this.profiles.length) {
+        this.areYouSure = false
+        const that = this
+        let categories = JSON.parse(JSON.stringify(that.categories)) // Creates a copy of this.categories
+        let challenges = JSON.parse(JSON.stringify(profile.challenges)) // Creates a copy of this.categories
+        let name = JSON.parse(JSON.stringify(profile.name))
+        let secret = JSON.parse(JSON.stringify(profile.secret))
+        this.profileForUpdate = []
+        this.profileForUpdate = {name: name, secret: secret, challenges: challenges, categories: categories}
+        this.profileForUpdate.challenges.forEach(function (pchallenge) {
+          that.profileForUpdate.categories.forEach(function (category) {
+            let index = category.challenges.findIndex(obj => obj['name'] === pchallenge.name)
+            if (index >= 0) {
+              //window.console.log("Found", pchallenge.name, "in category",category,"removing them from Challenges not in profile")
+              category.challenges = that.removeItem(category.challenges, 'value', pchallenge.tag)
+            }
+          })
         })
-      })
-      this.checkIfUpdateAvailable()
-     // window.console.log("ProfileForUpdate is now", this.profileForUpdate)
+        this.checkIfUpdateAvailable()
+      }
     },
     getProfiles: function () {
       const that = this
@@ -571,6 +601,13 @@ export default {
           })
         })
         that.setProfileForUpdate(that.profiles[0])
+        if (!that.profiles.length) {
+          that.noProfiles = true
+        }
+        setTimeout(function (){
+          that.loaderIsActive = false
+        }.bind(that), 1000)
+
       })
     },
     getCategories: function () {
