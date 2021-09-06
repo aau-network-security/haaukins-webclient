@@ -3,7 +3,11 @@
     <Navbar/>
     <div class="container" style="margin-top: 40px">
       <b-row style="margin-bottom: 20px">
-        <h3 class="float-left font-weight-bold text-gray-800 mb-1">Available Challenge Profiles</h3>
+        <h3 class="float-left font-weight-bold text-gray-800 mb-1">
+          Available Challenge Profiles
+          <b-icon id="create-chal-info" class="info-icon" icon="info-circle"></b-icon>
+          <b-tooltip target="create-chal-info">You can create challenge profiles from the <i>Challenges</i> page. Select your desired challenges, choose a profile name and hit "Save Profile". Your new profile will displayed on this page.</b-tooltip>
+        </h3>
       </b-row>
       <template v-if="!noProfiles && !loaderIsActive">
         <b-row>
