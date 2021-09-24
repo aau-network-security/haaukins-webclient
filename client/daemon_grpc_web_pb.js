@@ -2585,5 +2585,310 @@ proto.daemon.DaemonPromiseClient.prototype.listCategories =
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.SaveProfileRequest,
+ *   !proto.daemon.ProfileStatus>}
+ */
+const methodDescriptor_Daemon_SaveProfile = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/SaveProfile',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.daemon.SaveProfileRequest,
+  proto.daemon.ProfileStatus,
+  /**
+   * @param {!proto.daemon.SaveProfileRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.ProfileStatus.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.SaveProfileRequest,
+ *   !proto.daemon.ProfileStatus>}
+ */
+const methodInfo_Daemon_SaveProfile = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.ProfileStatus,
+  /**
+   * @param {!proto.daemon.SaveProfileRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.ProfileStatus.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.SaveProfileRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ProfileStatus>}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.saveProfile =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/daemon.Daemon/SaveProfile',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_SaveProfile);
+};
+
+
+/**
+ * @param {!proto.daemon.SaveProfileRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ProfileStatus>}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonPromiseClient.prototype.saveProfile =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/daemon.Daemon/SaveProfile',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_SaveProfile);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.DeleteProfileRequest,
+ *   !proto.daemon.ProfileStatus>}
+ */
+const methodDescriptor_Daemon_DeleteProfile = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/DeleteProfile',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.daemon.DeleteProfileRequest,
+  proto.daemon.ProfileStatus,
+  /**
+   * @param {!proto.daemon.DeleteProfileRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.ProfileStatus.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.DeleteProfileRequest,
+ *   !proto.daemon.ProfileStatus>}
+ */
+const methodInfo_Daemon_DeleteProfile = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.ProfileStatus,
+  /**
+   * @param {!proto.daemon.DeleteProfileRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.ProfileStatus.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.DeleteProfileRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ProfileStatus>}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.deleteProfile =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/daemon.Daemon/DeleteProfile',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_DeleteProfile);
+};
+
+
+/**
+ * @param {!proto.daemon.DeleteProfileRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ProfileStatus>}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonPromiseClient.prototype.deleteProfile =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/daemon.Daemon/DeleteProfile',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_DeleteProfile);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.SaveProfileRequest,
+ *   !proto.daemon.ProfileStatus>}
+ */
+const methodDescriptor_Daemon_EditProfile = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/EditProfile',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.daemon.SaveProfileRequest,
+  proto.daemon.ProfileStatus,
+  /**
+   * @param {!proto.daemon.SaveProfileRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.ProfileStatus.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.SaveProfileRequest,
+ *   !proto.daemon.ProfileStatus>}
+ */
+const methodInfo_Daemon_EditProfile = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.ProfileStatus,
+  /**
+   * @param {!proto.daemon.SaveProfileRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.ProfileStatus.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.SaveProfileRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ProfileStatus>}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.editProfile =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/daemon.Daemon/EditProfile',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_EditProfile);
+};
+
+
+/**
+ * @param {!proto.daemon.SaveProfileRequest} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ProfileStatus>}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonPromiseClient.prototype.editProfile =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/daemon.Daemon/EditProfile',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_EditProfile);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.ListProfilesResponse>}
+ */
+const methodDescriptor_Daemon_ListProfiles = new grpc.web.MethodDescriptor(
+  '/daemon.Daemon/ListProfiles',
+  grpc.web.MethodType.UNARY,
+  proto.daemon.Empty,
+  proto.daemon.ListProfilesResponse,
+  /**
+   * @param {!proto.daemon.Empty} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.ListProfilesResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.daemon.Empty,
+ *   !proto.daemon.ListProfilesResponse>}
+ */
+const methodInfo_Daemon_ListProfiles = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.daemon.ListProfilesResponse,
+  /**
+   * @param {!proto.daemon.Empty} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.daemon.ListProfilesResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.daemon.Empty} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.daemon.ListProfilesResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.daemon.ListProfilesResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.daemon.DaemonClient.prototype.listProfiles =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/daemon.Daemon/ListProfiles',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_ListProfiles,
+      callback);
+};
+
+
+/**
+ * @param {!proto.daemon.Empty} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.daemon.ListProfilesResponse>}
+ *     Promise that resolves to the response
+ */
+proto.daemon.DaemonPromiseClient.prototype.listProfiles =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/daemon.Daemon/ListProfiles',
+      request,
+      metadata || {},
+      methodDescriptor_Daemon_ListProfiles);
+};
+
+
 module.exports = proto.daemon;
 
