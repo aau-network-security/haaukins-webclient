@@ -8,10 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Publish Webclient to Docker Registry
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v3
         with:
           repository: aaunetworksecurity/haaukins-webclient
           username: aaunetworksecurity
@@ -22,7 +22,7 @@ jobs:
 
 
       - name: Publish Webclient to Github Registry
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v3
         with:
           repository: aau-network-security/haaukins-webclient/webclient
           username: ${{ github.actor }}
@@ -44,13 +44,10 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        uses: ncipollo/release-action@v1.10.0
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body_path: ./changelog.txt
-          draft: false
-          prerelease: false
+          tag: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          bodyFile: ./changelog.txt
+          token: ${{ secrets.GITHUB_TOKEN }}
 
