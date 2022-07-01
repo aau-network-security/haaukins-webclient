@@ -62,20 +62,20 @@
                         <th>Event Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Availability</th><th>Capacity</th><th>Status</th><th>Action</th><th>Stop</th><th>Secret_Key</th><th>Created_By</th><th>Creation_Date</th><th>Finish_Date</th>
                     </thead>
                     <tbody v-if="events!=null">
-                        <tr v-for="event in events.eventsList" v-bind:key="event.tag">
+                        <tr v-for="event in events" v-bind:key="event.tag">
                             <td><strong><router-link :to="{name: 'event', params: {tag: event.tag}}" class="text-haaukins" >{{event.tag}}</router-link></strong></td>
                             <td>{{event.name}}</td>
-                            <td>{{event.teamcount}}</td>
+                            <td>{{event.teamCount}}</td>
                             <td>{{challenges_count(event.exercises)}}</td>
                             <td>{{event.availability}}</td>
                             <td>{{event.capacity}}</td>
                             <td>{{event_status(event.status)}}</td>
                             <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == Booked">{{suspendResumeEventButton(event.status)}}</button></td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
-                            <td>{{event.secretevent}}</td>
-                            <td>{{event.createdby}}</td>
-                            <td>{{beaut_date(event.creationtime)}}</td>
-                            <td>{{beaut_date(event.finishtime)}}</td>
+                            <td>{{event.secretEvent}}</td>
+                            <td>{{event.createdBy}}</td>
+                            <td>{{beauty_date(event.creationTime)}}</td>
+                            <td>{{beauty_date(event.finishTime)}}</td>
                         </tr>
                     </tbody>
                     <tbody v-else>
@@ -124,7 +124,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { ListEventsRequest,
+    import { 
       StopEventRequest,
       SuspendEventRequest,
       InviteUserRequest,
@@ -133,6 +133,7 @@
     import EventModal from "../components/EventModal";
     import ChalModal from "../components/ChalModal";
     import AnnounceModal from "../components/AnnounceModal";
+    import APIURL from "../router"
 
     export default {
         name: "Home",
@@ -152,7 +153,8 @@
                   { item: 'super_user', name: 'Super User' },
                   { item: 'np_user', name: 'NP User' },
                 ],
-                userSelected: ""
+                userSelected: "",
+                API_URL: 'http://localhost:8090/admin/event/list'
             }
         },
         created: function() {
@@ -197,18 +199,27 @@
             }
             ,
             listEvent: function (status) {
-                let getRequest = new ListEventsRequest();
-                getRequest.setStatus(status)
-                daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.events = response.toObject()
-                        this.events['eventsList'].sort(function (a, b) {
-                            return new Date(a.creationtime.replace(/\s/, 'T')) - new Date(b.creationtime.replace(/\s/, 'T'));
-                        })
-                    }else{
-                        this.error = err;
-                    }
-                });
+              const opts = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+
+              };
+              window.console.log(status)
+              fetch(this.API_URL, opts).then(response => response.json())
+              .then(response => {
+                this.events = response.events
+                this.events.sort(function (a, b) {
+                    return new Date(a.creationtime.replace(/\s/, 'T')) - new Date(b.creationtime.replace(/\s/, 'T'));
+                })
+                window.console.log(this.events)
+              })
+              .catch(function (err) {
+                window.console.log("Unable to fetch -", err);
+                this.error = err;
+                window.console.log(err)
+                return
+              });
+               
             },
 
              addChallenge: function (request) {
@@ -358,7 +369,7 @@
                 const challenges = challenges_string.split(",");
                 return challenges.length
             },
-            beaut_date: function (string_date){
+            beauty_date: function (string_date){
                 let date = new Date(string_date.replace(/\s/, 'T'));
                 return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
             },
