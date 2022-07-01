@@ -25,9 +25,6 @@
 
 <script>
     import { router } from '../router';
-    import { daemonclient } from "../App";
-    import { LoginUserRequest } from "daemon_pb"
-
     export default {
         data () {
             return {
@@ -36,7 +33,8 @@
                 submitted: false,
                 loading: false,
                 returnUrl: '',
-                error: null
+                error: null,
+                API_URL: 'http://localhost:8090/admin/login'
             }
         },
         created () {
@@ -48,33 +46,35 @@
             this.returnUrl = this.$route.query.returnUrl || '/';
         },
         methods: {
-            login () {
-                this.submitted = true;
-                const { username, password } = this;
-                // stop here if form is invalid
-                if (!(username && password)) {
-                    return;
-                }else{
-                    this.loading = true;
-                    let getRequest = new LoginUserRequest();
-                    getRequest.setUsername(username);
-                    getRequest.setPassword(password);
-
-                    //router.push(this.returnUrl)
-
-                    daemonclient.loginUser(getRequest, {}, (err, response) => {
-                        if (err == null && response.getError() == '') {
-                            localStorage.setItem('user', response.getToken());
-                            localStorage.setItem('user-email', username);
-                            router.push(this.returnUrl)
-                        }else{
-                            this.error = err || response.getError();
-                            this.submitted = false;
-                            this.loading = false;
-                        }
-                    });
-                }
+          login() {
+            this.submitted = true;
+            const opts = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({"username":this.username, "password":this.password}),
+            };
+            if (!(this.username && this.password)) {
+              return;
             }
+            fetch(this.API_URL, opts)
+                .then(response => response.json())
+                .then(response => {
+                  window.console.log('Respond is '+ response["token"]);
+                  localStorage.setItem('user', response["token"]);
+                  localStorage.setItem('user-email', this.username);
+                  router.push(this.returnUrl)
+                  window.console.log("Login successful from REST...")
+                })
+                .catch(err =>{
+                  window.console.log("Unable to fetch -", err);
+                  this.error = err;
+                  this.submitted = false;
+                  this.loading = false;
+                  window.console.log(err)
+                  return
+                });
+
+          },
         }
     };
 </script>
