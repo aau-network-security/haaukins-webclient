@@ -59,21 +59,18 @@
             fetch(this.API_URL, opts)
                 .then(response => response.json())
                 .then(response => {
+                  if (response["error"] !== "") {
+                    this.error = response["error"];
+                    this.submitted = false;
+                    this.loading = false;
+                    window.console.log(response["error"])
+                    return
+                  }
                   window.console.log('Respond is '+ response["token"]);
                   localStorage.setItem('user', response["token"]);
                   localStorage.setItem('user-email', this.username);
                   router.push(this.returnUrl)
-                  window.console.log("Login successful from REST...")
                 })
-                .catch(err =>{
-                  window.console.log("Unable to fetch -", err);
-                  this.error = err;
-                  this.submitted = false;
-                  this.loading = false;
-                  window.console.log(err)
-                  return
-                });
-
           },
         }
     };
