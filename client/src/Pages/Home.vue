@@ -205,7 +205,7 @@
 
               };
               window.console.log(status)
-              fetch(this.API_URL, opts).then(response => response.json())
+              fetch(this.API_URL+'/'+status, opts).then(response => response.json())
               .then(response => {
                 if (response.message !== undefined) {
                   window.console.log("Unable to fetch -", response.message);
