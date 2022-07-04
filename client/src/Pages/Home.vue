@@ -127,7 +127,6 @@
     import { 
       StopEventRequest,
       SuspendEventRequest,
-      InviteUserRequest,
       Empty } from "daemon_pb";
     import { daemonclient, API_ENDPOINT } from "../App";
     import EventModal from "../components/EventModal";
@@ -369,20 +368,33 @@
                 return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
             },
             create_signup_key: function () {
-                let getRequest = new InviteUserRequest();
-                if (this.userSelected == 'super_user') {
-                    getRequest.setSuperUser(true)
-                }
-                if (this.userSelected == 'np_user') {
-                    getRequest.setNpUser(true)
-                }
 
-                daemonclient.inviteUser(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (response.getError() != null) {
-                        this.error = response.getError();
+              const opts = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+              }
+              let body = {}
+              if (this.userSelected == 'super_user') {
+                  body['super_user'] = true
+                }
+              if (this.userSelected == 'np_user') {
+                body['np_user'] = true
+              }
+              opts['body'] = JSON.stringify(body)
+
+              fetch(API_ENDPOINT+'/admin/invite', opts)
+                  .then(response => response.json())
+                  .then(response => {
+                    window.console.log('invite response '+ JSON.stringify(response))
+                    if (response['message'] !== "" ){
+                      // this is in case of token is invalidated
+                      this.error = response['message']
                     }
-                    this.success = response.getKey()
-                });
+                    if (response['error'] !== "") {
+                      this.error = response['error']
+                    }
+                    this.success = response['key']
+                  })
             },
             monitorHost: function () {
                 const that = this;
