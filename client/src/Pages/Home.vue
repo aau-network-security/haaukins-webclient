@@ -208,8 +208,8 @@
               fetch(this.API_URL, opts).then(response => response.json())
               .then(response => {
                 if (response.message !== undefined) {
-                  window.console.log("Unable to fetch -", response.error);
-                  this.error = response.error;
+                  window.console.log("Unable to fetch -", response.message);
+                  this.error = response.message;
                   return
                 }
                 this.events = response.events
