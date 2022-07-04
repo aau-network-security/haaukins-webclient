@@ -129,11 +129,10 @@
       SuspendEventRequest,
       InviteUserRequest,
       Empty } from "daemon_pb";
-    import { daemonclient } from "../App";
+    import { daemonclient, API_ENDPOINT } from "../App";
     import EventModal from "../components/EventModal";
     import ChalModal from "../components/ChalModal";
     import AnnounceModal from "../components/AnnounceModal";
-
 
     export default {
         name: "Home",
@@ -153,8 +152,7 @@
                   { item: 'super_user', name: 'Super User' },
                   { item: 'np_user', name: 'NP User' },
                 ],
-                userSelected: "",
-                API_URL: 'http://localhost:8090/admin/event/list'
+                userSelected: ""
             }
         },
         created: function() {
@@ -205,7 +203,7 @@
 
               };
               window.console.log(status)
-              fetch(this.API_URL+'/'+status, opts).then(response => response.json())
+              fetch(API_ENDPOINT+'/admin/event/list/'+status, opts).then(response => response.json())
               .then(response => {
                 if (response.message !== undefined) {
                   window.console.log("Unable to fetch -", response.message);

@@ -25,6 +25,7 @@
 
 <script>
     import { router } from '../router';
+    import { API_ENDPOINT } from '../App';
     export default {
         data () {
             return {
@@ -33,8 +34,7 @@
                 submitted: false,
                 loading: false,
                 returnUrl: '',
-                error: null,
-                API_URL: 'http://localhost:8090/admin/login'
+                error: null
             }
         },
         created () {
@@ -56,7 +56,7 @@
             if (!(this.username && this.password)) {
               return;
             }
-            fetch(this.API_URL, opts)
+            fetch(API_ENDPOINT+'/admin/login', opts)
                 .then(response => response.json())
                 .then(response => {
                   if (response["error"] !== "") {
