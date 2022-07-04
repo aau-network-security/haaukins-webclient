@@ -133,7 +133,7 @@
     import EventModal from "../components/EventModal";
     import ChalModal from "../components/ChalModal";
     import AnnounceModal from "../components/AnnounceModal";
-    import APIURL from "../router"
+
 
     export default {
         name: "Home",
