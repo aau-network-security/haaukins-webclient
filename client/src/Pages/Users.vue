@@ -20,16 +20,16 @@
                     <thead>
                         <th>Username</th><th>Name</th><th>Last_Name</th><th>Email</th><th>Created_At</th><th>Priviledge</th><th>Update</th><th>Delete</th>
                     </thead>
-                    <tbody v-if="users!=null">
-                        <tr v-for="user in users.usersList" v-bind:key="user.username">
-                            <td class="text-haaukins"><strong>{{user.username}}</strong></td>
-                            <td>{{user.name}}</td>
-                            <td>{{user.surname}}</td>
-                            <td>{{user.email}}</td>
-                            <td>{{beaut_date(user.createdat)}}</td>
-                            <td v-bind:class="{ 'text-success': user.issuperuser }">{{userType(user.issuperuser, user.isnpuser)}}</td>
-                            <td><button class="btn btn-secondary btn-sm" v-on:click="openModal(user.username)">Update</button></td>
-                            <td><button class="btn btn-danger btn-sm" v-on:click="deleteUser(user.username)">Delete</button></td>
+                    <tbody v-if="this.users!=null">
+                        <tr v-for="user in users" v-bind:key="user['username']">
+                            <td class="text-haaukins"><strong>{{user['username']}}</strong></td>
+                            <td>{{user['name']}}</td>
+                            <td>{{user['surname']}}</td>
+                            <td>{{user['email']}}</td>
+                            <td>{{beaut_date(user['createdAt'])}}</td>
+                            <td v-bind:class="{ 'text-success': user['isSuperUser'] }">{{userType(user['isSuperUser'] , user['isNPUser'])}}</td>
+                            <td><button class="btn btn-secondary btn-sm" v-on:click="openModal(user['username'])">Update</button></td>
+                            <td><button class="btn btn-danger btn-sm" v-on:click="deleteUser(user['username'])">Delete</button></td>
                         </tr>
                     </tbody>
                     <tbody v-else>
@@ -80,8 +80,7 @@
 <script>
     import Footer from "../components/Footer";
     import Navbar from "../components/Navbar";
-    import { DestroyUserRequest, UpdatePasswdRequest, Empty } from "daemon_pb";
-    import { daemonclient } from "../App";
+    import {  API_ENDPOINT } from "../App";
 
     export default {
         name: "Users",
@@ -98,18 +97,23 @@
         },
         methods: {
             listUsers: function () {
-                let getRequest = new Empty();
-                daemonclient.listUsers(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.users = response.toObject()
-                    }else{
-                        this.error = err["message"];
-                      if (this.error === 'token contains an invalid number of segments') {
+
+                const opts = {
+                  method: 'GET',
+                  headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')}
+                }
+                fetch(API_ENDPOINT+'/admin/user/list', opts)
+                    .then(response => response.json())
+                    .then(response => {
+                      if (response['error'] !==""){
+                        this.error = response['error']
+                      }
+                      if (response['message'] === 'token contains an invalid number of segments'){
                         this.$router.push({path: 'login'})
                         window.localStorage.clear()
                       }
-                    }
-                });
+                      this.users = response['users']
+                    });
             },
             openModal: function (username) {
                 this.userUpdate = username
@@ -124,33 +128,47 @@
                     return
                 }
 
-                let getRequest = new UpdatePasswdRequest();
-                getRequest.setUsername(this.userUpdate)
-                getRequest.setPassword(this.password)
-                daemonclient.changeUserPasswd(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.success = response.toObject().message
-                    }else{
-                        this.error = err["message"];
-                    }
-                });
+                const opst = {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                  body: JSON.stringify({
+                        'username': this.userUpdate,
+                        'password': this.password
+                      }
+                  )
+                }
+
+                fetch(API_ENDPOINT+'/admin/user/update', opst)
+                    .then(response => response.json())
+                    .then(response => {
+                      if (response['error'] !== ""){
+                        this.error = response['error']
+                      }
+                      if (response['message'] === 'User not found') {
+                        this.error = response['message']
+                      }
+                      this.success = response['message']
+                    })
                 this.password = ""
                 this.repeatPassword = ""
                 this.$bvModal.hide('update-user-modal')
             },
             deleteUser: function (username) {
-                let getRequest = new DestroyUserRequest();
-                getRequest.setUsername(username)
-                daemonclient.destroyUser(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.success = response.toObject().message
-                        this.listUsers()
-                    }else{
-                        this.error = err["message"];
 
-                    }
-                });
-
+                const opst = {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                  body: JSON.stringify({'username': username})
+                }
+                fetch(API_ENDPOINT+'/admin/user/delete', opst)
+                    .then(response => response.json())
+                    .then(response => {
+                      if (response['error'] !== ""){
+                        this.error = response['error']
+                      }
+                      this.success = response['message']
+                      this.listUsers()
+                    });
             },
             beaut_date: function (string_date){
                 let date = new Date(string_date.replace(/\s/, 'T'));
