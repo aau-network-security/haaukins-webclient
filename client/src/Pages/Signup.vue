@@ -102,26 +102,6 @@
                     router.push(this.returnUrl)
                   })
 
-
-
-
-                // let getRequest = new SignupUserRequest();
-                // getRequest.setKey(key);
-                // getRequest.setName(name);
-                // getRequest.setSurname(lastname);
-                // getRequest.setEmail(email);
-                // getRequest.setUsername(username);
-                // getRequest.setPassword(password);
-                //
-                // daemonclient.signupUser(getRequest, {}, (err, response) => {
-                //     if (err == null && response.getError() == '') {
-                //         localStorage.setItem('user', response.getToken());
-                //         router.push(this.returnUrl)
-                //     }else{
-                //         this.error = err || response.getError();
-                //         this.submitted = false;
-                //     }
-                // })
             }
         }
     }
