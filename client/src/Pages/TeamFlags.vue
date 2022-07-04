@@ -23,13 +23,13 @@
             <td> </td><td class="text-haaukins" style="text-align: left; font-weight: bolder">Name</td><td style="text-align: left; font-weight: bolder"> Tag</td><td style="text-align: left; font-weight: bolder" > Flag</td><td style="text-align: left; font-weight: bolder">Action</td>
           </tr>
           </thead>
-          <tbody v-if="infos">
-          <tr v-for="(info,count) in infos.flagsList" v-bind:key="info.tag">
+          <tbody v-if="this.infos">
+          <tr v-for="(info,count) in this.infos" v-bind:key="info.tag">
             <td>{{count + 1}}</td>
-            <td>{{info.challengename}}</td>
-            <td>{{info.challengetag}}</td>
-            <td class="user-select-all" style="text-align: left; font-weight: bold">{{info.challengeflag}}</td>
-            <td><button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="solveChallenge(info.challengetag)">Solve it !</button></td>
+            <td>{{info['challengeName']}}</td>
+            <td>{{info['challengeTag']}}</td>
+            <td class="user-select-all" style="text-align: left; font-weight: bold">{{info['challengeFlag']}}</td>
+            <td><button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="solveChallenge(info['challengeTag'])">Solve it !</button></td>
           </tr>
           </tbody>
         </table>
@@ -42,8 +42,7 @@
 <script>
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { daemonclient } from "../App";
-import { GetTeamInfoRequest, SolveChallengeRequest } from "daemon_pb"
+import { API_ENDPOINT } from "../App";
 
 export default {
   name: "FlagsAction",
@@ -60,20 +59,24 @@ export default {
   },
   methods: {
     getTeamChallenges () {
-      let getRequest = new GetTeamInfoRequest();
       this.error =null
       this.success = null
-      getRequest.setEventtag(this.$route.params.tag);
-      getRequest.setTeamid(this.$route.params.id)
 
-     daemonclient.getTeamChals(getRequest,{Token: localStorage.getItem("user")}, (err, response) => {
-        if (err == null) {
-          // window.console.log(response)
-          this.infos = response.toObject()
-        }else{
-          this.error = err["message"];
-        }
-      });
+
+      const opts = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')}
+      };
+
+      fetch(API_ENDPOINT+'/admin/team/'+this.$route.params.tag+'/'+this.$route.params.id+'/challenges', opts)
+          .then (response => response.json())
+          .then(response => {
+            window.console.log(JSON.stringify(response))
+            if (response['message'] !== "") {
+              this.error = response['message']
+            }
+            this.infos = response['flags']
+          });
 
 
     },
@@ -82,19 +85,26 @@ export default {
 
       var x = confirm("Are you sure you want to solve challenge " + chalTag + " for team "+ this.$route.params.id+ " ?");
       if (x) {
-        let getRequest = new SolveChallengeRequest()
-        getRequest.setEventtag(this.$route.params.tag);
-        getRequest.setTeamid(this.$route.params.id)
-        getRequest.setChallengetag(chalTag)
-        this.error = null
-        this.success = null
-        daemonclient.solveChallenge(getRequest,{Token: localStorage.getItem("user")}, (err, response) => {
-          if (err == null) {
-            this.success = response.toObject().status
-          }else{
-            this.error =  err["message"];
-          }
-        });
+
+        const opts = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+          body: JSON.stringify({
+            'eventTag': this.$route.params.tag,
+            'challengeTag': chalTag,
+            'teamID': this.$route.params.id,
+          })
+        };
+        fetch(API_ENDPOINT+'/admin/challenge/solve', opts)
+            .then(response => response.json())
+            .then(response => {
+              window.console.log('solve challenge response: '+ JSON.stringify(response))
+              if (response['message'] !== "") {
+                  this.error = response['message']
+              }
+              this.success = response['status']
+            })
+
       }
     },
   }
