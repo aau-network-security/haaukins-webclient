@@ -66,7 +66,7 @@
                     window.console.log(response["error"])
                     return
                   }
-                  window.console.log('Respond is '+ response["token"]);
+
                   localStorage.setItem('user', response["token"]);
                   localStorage.setItem('user-email', this.username);
                   router.push(this.returnUrl)
