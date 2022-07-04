@@ -207,19 +207,16 @@
               window.console.log(status)
               fetch(this.API_URL, opts).then(response => response.json())
               .then(response => {
+                if (response.message !== undefined) {
+                  window.console.log("Unable to fetch -", response.error);
+                  this.error = response.error;
+                  return
+                }
                 this.events = response.events
                 this.events.sort(function (a, b) {
                     return new Date(a.creationtime.replace(/\s/, 'T')) - new Date(b.creationtime.replace(/\s/, 'T'));
                 })
-                window.console.log(this.events)
               })
-              .catch(function (err) {
-                window.console.log("Unable to fetch -", err);
-                this.error = err;
-                window.console.log(err)
-                return
-              });
-               
             },
 
              addChallenge: function (request) {
