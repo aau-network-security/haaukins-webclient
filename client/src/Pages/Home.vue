@@ -275,8 +275,8 @@
                         .then(response => response.json())
                         .then(response => {
                             window.console.log("response is : "+JSON.stringify(response))
-                            this.loaderIsActive = false;
                             this.listEvent(this.Running)
+                            this.loaderIsActive = false;
                             this.success = response['Message']
                         }) 
                         .catch(error => {
@@ -333,8 +333,9 @@
                 fetch(API_ENDPOINT+'/admin/event/stop', opts)
                 .then(response => response.json())
                 .then(response=> {
+                    this.listEvent(this.Running)
                     this.loaderIsActive = false
-                    this.success = response['status'] 
+                    this.success = response['status']
                 })
                 .catch(error => {
                     this.loaderIsActive = false;
