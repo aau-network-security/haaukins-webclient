@@ -480,6 +480,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Empty, SaveProfileRequest} from "daemon_pb";
 import {daemonclient} from "../App";
+import { API_ENDPOINT } from "../App.vue";
 
 export default {
   name: "Challenges",
@@ -703,79 +704,165 @@ export default {
       })
     },
     getExercises: function () {
-      let getRequest = new Empty();
       const that = this
+      const opts = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        } 
+      }
       this.secretChallenges = new Map()
-      daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        this.error = err;
-        let exercisesListObj = response.getExercisesList();
-        exercisesListObj.forEach(function (element) {
-          let childrenChallengesObj = element.getExerciseinfoList();
-          that.childrenChallenges = "   (";
-          let totalPoints = 0;
-          for (let i = 0; i < childrenChallengesObj.length; i++) {
-            that.cat = childrenChallengesObj[i].getCategory();
-            that.childrenChallenges += childrenChallengesObj[i].getName() + ", "
-            totalPoints += childrenChallengesObj[i].getPoints();
-          }
-          let averagePoints = totalPoints / childrenChallengesObj.length
-          let averageDifficulty = ''
-          let difficultytag = ''
-          if (averagePoints < 21) {
-            averageDifficulty = "Very Easy"
-            difficultytag = "veryeasy"
-            //window.console.log("Challenge was very easy")
-          } else if (averagePoints >= 21 && averagePoints < 41) {
-            averageDifficulty = "Easy"
-            difficultytag = "easy"
-            //window.console.log("Challenge was easy")
-          } else if (averagePoints >= 41 && averagePoints < 61) {
-            averageDifficulty = "Medium"
-            difficultytag = "medium"
-            //window.console.log("Challenge was Medium")
-          } else if (averagePoints >= 61 && averagePoints < 81) {
-            averageDifficulty = "Hard"
-            difficultytag = "hard"
-            //window.console.log("Challenge was Hard")
-          } else if (averagePoints >= 81 && averagePoints <= 100) {
-            averageDifficulty = "Very Hard"
-            difficultytag = "veryhard"
-            //window.console.log("Challenge was Very Hard")
-          }
-          //window.console.log("Average difficulty: ", averageDifficulty, averagePoints)
-          that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2)
-          that.childrenChallenges += ")";
-          if (childrenChallengesObj.length == 1) {
-            that.childrenChallenges = '';
-          }
-          let taglist = element.getTagsList();
-          let name = element.getName();
-          let orgDesc = element.getOrgdescription()
-          let secret = element.getSecret()
-          let parentChallenge = {
-            text: name + that.childrenChallenges,
-            value: taglist[0],
-            name: name,
-            orgDesc: orgDesc,
-            isInfoShown: false,
-            secret: secret,
-            difficulty: averageDifficulty,
-            difficultytag: difficultytag
-          };
-          if (secret) {
-            that.secretChallenges.set(taglist[0], true)
-          }
-          that.categories.forEach(function (category) {
-            if (that.cat == category.name) {
-              category.challenges.push(parentChallenge)
-              category.taglist.push(taglist[0])
-            }
-          })
-        })
-        //window.console.log("Secret challenges", that.secretChallenges)
-        //window.console.log(that.categories)
-        that.getProfiles();
-      });
+      fetch(API_ENDPOINT + "/admin/exercise/list", opts)
+      .then(res => res.json())
+      .then(res => {
+            
+              let exerciseList = res['exercises']
+              window.console.log("Exercise list: " + JSON.stringify(res))
+              exerciseList.forEach(function (element) {
+              let tag = element['tags'][0]
+              let name = element['name']
+              let orgDesc = element['orgdescription'] 
+              let secret = element['secret']
+              let childrenChallengesObj = element['exerciseinfo']
+              // window.console.log("Exercise: "+JSON.stringify(element['exerciseInfo']) )
+              // window.console.log("Exercise: "+JSON.stringify(childrenChallengesObj) )
+              that.childrenChallenges = "  (";
+              let totalPoints = 0; 
+              for (let i=0; i<childrenChallengesObj.length; i++){
+                that.cat = childrenChallengesObj[i]['category']
+                that.childrenChallenges += childrenChallengesObj[i]['name'] + ", ";
+                totalPoints += childrenChallengesObj[i]['points'];
+              }
+              let averagePoints = totalPoints / exerciseList.length;
+              let averageDifficulty = '' 
+              let difficultytag = '' 
+              if (averagePoints < 21){
+                averageDifficulty = 'Very Easy'
+                difficultytag = 'veryeasy'
+              } else if (averagePoints >= 21 && averagePoints < 41){
+                averageDifficulty = 'Easy'
+                difficultytag = 'easy'
+              } else if (averagePoints >= 41 && averagePoints < 61){
+                averageDifficulty = 'Medium'
+                difficultytag = 'medium'
+              } else if (averagePoints >= 61 && averagePoints < 81){
+                averageDifficulty = 'Hard'
+                difficultytag = 'hard'
+              } else if (averagePoints >= 81 && averagePoints <= 100) {
+                averageDifficulty = 'Very Hard'
+                difficultytag = 'veryhard'
+              }
+
+              that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2) + ")";
+              if (exerciseList.length == 1){
+                that.childrenChallenges='';
+              }
+
+              let parentChallenge = {
+                text: name+that.childrenChallenges, 
+                value: tag, 
+                name: name, 
+                orgDesc: orgDesc,
+                isInfoShown: false,
+                secret: secret,
+                difficulty: averageDifficulty,
+                difficultyTag: difficultytag
+              };
+              if (secret) {
+                that.secretChallenges.set(tag, true)
+              }
+
+              window.console.log("categories "+JSON.stringify(that.categories))
+              //window.console.log(challenge)
+              that.categories.forEach(function (category) {
+                if (that.cat == category.name) {
+                  category.challenges.push(parentChallenge)
+                  category.taglist.push(parentChallenge.tag)
+                }
+              })
+
+              that.getProfiles();
+            });
+      })
+      .catch(err => {
+       this.error = err
+      }
+      )
+    
+    // let getRequest = new Empty();
+    //   const that = this
+    //   this.secretChallenges = new Map()
+    //   daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
+    //     this.error = err;
+    //     let exercisesListObj = response.getExercisesList();
+    //     exercisesListObj.forEach(function (element) {
+    //       let childrenChallengesObj = element.getExerciseinfoList();
+    //       that.childrenChallenges = "   (";
+    //       let totalPoints = 0;
+    //       for (let i = 0; i < childrenChallengesObj.length; i++) {
+    //         that.cat = childrenChallengesObj[i].getCategory();
+    //         that.childrenChallenges += childrenChallengesObj[i].getName() + ", "
+    //         totalPoints += childrenChallengesObj[i].getPoints();
+    //       }
+    //       let averagePoints = totalPoints / childrenChallengesObj.length
+    //       let averageDifficulty = ''
+    //       let difficultytag = ''
+    //       if (averagePoints < 21) {
+    //         averageDifficulty = "Very Easy"
+    //         difficultytag = "veryeasy"
+    //         //window.console.log("Challenge was very easy")
+    //       } else if (averagePoints >= 21 && averagePoints < 41) {
+    //         averageDifficulty = "Easy"
+    //         difficultytag = "easy"
+    //         //window.console.log("Challenge was easy")
+    //       } else if (averagePoints >= 41 && averagePoints < 61) {
+    //         averageDifficulty = "Medium"
+    //         difficultytag = "medium"
+    //         //window.console.log("Challenge was Medium")
+    //       } else if (averagePoints >= 61 && averagePoints < 81) {
+    //         averageDifficulty = "Hard"
+    //         difficultytag = "hard"
+    //         //window.console.log("Challenge was Hard")
+    //       } else if (averagePoints >= 81 && averagePoints <= 100) {
+    //         averageDifficulty = "Very Hard"
+    //         difficultytag = "veryhard"
+    //         //window.console.log("Challenge was Very Hard")
+    //       }
+    //       //window.console.log("Average difficulty: ", averageDifficulty, averagePoints)
+    //       that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2)
+    //       that.childrenChallenges += ")";
+    //       if (childrenChallengesObj.length == 1) {
+    //         that.childrenChallenges = '';
+    //       }
+    //       let taglist = element.getTagsList();
+    //       let name = element.getName();
+    //       let orgDesc = element.getOrgdescription()
+    //       let secret = element.getSecret()
+    //       let parentChallenge = {
+    //         text: name + that.childrenChallenges,
+    //         value: taglist[0],
+    //         name: name,
+    //         orgDesc: orgDesc,
+    //         isInfoShown: false,
+    //         secret: secret,
+    //         difficulty: averageDifficulty,
+    //         difficultytag: difficultytag
+    //       };
+    //       if (secret) {
+    //         that.secretChallenges.set(taglist[0], true)
+    //       }
+    //       that.categories.forEach(function (category) {
+    //         if (that.cat == category.name) {
+    //           category.challenges.push(parentChallenge)
+    //           category.taglist.push(taglist[0])
+    //         }
+    //       })
+    //     })
+    //     //window.console.log("Secret challenges", that.secretChallenges)
+    //     //window.console.log(that.categories)
+    //     that.getProfiles();
+    //   });
     },
   }
 }
