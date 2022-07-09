@@ -125,7 +125,6 @@
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
     import { 
-      StopEventRequest,
       SuspendEventRequest,
       Empty } from "daemon_pb";
     import { daemonclient, API_ENDPOINT } from "../App";
@@ -251,39 +250,28 @@
                 this.success = response.getResponse()
               });
             },
-            createEvent: function (request) {
+            createEvent: function (opst) {
                 const that = this
 
                 if (this.memory <= 95){
                     this.loaderIsActive = true;
-                    this.loader_status = "Creation Event in progress..."
+                    this.loader_status = "Creating event ... ";
                     this.$bvModal.hide('create-event-modal')
 
-                    const call = daemonclient.createEvent(request, {Token: localStorage.getItem("user")});
-
-                    call.on('data', function(response) {
-                        // daemon sends back to errorMessage
-                        that.error = response.array.toString().replace('/,/g', ' ')
-                        window.console.log(response)
-                    });
-                    call.on('error', function(e) {
-                         that.loaderIsActive = false;
-                        window.console.log(e['message'])
-                        that.error = e['message']
-                    });
-                    call.on('status', function(status) {
-                        that.loaderIsActive = false;
-                        if (!status['metadata']['grpc-message']) {
-                            that.success = "Event Successfully Created!"
-                            that.listEvent();
-                        }else{
-                            that.error = status['metadata']['grpc-message']
-                          if (status.details === 'token contains an invalid number of segments') {
-                            that.$router.push({ path: 'login' })
-                            window.localStorage.clear()
-                          }
-                        }
-                    });
+                    
+                     fetch(API_ENDPOINT+'/admin/event/create',opst)
+                        .then(response => response.json())
+                        .then(response => {
+                            window.console.log("response is : "+JSON.stringify(response))
+                            this.loaderIsActive = false;
+                            this.listEvent(this.Running)
+                            this.success = response['Message']
+                        }) 
+                        .catch(error => {
+                            this.loaderIsActive = false;
+                            this.error = error
+                            window.console.log(error['message'])
+                        })  
                 }else{
                     that.$bvModal.hide('create-event-modal')
                     this.error = "Error! Not enough memory on the Server."
@@ -321,36 +309,26 @@
 
             },
             stopEvent: function (tag) {
-                const that = this
                 this.loaderIsActive = true
                 this.loader_status = "Stopping " + tag + "..."
-
-                let getRequest = new StopEventRequest();
-                getRequest.setTag(tag)
-
-                const call = daemonclient.stopEvent(getRequest, {Token: localStorage.getItem("user")});
-
-
-                call.on('data', function(response) {
-                    //TODO nothign receive because cause the deamon dosen't send anything
-                    window.console.log(response)
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function(status) {
-                    that.loaderIsActive = false
-                    if (!status['metadata']['grpc-message']) {
-                        that.success = "Event Successfully Stopped!"
-                        that.listEvent()
-                    }else{
-                        that.error = status['metadata']['grpc-message']
-                      if (status.details === 'token contains an invalid number of segments') {
-                        that.$router.push({ path: 'login' })
-                        window.localStorage.clear()
-                      }
-                    }
-                });
+                const opts = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                    body: JSON.stringify({
+                        "tag": tag
+                    })
+                };
+                fetch(API_ENDPOINT+'/admin/event/stop', opts)
+                .then(response => response.json())
+                .then(response=> {
+                    this.loaderIsActive = false
+                    this.success = response['status'] 
+                })
+                .catch(error => {
+                    this.loaderIsActive = false;
+                    this.error = error
+                })
+                    
             },
             bookingValue: function (value){
                 if (value.ok) {

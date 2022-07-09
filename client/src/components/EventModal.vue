@@ -416,7 +416,7 @@
 </template>
 
 <script>
-import { Empty, CreateEventRequest,GetExsByTagsReq } from "daemon_pb";
+import { Empty,GetExsByTagsReq } from "daemon_pb";
 import { daemonclient } from "../App";
 import Datepicker from "vuejs-datepicker"
 
@@ -614,24 +614,25 @@ export default {
       }
     },
     createEvent: function () {
-      let getRequest = new CreateEventRequest();
-      getRequest.setName(this.eventName);
-      getRequest.setSecretevent(this.secretKey);
-      getRequest.setTag(this.eventTag.toLowerCase());
-      getRequest.setAvailable(this.eventAvailability);
-      getRequest.setCapacity(this.eventCapacity);
-      getRequest.setFinishtime(this.eventFinishTime);
-      getRequest.setStarttime(this.eventStartTime.toString());
-      this.selectedChallenges.forEach(function(challenge) {
-        getRequest.addExercises(challenge)
-      });
-      this.disableChallenges.forEach(function (challenge){
-        getRequest.addDisableexercises(challenge)
-      })
-      getRequest.addFrontends(this.selectedFrontends)
-      getRequest.setOnlyvpn(this.isVPNON)
 
-      this.$emit('createEvent', getRequest)
+       const opts = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+        body: JSON.stringify({
+          'name': this.eventName,
+          'tag': this.eventTag,
+          'available': this.eventAvailability,
+          'capacity': this.eventCapacity,
+          'startTime': this.eventStartTime.toString(),
+          'finishTime': this.eventFinishTime,
+          'onlyVPN': this.isVPNON,
+          'secretEvent': this.secretKey,
+          'disableExercises': this.disableChallenges,
+          'exercises' : this.selectedChallenges,
+          'frontends': this.frontends,
+        })
+      }
+      this.$emit('createEvent', opts)
 
     },
     getCategories: function(){
