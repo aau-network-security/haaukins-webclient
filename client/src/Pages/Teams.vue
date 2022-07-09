@@ -107,9 +107,9 @@
       ResetFrontendsRequest,
       Team,
       SetTeamSuspendRequest,
-      UpdateTeamPassRequest,
       DeleteTeamRequest,
     } from "daemon_pb"
+    import { API_ENDPOINT } from "../App.vue";
 
     export default {
         name: "Teams",
@@ -253,21 +253,36 @@
                 return
               }
 
-              let getRequest = new UpdateTeamPassRequest();
-              getRequest.setTeamid(this.teamUpdate)
-              getRequest.setEventtag(this.$route.params.tag)
-              getRequest.setPassword(this.password)
-              getRequest.setPasswordrepeat(this.password)
-              daemonclient.updateTeamPassword(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                if (err == null) {
-                  this.success = response.toObject().status
-                }else{
-                  this.error = err["status"];
-                }
-              });
-              this.password = ""
-              this.repeatPassword = ""
-              this.$bvModal.hide('update-team-modal')
+              const opts = {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "token": localStorage.getItem("user")
+                },
+                body: JSON.stringify({
+                  "eventTag": this.$route.params.tag,
+                  "teamId": this.teamUpdate,
+                  "password": this.password,
+                  "passwordRepeat": this.repeatPassword
+                })
+              }
+              fetch(API_ENDPOINT+"/admin/team/update", opts)
+                .then(res => res.json())
+                .then(res => {
+                  if (res.error) {
+                    this.error = res.error
+                  } else {
+                    this.success = res['status']
+                    this.$bvModal.hide('update-team-modal')
+                    this.password = ""
+                    this.repeatPassword = ""
+                  }
+                })
+                .catch(err => {
+                  this.$bvModal.hide('update-team-modal')
+                  this.error = err
+                })
+                this.$bvModal.hide('update-team-modal')
             },
             suspendResumeTeamLab: function (teamID, setSuspend) {
                 let getRequest = new SetTeamSuspendRequest()
