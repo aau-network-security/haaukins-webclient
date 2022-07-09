@@ -242,13 +242,25 @@
                });
              },
             addAnnouncement: function (request) {
+
+            const opts = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                body: JSON.stringify(request)
+                };
+
+            fetch(API_ENDPOINT+'/admin/manage/notification', opts)
+                .then(response => response.json())
+                .then(response => {
+                    if (response.response === undefined) {
+                        window.console.log("Unable to fetch -", response.message);
+                        this.error = response['response'];
+                        return
+                    }
+                    this.success = response['response'];
+                })
               this.$bvModal.hide('add-announcement-modal')
-              daemonclient.addNotification(request,{Token: localStorage.getItem("user")}, (err, response) => {
-                if (err != null) {
-                  this.error = err
-                }
-                this.success = response.getResponse()
-              });
+          
             },
             createEvent: function (opst) {
                 const that = this
