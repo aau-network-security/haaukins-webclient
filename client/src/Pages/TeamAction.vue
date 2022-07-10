@@ -53,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody v-if="infos">
-                        <tr v-for="(info,count) in infos.instancesList" v-bind:key="info.id">
+                        <tr v-for="(info,count) in infos" v-bind:key="info.id">
                             <td>{{count + 1}}</td>
                             <td>{{info.image}}</td>
                             <td>{{info.type}}</td>
@@ -72,7 +72,8 @@
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
     import { daemonclient } from "../App";
-    import { GetTeamInfoRequest, ResetExerciseRequest, Team, ListEventsRequest, Empty } from "daemon_pb"
+    import { ResetExerciseRequest, Team } from "daemon_pb"
+    import { API_ENDPOINT } from '../App.vue';
 
     export default {
         name: "TeamAction",
@@ -91,45 +92,62 @@
         },
         created() {
             this.getTeamInfo();
-            this.listEvent();
+            this.listEvent(0);
             this.listChallenges();
         },
         methods: {
             getTeamInfo () {
-                let getRequest = new GetTeamInfoRequest();
-                getRequest.setEventtag(this.$route.params.tag);
-                getRequest.setTeamid(this.$route.params.id)
 
-                daemonclient.getTeamInfo(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.infos = response.toObject()
-                    }else{
-                        this.error = err['metadata']['grpc-message'];
-                    }
-                });
+               const opts = {
+                   method: 'GET',
+                   headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                 };
+
+                 fetch(API_ENDPOINT+'/admin/team/'+this.$route.params.tag+'/'+this.$route.params.id+'/info', opts)
+                    .then(response => response.json())
+                    .then(response => {
+                        this.infos = response['instances'];
+                    })
+                    .catch(error => {
+                        this.error = error;
+                    });
+
             },
-            listEvent: function () {
-                let getRequest = new ListEventsRequest();
-                daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        let response_obj = response.toObject()
-                        for(let i = 0; i < response_obj['eventsList'].length; i++){
-                            if(response_obj['eventsList'][i]['tag'] == this.$route.params.tag){
-                                this.challenges = response_obj['eventsList'][i]['exercises'];
-                                break;
-                            }
+            listEvent: function (status) {
+                const opts = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+
+                };
+            
+                fetch(API_ENDPOINT+'/admin/event/list/'+status, opts).then(response => response.json())
+                .then(response => {
+                    this.events = response['events'];
+
+                    for (let i = 0; i < this.events.length; i++) {
+                        if (this.events[i]['tag'] == this.$route.params.tag) {
+                            this.challenges = this.events[i]['exercises'];
+                            break;
                         }
-                    }else{
-                        this.error = err;
                     }
+                })
+                .catch(error => {
+                    this.error = error;
                 });
             },
 
             listChallenges: function () {
-                let getRequest = new Empty();
-                daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    this.error = err;
-                    this.challengesList = response.toObject()
+                const opts = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                };
+
+                fetch(API_ENDPOINT+'/admin/exercise/list', opts).then(response => response.json())
+                .then(response => {
+                    this.challengesList = response['exercises'];
+                })
+                .catch(error => {
+                    this.error = error;
                 });
 
             },
@@ -138,11 +156,17 @@
                 if (this.challengesList == null) {
                     return
                 }
-                this.challengesList.exercisesList.forEach(function(challenge) {
-                    if (challenge.tagsList[0] == tag){
-                        chalName =  challenge.name
+
+
+
+
+            this.challengesList.forEach(function(challenge) {
+                    if (challenge['tags'][0] == tag){
+                        chalName =  challenge['name'];
                     }
                 }, chalName);
+
+
                 return chalName
             },
             getTeamInfoState: function (state) {
