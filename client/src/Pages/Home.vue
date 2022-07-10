@@ -125,7 +125,6 @@
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
     import { 
-      SuspendEventRequest,
       Empty } from "daemon_pb";
     import { daemonclient, API_ENDPOINT } from "../App";
     import EventModal from "../components/EventModal";
@@ -200,7 +199,7 @@
                 headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
 
               };
-              window.console.log(status)
+            
               fetch(API_ENDPOINT+'/admin/event/list/'+status, opts).then(response => response.json())
               .then(response => {
                 if (response.message !== undefined) {
@@ -292,33 +291,39 @@
 
             },
             suspendResumeEvent: function (tag, status) {
-                const that = this
                 this.loaderIsActive = true
-
-                let getRequest = new SuspendEventRequest();
-                getRequest.setEventtag(tag)
-                if (status == this.Running){
-                    getRequest.setSuspend(true)
+                const opts = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                    
+                };
+                let body = {
+                    "eventTag": tag,
+                    "suspend": false
                 }
-                const call = daemonclient.suspendEvent(getRequest, {Token: localStorage.getItem("user")});
 
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function(status) {
-                    that.loaderIsActive = false
-                    if (!status['metadata']['grpc-message']) {
-                        that.success = "Action successfully completed!"
-                        that.listEvent()
-                    }else{
-                        that.error = status['metadata']['grpc-message']
-                       if (status.details === 'token contains an invalid number of segments') {
-                        that.$router.push({ path: 'login' })
-                        window.localStorage.clear()
-                      }
-                    }
-                });
+                if (status == this.Running){
+                    body['suspend'] = true
+                    opts['body'] = JSON.stringify(body)
+                }
+                else if (status == this.Suspended){
+                    opts['body'] = JSON.stringify(body)
+                }
 
+                fetch(API_ENDPOINT+'/admin/event/suspend', opts)
+                    .then(response => response.json())
+                    .then(response => {
+                        this.success = response['status'];
+                        this.listEvent(this.Running)
+                    })
+                    .catch(error => {
+                        this.loaderIsActive = false;
+                        this.error = error
+                        window.console.log(error['message'])
+                    })
+                    .finally(() => {
+                        this.loaderIsActive = false
+                    }) 
             },
             stopEvent: function (tag) {
                 this.loaderIsActive = true
@@ -340,6 +345,9 @@
                 .catch(error => {
                     this.loaderIsActive = false;
                     this.error = error
+                })
+                .finally(() => {
+                    this.loaderIsActive = false
                 })
                     
             },
@@ -386,6 +394,10 @@
                     }
                     this.success = response['key']
                   })
+                  .catch(error => {
+                      this.error = error
+                   })
+            
             },
             monitorHost: function () {
                 const that = this;
@@ -413,8 +425,8 @@
                     window.console.log(status)
                 });
             },
+         }
         }
-    }
 </script>
 <style>
     h3 {
