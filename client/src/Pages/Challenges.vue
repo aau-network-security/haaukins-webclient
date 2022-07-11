@@ -718,7 +718,6 @@ export default {
       .then(res => {
             
               let exerciseList = res['exercises']
-              window.console.log("Exercise list: " + JSON.stringify(res))
               exerciseList.forEach(function (element) {
               let tag = element['tags'][0]
               let name = element['name']
@@ -773,8 +772,6 @@ export default {
                 that.secretChallenges.set(tag, true)
               }
 
-              window.console.log("categories "+JSON.stringify(that.categories))
-              //window.console.log(challenge)
               that.categories.forEach(function (category) {
                 if (that.cat == category.name) {
                   category.challenges.push(parentChallenge)
