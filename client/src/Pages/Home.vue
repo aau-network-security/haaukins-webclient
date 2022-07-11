@@ -273,7 +273,11 @@
                      fetch(API_ENDPOINT+'/admin/event/create',opst)
                         .then(response => response.json())
                         .then(response => {
-                            window.console.log("response is : "+JSON.stringify(response))
+                            if (response['code'] !== undefined) {
+                                this.error = response['message'];
+                                this.loaderIsActive = false;
+                                return
+                            }
                             this.listEvent(this.Running)
                             this.loaderIsActive = false;
                             this.success = response['Message']
