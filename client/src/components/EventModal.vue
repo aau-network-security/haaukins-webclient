@@ -809,18 +809,30 @@ export default {
       }
     },
     getFrontends: function () {
-      let getRequest = new Empty();
-      daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        this.error = err;
-        const that = this
-        let frontendsListObj = response.getFrontendsList()
-        frontendsListObj.forEach(function (element) {
-          if (!element.getImage().includes("vulnerability")){
-            that.frontends.push(element.getImage())
-          }
+      // let getRequest = new Empty();
+      const that = this
+      const opts = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        }
+      }
+      fetch(API_ENDPOINT + "/admin/frontends/list", opts)
+        .then(res => res.json())
+        .then(res => {
+          let allFrontendInfo = res['frontends']
+          allFrontendInfo.forEach(function (element) {
+            if (!element['image'].includes("vulnerability")) {
+              that.frontends.push(element['image'])
+            }
+          })
+          
         })
-      });
-
+        .catch(error => {
+          window.console.log('List Frontend Error: ' + error)
+          this.error = error
+        })
     },
     selectedVPNOption: function (isVPN) {
       this.isVPNON = isVPN
