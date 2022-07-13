@@ -205,8 +205,8 @@
 </template>
 
 <script>
-import {AddChallengeRequest, Empty} from "daemon_pb";
-import { daemonclient, API_ENDPOINT } from "../App";
+import {AddChallengeRequest} from "daemon_pb";
+import {  API_ENDPOINT } from "../App";
 
 
 export default {
@@ -232,21 +232,30 @@ export default {
   methods: {
     getCategories: function(){
       // Getting categories first.
-      let getRequest = new Empty();
-      const that = this
-      daemonclient.listCategories(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        let categoryListObj = response.getCategoriesList();
-        categoryListObj.forEach(function (element){
-          let tag = element.getTag()
-          let name = element.getName()
-          let description = element.getCatdescription()
+      // let getRequest = new Empty();
+    const that = this
+     
+    const opts = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "token": localStorage.getItem("user")
+      },
+    };
+    
+    fetch(API_ENDPOINT+'/admin/categories/list', opts)
+      .then(response => response.json())
+      .then(response => {
+        response['categories'].forEach(function(c){
+          let tag = c['tag']
+          let name = c['name']
+          let description = c['catDescription']
           let category = {tag: tag, name: name, catDesc: description, isInfoShown: false, challenges: [], taglist: []}
-          //window.console.log(category)
           that.categories.push(category)
         })
-        // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
-        if (that.categories[0].tag != "ST") {
-          that.categories.forEach(function(category, index){
+        if (that.categories[0].tag != "ST"){
+          // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
+           that.categories.forEach(function(category, index){
             if (category.tag == "ST") {
               let tempCat = that.categories[0]
               //window.console.log("Found Starters category. Rearranging array to display starters first") // Debugging
@@ -263,6 +272,11 @@ export default {
         //Inserting exercises into categories list
         that.getExercises()
       })
+      .catch(error => {
+        window.console.log('ChalModal getCategories Error: ' + error)
+        this.error = error
+      })
+    
     },
     getExercises: function () {
       const that = this
@@ -318,7 +332,7 @@ export default {
               if (exerciseList.length == 1){
                 that.childrenChallenges='';
               }
-              
+
               let parentChallenge = {
                 text: name+that.childrenChallenges, 
                 value: tag, 
