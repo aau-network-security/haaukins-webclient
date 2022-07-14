@@ -240,13 +240,7 @@
                  that.loaderIsActive = false;
                });
              },
-            addAnnouncement: function (request) {
-
-            const opts = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
-                body: JSON.stringify(request)
-                };
+            addAnnouncement: function (opts) {
 
             fetch(API_ENDPOINT+'/admin/manage/notification', opts)
                 .then(response => response.json())
