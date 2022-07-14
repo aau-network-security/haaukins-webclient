@@ -376,7 +376,7 @@
 <script>
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {SaveProfileRequest, DeleteProfileRequest} from "daemon_pb";
+import {SaveProfileRequest} from "daemon_pb";
 import {daemonclient, API_ENDPOINT} from "../App";
 
 export default {
@@ -431,37 +431,34 @@ export default {
       this.variant = variant
       this.dismissCountDown = this.dismissSecs
     },
-    deleteProfile: function() {
+    deleteProfile: async function() {
       //window.console.log("Deleting profile", this.profileForUpdate.name)
       const that = this
-      let getRequest = new DeleteProfileRequest()
-      getRequest.setName(this.profileForUpdate.name)
-
-      const call = daemonclient.deleteProfile(getRequest, {Token: localStorage.getItem("user")});
-
-      call.on('data', function(response){
-        window.console.log("Data response: ", response)
-      });
-      call.on('error', function(response){
-        that.alert = response.message
-        that.showAlert("danger")
-        //window.console.log("Error response: ", response)
-      });
-      call.on('status', function(response){
-        //window.console.log("Status response: ", response)
-        if (response.details == "") {
+      const opts = {
+        method : "POST", 
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+        body: JSON.stringify({
+          "name": this.profileForUpdate.name
+        })
+      }
+      await fetch(API_ENDPOINT+"/admin/profile/delete",opts)
+      .then(response => response.json())
+      .then(response => {
+        window.console.log("Response from server: " +JSON.stringify(response))
+        if (response['status'] !== "") {
           that.profiles = that.removeItem(that.profiles, 'name', that.profileForUpdate.name)
           that.areYouSure = false
-          that.alert = "Profile \"" + that.profileForUpdate.name + "\" successfully deleted"
+          that.alert = response['status']
           that.setProfileForUpdate(that.profiles[0])
           that.showAlert("success")
-          setTimeout(function (){
-            if(!that.profiles.length){
-              that.noProfiles = true
-            }
-          }.bind(that), 5000)
-        }
-      });
+          }
+      }).catch(error => {
+        that.alert = error
+        that.showAlert("danger")
+      })
     },
     updateProfile: function() {
       //window.console.log("Updating profile", this.profileForUpdate.name)
