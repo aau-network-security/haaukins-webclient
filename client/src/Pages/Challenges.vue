@@ -530,26 +530,22 @@ export default {
     },
     getProfiles: function () {
       const that = this
-      let getRequest = new Empty
-      daemonclient.listProfiles(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        window.console.log(err)
-        let profileListObj = response.getProfilesList();
-        profileListObj.forEach(function (element) {
-          let name = element.getName()
-          let secret = element.getSecret()
-          let challengesListObj = element.getChallengesList()
-          let challenges = []
-          challengesListObj.forEach(function (element) {
-            let tag = element.getTag()
-            let name = element.getName()
-            let challenge = {tag: tag, name: name}
-            challenges.push(challenge)
-          })
-          let profile = {name: name, secret: secret, challenges: challenges}
-          //window.console.log("Got profile", profile)
-          that.profiles.push(profile)
+      const opts = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        }
+      }
+      fetch(API_ENDPOINT+"/admin/profiles/list", opts)
+        .then(response => response.json())
+        .then(response => {
+          that.profiles = response['profiles'] 
         })
-      })
+        .catch(error => {
+          window.console.log("challenges /admin/profiles/list error:", error)
+          that.error = error
+        })
     },
     saveProfile: function () {
       //window.console.log("Saving profile")
