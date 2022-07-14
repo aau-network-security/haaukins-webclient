@@ -376,8 +376,7 @@
 <script>
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {SaveProfileRequest} from "daemon_pb";
-import {daemonclient, API_ENDPOINT} from "../App";
+import { API_ENDPOINT} from "../App";
 
 export default {
   name: "Challenges",
@@ -460,41 +459,68 @@ export default {
         that.showAlert("danger")
       })
     },
+    saveProfile: function(profile){
+        const opts = {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json",
+            "token": localStorage.getItem("user")
+          },
+          body: JSON.stringify(profile)
+        }
+        // window.console.log("Save profile called: " + JSON.stringify(profile))
+        fetch(API_ENDPOINT+"/admin/profile/save",opts)
+        .then(response => response.json())
+        .then(response => {
+          window.console.log("Response from server: " +JSON.stringify(response))
+          if (response['status'] !== "") {
+            this.alert = response['status']
+            this.showAlert("success")
+          }
+        }).catch(error => {
+          this.alert = error
+          this.showAlert("danger")
+        })
+    },
+
     updateProfile: function() {
       //window.console.log("Updating profile", this.profileForUpdate.name)
       const that = this
-      let getRequest = new SaveProfileRequest()
-      getRequest.setName(this.profileForUpdate.name)
-      getRequest.setSecret(this.profileForUpdate.secret)
-      this.profileForUpdate.challenges.forEach(function(chal){
-        let challenge = new SaveProfileRequest.Challenge()
-        challenge.setTag(chal.tag)
-        challenge.setName(chal.name)
-        getRequest.addChallenges(challenge)
-      })
 
-      const call = daemonclient.editProfile(getRequest, {Token: localStorage.getItem("user")});
+      let profileToBeUpdated  = {
+        "name": this.profileForUpdate.name,
+        "challenges": this.profileForUpdate.challenges,
+        "secret": this.profileForUpdate.secret
+      }
 
-      call.on('data', function(response){
-        window.console.log("Data response: ", response)
-      });
-      call.on('error', function(response){
-        that.alert = response.message
-        that.showAlert("danger")
-        //window.console.log("Error response: ", response)
-      });
-      call.on('status', function(response){
-        //window.console.log("Status response: ", response)
-        if (response.details == "") {
+      const opts = {
+        method : "POST", 
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+        body: JSON.stringify(profileToBeUpdated)
+      }
+      window.console.log("Update profile called: " + JSON.stringify(profileToBeUpdated))
+      fetch(API_ENDPOINT+"/admin/profile/edit",opts)
+      .then(response => response.json())
+      .then(response => {
+        // window.console.log("Response from server: " +JSON.stringify(response))
+        if (response['status'] !== "") {
+
           let index = that.profiles.findIndex(obj => obj['name'] === that.profileForUpdate.name)
           that.profiles[index].challenges = that.profileForUpdate.challenges
           that.profiles[index].secret = that.profileForUpdate.secret
           that.setProfileForUpdate(that.profiles[index])
           that.checkIfUpdateAvailable()
-          that.alert = "Profile successfully updated"
+          that.alert = response['status']
           that.showAlert("success")
+          that.saveProfile(that.profileForUpdate)
         }
-      });
+      }).catch(error => {
+        that.alert = error
+        that.showAlert("danger")
+      })
     },
     checkIfUpdateAvailable: function() {
       const that = this
