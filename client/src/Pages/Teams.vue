@@ -31,24 +31,27 @@
                 <table class="table mx-auto table-hover table-striped" id="teamsEventTable" cellspacing="0" style="table-layout: auto; width: 100%">
                     <thead>
                         <tr class="text-center">
-                          <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td><td>Actions</td>
+                          <!-- Emails are not used on event users, not collected hence it is commented -->
+                          <!-- <td>#</td><td>Team_ID</td><td>Name</td><td>Email</td><td>Reset</td><td>Restart</td><td>Actions</td> -->
+                          <td>#</td><td>Team ID</td><td>Name</td><td>Last Access</td><td>Reset</td><td>Restart</td><td>Actions</td>
                         </tr>
                     </thead>
                     <tbody v-if="teams">
-                        <tr v-for="(team,count) in teams.teamsList" v-bind:key="team.id">
+                        <tr v-for="(team,count) in teams" v-bind:key="team.id">
                             <td class="text-center">{{count + 1}}</td>
-                            <td><strong><router-link :to="{name: 'team', params: {id: team.id}}" class="text-haaukins" >{{team.id}}</router-link></strong></td>
+                            <td><strong><router-link :to="{name: 'team', params: {id: team['Id']}}" class="text-haaukins" >{{team['Id']}}</router-link></strong></td>
 
-                            <td>{{team.name}}</td>
-                            <td>{{team.email}}</td>
-                            <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="resetFrontend(team.id)">Frontend</button></td>
-                            <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="restartTeamLab(team.id)">Lab</button></td>
+                            <td>{{team['Name']}}</td>
+                            <!-- <td>{{team['Email']}}</td> -->
+                            <td>{{formatDate(team['AccessedAt'])}}</td>
+                            <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="resetFrontend(team['Id'])">Frontend</button></td>
+                            <td class="text-center"><button class="btn btn-secondary btn-sm" v-on:click="restartTeamLab(team['Id'])">Lab</button></td>
                             <td class="text-center">
-                              <router-link :to="{name:'flags', params: {id: team.id, flags:'flags'}}" class="text-haaukins"><button class="btn btn-warning btn-sm m-btn-responsive">Flags</button></router-link>
-                              <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team.id, true)">Suspend</button>
-                              <button class="btn btn-warning btn-sm mr-1" v-on:click="suspendResumeTeamLab(team.id, false)">Resume</button>
-                              <button class="btn btn-secondary btn-sm m-btn-responsive" v-on:click="openModal(team.id)">Update</button>
-                              <button class="btn btn-danger btn-sm m-btn-responsive" v-on:click="deleteTeam(team.id)">Delete</button>
+                              <router-link :to="{name:'flags', params: {id: team['Id'], flags:'flags'}}" class="text-haaukins"><button class="btn btn-warning btn-sm m-btn-responsive">Flags</button></router-link>
+                              <button class="btn btn-warning btn-sm m-btn-responsive" v-on:click="suspendResumeTeamLab(team['Id'], true)">Suspend</button>
+                              <button class="btn btn-warning btn-sm mr-1" v-on:click="suspendResumeTeamLab(team['Id'], false)">Resume</button>
+                              <button class="btn btn-secondary btn-sm m-btn-responsive" v-on:click="openModal(team['Id'])">Update</button>
+                              <button class="btn btn-danger btn-sm m-btn-responsive" v-on:click="deleteTeam(team['Id'])">Delete</button>
                           </td>
                         </tr>
                     </tbody>
@@ -102,12 +105,10 @@
     import Footer from "../components/Footer";
     import { daemonclient } from "../App";
     import {
-      ListEventTeamsRequest,
       RestartTeamLabRequest,
       ResetFrontendsRequest,
       Team,
       SetTeamSuspendRequest,
-      DeleteTeamRequest,
     } from "daemon_pb"
     import { API_ENDPOINT } from "../App.vue";
 
@@ -131,15 +132,25 @@
         },
         methods: {
             listTeams () {
-                let getRequest = new ListEventTeamsRequest();
-                getRequest.setTag(this.$route.params.tag);
-                daemonclient.listEventTeams(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.teams = response.toObject();
-                    }else{
-                        this.error = err['metadata']['grpc-message'];
-                    }
+                const opts = {
+                  method:"GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "token": localStorage.getItem("user")
+                  }
+                }
+                fetch(API_ENDPOINT + "/admin/event/"+this.$route.params.tag+"/list/teams", opts)
+                .then(response => response.json())
+                .then(response => {
+                    this.teams = response["teams"];
+                }).catch(error => {
+                    this.error = error;
                 });
+
+            },
+
+            formatDate(date) {
+                return new Date(date).toLocaleString();
             },
             restartTeamLab (teamID) {
                 const that = this
@@ -173,40 +184,37 @@
                   }, 500);
                 });
             },
-           deleteTeam(teamId){
-             const that = this
-             this.loaderIsActive = true
-             const eventTag = this.$route.params.tag
-             let getRequest = new DeleteTeamRequest();
+          async deleteTeam(teamId){
+              const that = this; 
+              const opts = {
+                method : "POST", 
+                headers : {
+                  "Content-Type" : "application/json",
+                  "token" :  localStorage.getItem("user")
+                },
+                body : JSON.stringify({
+                  "evTag" : this.$route.params.tag,
+                  "teamId" : teamId
+                })
+              }
+
              var x = confirm("Do you really want to delete " + teamId + " on event "+ this.$route.params.tag+ " ?");
              if (x) {
-               getRequest.setEvtag(this.$route.params.tag)
-               getRequest.setTeamid(teamId)
-
-               const call = daemonclient.deleteTeam(getRequest, {Token: localStorage.getItem("user")});
-
-               call.on('data', function(response) {
-                 window.console.log(response.getMessage())
-                 that.loader_msg = response.getMessage()
-                 that.loader_id = teamId
-               });
-               call.on('end', function() {
-                 window.console.log("enddd")
-                 that.loaderIsActive=false
-                 that.listTeams()
-               });
-               call.on('error', function(e) {
-                 that.error = e
-               });
-               call.on('status', function() {
-                 that.loaderIsActive = false
-                 setTimeout(function(){
-                   that.loaderIsActive = false
-                   that.success = "Team [ " +teamId + " ] is deleted from event tag [ " + eventTag+  " ] !"
-                 }, 500);
-               });
-             }else{
-               that.loaderIsActive = false
+              this.loaderIsActive = true;
+              this.loader_msg = "Pruning " +teamId +" team's resources...."
+                await fetch(API_ENDPOINT+ "/admin/team/delete", opts)
+                .then(response => response.json())
+                .then(response => {
+                  if(response["message"] !== ""){
+                    that.loaderIsActive = false
+                    that.success = response["message"]
+                    that.listTeams()
+                  }
+                }).catch(error => {
+                  that.success = null
+                  that.error = error
+                })
+                
              }
              },
             resetFrontend(teamID){
