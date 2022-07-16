@@ -267,7 +267,7 @@
                 },
                 body: JSON.stringify({
                   "eventTag": this.$route.params.tag,
-                  "teamId": this.teamUpdate,
+                  "teamID": this.teamUpdate,
                   "password": this.password,
                   "passwordRepeat": this.repeatPassword
                 })
