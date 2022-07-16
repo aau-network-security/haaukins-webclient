@@ -103,13 +103,6 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { daemonclient } from "../App";
-    import {
-      RestartTeamLabRequest,
-      ResetFrontendsRequest,
-      Team,
-      SetTeamSuspendRequest,
-    } from "daemon_pb"
     import { API_ENDPOINT } from "../App.vue";
 
     export default {
@@ -148,42 +141,46 @@
                 });
 
             },
-
             formatDate(date) {
                 return new Date(date).toLocaleString();
             },
-            restartTeamLab (teamID) {
-                const that = this
-                this.loaderIsActive = true
 
-                let getRequest = new RestartTeamLabRequest();
-                getRequest.setEventtag(this.$route.params.tag);
-                getRequest.setTeamid(teamID)
+          async restartTeamLab (teamID) {
+              const opts = {
+                method:"POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "token": localStorage.getItem("user")
+                },
+                body: JSON.stringify({
+                  "eventTag": this.$route.params.tag,
+                  "teamId": teamID
+                })
+              }
+              this.loaderIsActive = true;
+              this.loader_msg = "Restarting Team " + teamID +" Lab...";
+          
+          
+            await fetch (API_ENDPOINT + "/admin/lab/restart", opts)
+              .then(response => response.json())
+              .then(response => {
+                if (response["code"] !== "") {
+                  this.error = response["message"];
+                  this.loaderIsActive = false;
+                  return
+                } 
+                if (response["status"] !== "") {
+                  this.success = response["status"];
+                  this.loaderIsActive = false;
+                }
+                this.listTeams();
+              }).catch(error => { 
+                this.loaderIsActive = false;
+                this.error = error;
+              });
 
-                const call = daemonclient.restartTeamLab(getRequest, {Token: localStorage.getItem("user")});
-
-                call.on('data', function(response) {
-                    //this.status = response.getErrormessage();
-                    that.loader_msg = response.getStatus()
-                    that.loader_id = teamID
-                    window.console.log(response)
-                });
-                call.on('end', function() {
-                  window.console.log("enddd")
-                  that.loaderIsActive=false
-                  that.listTeams()
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function() {
-                    that.loaderIsActive = false
-                  setTimeout(function(){
-                    that.loaderIsActive = false
-                    that.success = "Team [ " +teamID + " ] Lab Successfully Restarted!"
-                  }, 500);
-                });
             },
+
           async deleteTeam(teamId){
               const that = this; 
               const opts = {
@@ -200,11 +197,16 @@
 
              var x = confirm("Do you really want to delete " + teamId + " on event "+ this.$route.params.tag+ " ?");
              if (x) {
-              this.loaderIsActive = true;
-              this.loader_msg = "Pruning " +teamId +" team's resources...."
+              that.loaderIsActive = true;
+              that.loader_msg = "Pruning " +teamId +" team's resources...."
                 await fetch(API_ENDPOINT+ "/admin/team/delete", opts)
                 .then(response => response.json())
                 .then(response => {
+                  if (response["code"] !== "") {
+                    this.error = response["message"];
+                    this.loaderIsActive = false;
+                    return
+                  }
                   if(response["message"] !== ""){
                     that.loaderIsActive = false
                     that.success = response["message"]
@@ -214,39 +216,40 @@
                   that.success = null
                   that.error = error
                 })
-                
-             }
+              }
              },
-            resetFrontend(teamID){
-                const that = this
+            async resetFrontend(teamID){
+                this.loaderIsActive = true   
+                const opts = {
+                  method:"POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "token": localStorage.getItem("user")
+                  },
+                  body: JSON.stringify({
+                    "eventTag": this.$route.params.tag,
+                    "teams": [{'Id':teamID}]
+                  })
+                }
                 this.loaderIsActive = true
-
-                let getRequest = new ResetFrontendsRequest();
-                let getTeam = new Team();
-
-                getTeam.setId(teamID);
-                getRequest.setEventtag(this.$route.params.tag);
-                getRequest.addTeams(getTeam);
-
-                const call = daemonclient.resetFrontends(getRequest, {Token: localStorage.getItem("user")});
-
-                call.on('data', function(response) {
-                    //this.status = response.getErrormessage();
-                    window.console.log(response.getStatus())
-
-                    that.loader_msg = response.getStatus()
-                    that.loader_id = response.getTeamid()
-
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function() {
-                    setTimeout(function(){
-                        that.loaderIsActive = false
-                        that.success = "Frontend successfully restarted!"
-                    }, 1000);
-                });
+                this.loader_msg = "Resetting frontends of teams " 
+                await fetch(API_ENDPOINT + "/admin/frontend/reset", opts)
+                  .then(response => response.json())
+                  .then(response => {
+                      if (response["code"] !== "" ) {
+                        this.error = response["message"];
+                        this.loaderIsActive = false
+                        return 
+                      }
+                      if (response["status"] !== "" ) {
+                        this.success = response["status"];
+                      } 
+                      this.loaderIsActive = false
+                      this.listTeams();
+                  }).catch(error => {
+                      this.loaderIsActive = false
+                      this.error = error;
+                  });
             },
             openModal: function (teamid) {
               this.teamUpdate = teamid
@@ -277,6 +280,12 @@
               fetch(API_ENDPOINT+"/admin/team/update", opts)
                 .then(res => res.json())
                 .then(res => {
+                  if (res["code"] !== "") {
+                    this.error = res["message"];
+                    this.password = ""
+                    this.repeatPassword = ""
+                    return
+                  }
                   if (res.error) {
                     this.error = res.error
                   } else {
@@ -292,19 +301,47 @@
                 })
                 this.$bvModal.hide('update-team-modal')
             },
-            suspendResumeTeamLab: function (teamID, setSuspend) {
-                let getRequest = new SetTeamSuspendRequest()
-                getRequest.setTeamid(teamID)
-                getRequest.setEventtag(this.$route.params.tag)
-                getRequest.setSuspend(setSuspend)
+          suspendResumeTeamLab: async function (teamID, setSuspend) {
 
-                daemonclient.setTeamSuspend(getRequest, {Token: localStorage.getItem("user")}, (err) => {
-                    if (err == null) {
-                        this.success = "Action completed!"
-                    }else{
-                        this.error = err["message"];
+              const opts = {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "token": localStorage.getItem("user")
+                },
+                body: JSON.stringify({
+                  "eventTag": this.$route.params.tag,
+                  "teamId": teamID,
+                  "suspend": setSuspend
+                })
+              }
+
+              this.loaderIsActive = true;
+              if (setSuspend) {
+                this.loader_msg = "Suspending Team " + teamID + " Lab...";
+              } else {
+                this.loader_msg = "Resuming Team " + teamID + " Lab...";
+              }
+            await  fetch(API_ENDPOINT + "/admin/team/suspend", opts)
+                  .then(res => res.json())
+                  .then(res => {
+                    window.console.log("Suspend/Resume Team Lab: "+ JSON.stringify(res))
+                    if (Object.keys(res).length !== 0) {
+                      this.error = res
+                      this.loaderIsActive = false;
+                      return
                     }
-                });
+                    this.loaderIsActive = false;
+                    if (setSuspend) {
+                      this.success = "Team " + teamID + " Lab suspended!";
+                    } else {
+                      this.success = "Team " + teamID + " Lab resumed!";
+                    }
+                    this.listTeams();
+                  }).catch(error => {
+                    this.loaderIsActive = false;
+                    this.error = error;
+                  });
             }
         }
     }
