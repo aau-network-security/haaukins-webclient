@@ -24,7 +24,7 @@
           </tr>
           </thead>
           <tbody v-if="this.infos">
-          <tr v-for="(info,count) in this.infos" v-bind:key="info.tag">
+          <tr v-for="(info,count) in this.infos" v-bind:key="info['tag']">
             <td>{{count + 1}}</td>
             <td>{{info['challengeName']}}</td>
             <td>{{info['challengeTag']}}</td>
@@ -71,7 +71,7 @@ export default {
       fetch(API_ENDPOINT+'/admin/team/'+this.$route.params.tag+'/'+this.$route.params.id+'/challenges', opts)
           .then (response => response.json())
           .then(response => {
-            window.console.log(JSON.stringify(response))
+            window.console.log('Team information' +JSON.stringify(response))
             if (response['message'] !== "") {
               this.error = response['message']
             }
