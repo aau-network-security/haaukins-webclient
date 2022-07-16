@@ -164,11 +164,6 @@
             await fetch (API_ENDPOINT + "/admin/lab/restart", opts)
               .then(response => response.json())
               .then(response => {
-                if (response["code"] !== "") {
-                  this.error = response["message"];
-                  this.loaderIsActive = false;
-                  return
-                } 
                 if (response["status"] !== "") {
                   this.success = response["status"];
                   this.loaderIsActive = false;
@@ -322,10 +317,9 @@
               } else {
                 this.loader_msg = "Resuming Team " + teamID + " Lab...";
               }
-            await  fetch(API_ENDPOINT + "/admin/team/suspend", opts)
+            await fetch(API_ENDPOINT + "/admin/team/suspend", opts)
                   .then(res => res.json())
                   .then(res => {
-                    window.console.log("Suspend/Resume Team Lab: "+ JSON.stringify(res))
                     if (Object.keys(res).length !== 0) {
                       this.error = res
                       this.loaderIsActive = false;
