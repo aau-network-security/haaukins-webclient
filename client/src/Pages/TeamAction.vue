@@ -71,8 +71,6 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { daemonclient } from "../App";
-    import { ResetExerciseRequest, Team } from "daemon_pb"
     import { API_ENDPOINT } from '../App.vue';
 
     export default {
@@ -178,42 +176,32 @@
                     return "SUSPENDED"
                 }
             },
-            resetExercise: function (tag) {
-
-                const that = this
-                this.loaderIsActive = true
-
-                let getRequest = new ResetExerciseRequest();
-                let getTeam = new Team();
-
-                getTeam.setId(this.$route.params.id);
-
-                getRequest.setEventtag(this.$route.params.tag);
-                getRequest.setExercisetag(tag);
-
-                //todo if we do not set any teams, the challenge will be resetted for every team
-                getRequest.addTeams(getTeam);
-
-                const call = daemonclient.resetExercise(getRequest, {Token: localStorage.getItem("user")});
-
-                call.on('data', function(response) {
-                    //this.status = response.getErrormessage();
-                    window.console.log(response.getStatus())
-
-                    that.loader_msg = response.getStatus()
-                    that.loader_id = response.getTeamid()
-
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function() {
-                    setTimeout(function(){
-                        that.loaderIsActive = false
-                        that.success = "Exercises successfully reset!"
-                        that.getTeamInfo()
-                    }, 1000);
-                });
+            resetExercise: async function (tag) {
+                this.loaderIsActive = true;
+                this.loader_msg = "Resetting exercise "+tag+ " ...";
+                const opts = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                    body: JSON.stringify({
+                        "eventTag": this.$route.params.tag,
+                        "teams": [{'Id':this.$route.params.id}],
+                        "exerciseTag": tag
+                    })
+                };
+            await  fetch(API_ENDPOINT+'/admin/event/reset/exercise', opts)
+                    .then(response => response.json())
+                    .then(response => {
+                        if (response['code'] !== undefined){
+                            this.error = response['message'];
+                            this.loaderIsActive = false; 
+                            return 
+                        }
+                        this.success = response['status'];
+                        this.loaderIsActive = false;
+                    }).catch(error => {
+                        this.error = error;
+                        this.loaderIsActive = false;
+                    });
             },
         }
     }
