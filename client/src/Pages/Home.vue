@@ -214,31 +214,25 @@
               })
             },
 
-             addChallenge: function (request) {
+             addChallenge: async function (opts) {
                const that = this
                that.loaderIsActive = true
                that.loader_status = "Adding challenges to event ... "
                this.$bvModal.hide('add-challenge-modal')
-               const call = daemonclient.addChallenge(request, {Token: localStorage.getItem("user")});
-               call.on('data', function (response) {
-                 that.loader_status = response.getMessage()
-                 // window.console.log(response)
-               });
-               call.on('error', function (error) {
-                 that.loaderIsActive = false;
-                 that.error = error
-                 // window.console.log(error['message'])
-               });
-               call.on('end', function () {
-                 that.loaderIsActive = false
-                 if (that.error === null) {
-                    that.success = "Challenges are added to event successfully !"
-                 }
-                 window.console.log("enddd")
-               })
-               call.on('status', function () {
-                 that.loaderIsActive = false;
-               });
+               window.console.log("addChallenge opts:" + JSON.stringify(opts))
+            await fetch(API_ENDPOINT+'/admin/challenge/add', opts)
+                .then(response => response.json())
+                .then(response => {
+                 window.console.log("addChallenge response:" + JSON.stringify(response))
+                  if (response['code'] !== undefined) {
+                    that.error = response['message'];
+                    that.loaderIsActive = false
+                    return
+                  }
+                  that.loaderIsActive = false
+                  that.success = response['message'];
+                  that.listEvent(that.Running)
+                })
              },
             addAnnouncement: function (opts) {
 

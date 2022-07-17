@@ -205,7 +205,6 @@
 </template>
 
 <script>
-import {AddChallengeRequest} from "daemon_pb";
 import {  API_ENDPOINT } from "../App";
 
 
@@ -424,10 +423,18 @@ export default {
       this.submitted = true;
     },
     addChallenge: function () {
-      let getRequest = new AddChallengeRequest();
-      getRequest.setChallengetagList(this.selectedChallenges)
-      getRequest.setEventtag(this.selectedEvent)
-      this.$emit('addChallenge', getRequest)
+      const opts = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+        body: JSON.stringify({
+          "challengeTag": this.selectedChallenges,
+          "eventTag": this.selectedEvent
+        })
+        }
+      this.$emit('addChallenge', opts)
     },
     getExsByTags : function (tags) {
           const that = this
