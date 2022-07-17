@@ -12,7 +12,6 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    // import { ListEventsRequest } from "daemon_pb";
     import {API_ENDPOINT} from "../App";
     import ApexCharts from 'apexcharts'
 
