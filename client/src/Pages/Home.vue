@@ -124,9 +124,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { 
-      Empty } from "daemon_pb";
-    import { daemonclient, API_ENDPOINT } from "../App";
+    import {  API_ENDPOINT } from "../App";
     import EventModal from "../components/EventModal";
     import ChalModal from "../components/ChalModal";
     import AnnounceModal from "../components/AnnounceModal";
@@ -391,31 +389,47 @@
                    })
             
             },
-            monitorHost: function () {
+            monitorHost:  async function () {
                 const that = this;
-                let getRequest = new Empty();
+                const socketProtocol = (window.location.protocol === 'https:' ? 'wss:' : 'ws:')
+                const port = ':8091';
+                const echoSocketUrl = socketProtocol + '//' + 'localhost' + port + '/admin/host/monitor';
 
-                const call = daemonclient.monitorHost(getRequest, {Token: localStorage.getItem("user")});
+                // Define socket and attach it to our data object
+                this.socket = await new WebSocket(echoSocketUrl); 
+                
 
-                call.on('data', function(response) {
-                    //TODO nothign receive because cause the deamon dosen't send anything
-                    let memory = response.getMemorypercent()
-                    that.memory = memory.toFixed(2)
-                    let cpu = response.getCpupercent()
-                    that.cpu = cpu.toFixed(2)
-                    that.memoryError = response.getMemoryreaderror()
-                    that.cpuError = response.getCpureaderror()
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function(status) {
-                  if (status.details === 'token contains an invalid number of segments') {
-                     that.$router.push({ path: 'login' })
-                     window.localStorage.clear()
-                  }
-                    window.console.log(status)
-                });
+
+                // When it opens, console log that it has opened. and send a message to the server to let it know we exist
+                this.socket.onopen = () => {
+                    
+                    window.console.log('Websocket connected.');
+                    this.connectedStatus = 'Connected';
+         
+                }
+
+                // When we receive a message from the server, we can capture it here in the onmessage event.
+               this.socket.onmessage = (event) => {
+                    // We can parse the data we know to be JSON, and then check it for data attributes
+                    let parsedMessage = JSON.parse(event.data);
+                    // If those data attributes exist, we can then console log or show data to the user on their web page.
+                   
+                    if(Object.keys(parsedMessage).length !== 0) {
+                        let memory = parseFloat(parsedMessage["memPercent"])
+                        that.memory = memory.toFixed(2)
+                        let cpu = parseFloat(parsedMessage["cpuPercent"])
+                        that.cpu = cpu.toFixed(2)
+                        that.memoryError = parsedMessage["memError"]
+                        that.cpuError = parsedMessage["cpuError"]
+                        window.console.log('We have received a message from the server!')
+                    }
+                }
+                
+                this.socket.onerror = (error) => {
+                    window.console.log('Websocket error: '+ JSON.stringify(error));
+                    this.error = error;
+                    this.connectedStatus = 'Disconnected';
+                }
             },
          }
         }
