@@ -44,7 +44,7 @@
 </template>
 
 <script>
-    import { API_ENDPOINT } from "../App";
+    import { REST_API_ENDPOINT , REST_API_PORT  } from "../App";
     import {router} from "../router";
 
     export default {
@@ -90,7 +90,7 @@
                 }),
               };
 
-              fetch(API_ENDPOINT + '/admin/signup', opts)
+              fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  + '/admin/signup', opts)
                   .then ( response => response.json())
                   .then (response  => {
                     if (response["error"] !== "") {

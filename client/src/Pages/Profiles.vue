@@ -376,7 +376,7 @@
 <script>
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { API_ENDPOINT} from "../App";
+import { REST_API_ENDPOINT, REST_API_PORT  } from "../App";
 
 export default {
   name: "Challenges",
@@ -443,7 +443,7 @@ export default {
           "name": this.profileForUpdate.name
         })
       }
-      await fetch(API_ENDPOINT+"/admin/profile/delete",opts)
+      await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +"/admin/profile/delete",opts)
       .then(response => response.json())
       .then(response => {
         window.console.log("Response from server: " +JSON.stringify(response))
@@ -469,7 +469,7 @@ export default {
           body: JSON.stringify(profile)
         }
         // window.console.log("Save profile called: " + JSON.stringify(profile))
-        fetch(API_ENDPOINT+"/admin/profile/save",opts)
+        fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + "/admin/profile/save",opts)
         .then(response => response.json())
         .then(response => {
           window.console.log("Response from server: " +JSON.stringify(response))
@@ -502,7 +502,7 @@ export default {
         body: JSON.stringify(profileToBeUpdated)
       }
       window.console.log("Update profile called: " + JSON.stringify(profileToBeUpdated))
-      fetch(API_ENDPOINT+"/admin/profile/edit",opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + "/admin/profile/edit",opts)
       .then(response => response.json())
       .then(response => {
         // window.console.log("Response from server: " +JSON.stringify(response))
@@ -606,7 +606,7 @@ export default {
           "token": localStorage.getItem("user")
         }
       }
-      await fetch(API_ENDPOINT+"/admin/profiles/list", opts)
+      await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +"/admin/profiles/list", opts)
         .then(response => response.json())
         .then(response => {
           that.profiles = response['profiles'] 
@@ -646,7 +646,7 @@ export default {
           "token": localStorage.getItem("user")
         },
       };
-       fetch(API_ENDPOINT+'/admin/categories/list', opts)
+       fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/categories/list', opts)
       .then(response => response.json())
       .then(response => {
         
@@ -705,7 +705,7 @@ export default {
         }
       this.secretChallenges = new Map()
 
-      fetch(API_ENDPOINT + "/admin/exercise/list", opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +  "/admin/exercise/list", opts)
         .then(res => res.json())
         .then(res => {
               let exerciseList = res['exercises']

@@ -21,7 +21,7 @@
 <script>
   import Navbar from "../components/Navbar";
   import Footer from "../components/Footer";
-  import { API_ENDPOINT } from "../App";
+  import { REST_API_ENDPOINT , REST_API_PORT  } from "../App";
   export default {
     name: "APICreds",
     components:{Footer, Navbar},
@@ -42,7 +42,7 @@
           headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
 
         };
-        fetch(API_ENDPOINT+'/admin/get/api/creds', opts)
+        fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/get/api/creds', opts)
             .then(response => response.json())
             .then(response => {
               if (response['message'] !== ""){

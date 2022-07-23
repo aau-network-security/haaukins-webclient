@@ -80,7 +80,7 @@
 <script>
     import Footer from "../components/Footer";
     import Navbar from "../components/Navbar";
-    import {  API_ENDPOINT } from "../App";
+    import {  REST_API_ENDPOINT, REST_API_PORT } from "../App";
 
     export default {
         name: "Users",
@@ -102,7 +102,7 @@
                   method: 'GET',
                   headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')}
                 }
-                fetch(API_ENDPOINT+'/admin/user/list', opts)
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/user/list', opts)
                     .then(response => response.json())
                     .then(response => {
                       if (response['error'] !==""){
@@ -138,7 +138,7 @@
                   )
                 }
 
-                fetch(API_ENDPOINT+'/admin/user/update', opst)
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/user/update', opst)
                     .then(response => response.json())
                     .then(response => {
                       if (response['error'] !== ""){
@@ -160,7 +160,7 @@
                   headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
                   body: JSON.stringify({'username': username})
                 }
-                fetch(API_ENDPOINT+'/admin/user/delete', opst)
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/user/delete', opst)
                     .then(response => response.json())
                     .then(response => {
                       if (response['error'] !== ""){

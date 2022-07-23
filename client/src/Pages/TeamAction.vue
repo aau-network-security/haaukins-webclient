@@ -71,7 +71,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { API_ENDPOINT } from '../App.vue';
+    import { REST_API_ENDPOINT , REST_API_PORT   } from '../App.vue';
 
     export default {
         name: "TeamAction",
@@ -101,7 +101,7 @@
                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
                  };
 
-                 fetch(API_ENDPOINT+'/admin/team/'+this.$route.params.tag+'/'+this.$route.params.id+'/info', opts)
+                 fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/team/'+this.$route.params.tag+'/'+this.$route.params.id+'/info', opts)
                     .then(response => response.json())
                     .then(response => {
                         this.infos = response['instances'];
@@ -118,7 +118,7 @@
 
                 };
             
-                fetch(API_ENDPOINT+'/admin/event/list/'+status, opts).then(response => response.json())
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/event/list/'+status, opts).then(response => response.json())
                 .then(response => {
                     this.events = response['events'];
 
@@ -140,7 +140,7 @@
                     headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
                 };
 
-                fetch(API_ENDPOINT+'/admin/exercise/list', opts).then(response => response.json())
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/exercise/list', opts).then(response => response.json())
                 .then(response => {
                     this.challengesList = response['exercises'];
                 })
@@ -188,7 +188,7 @@
                         "exerciseTag": tag
                     })
                 };
-            await  fetch(API_ENDPOINT+'/admin/event/reset/exercise', opts)
+            await  fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/event/reset/exercise', opts)
                     .then(response => response.json())
                     .then(response => {
                         if (response['code'] !== undefined){

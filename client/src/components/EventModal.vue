@@ -416,7 +416,7 @@
 </template>
 
 <script>
-import { API_ENDPOINT } from "../App";
+import { REST_API_ENDPOINT, REST_API_PORT  } from "../App";
 import Datepicker from "vuejs-datepicker"
 
 export default {
@@ -504,7 +504,7 @@ export default {
           "token": localStorage.getItem("user")
         }
       }
-      fetch(API_ENDPOINT+"/admin/profiles/list", opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +"/admin/profiles/list", opts)
         .then(response => response.json())
         .then(response => {
           that.profiles = response['profiles'] 
@@ -641,7 +641,7 @@ export default {
         headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
       }
 
-     fetch(API_ENDPOINT+'/admin/categories/list', opts)
+     fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/categories/list', opts)
       .then(response => response.json())
       .then(response => {
         response['categories'].forEach(function(c){
@@ -686,7 +686,7 @@ export default {
         }
       this.secretChallenges = new Map()
 
-      fetch(API_ENDPOINT + "/admin/exercise/list", opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT   + "/admin/exercise/list", opts)
         .then(res => res.json())
         .then(res => {
               let exerciseList = res['exercises']
@@ -775,7 +775,7 @@ export default {
         })
       }
 
-      fetch(API_ENDPOINT + '/admin/event/get/exercises', opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT   + '/admin/event/get/exercises', opts)
       .then(response => response.json())
       .then(response =>  {
         response['exercises'].forEach(function (element){
@@ -815,7 +815,7 @@ export default {
           "token": localStorage.getItem("user")
         }
       }
-      fetch(API_ENDPOINT + "/admin/frontends/list", opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  + "/admin/frontends/list", opts)
         .then(res => res.json())
         .then(res => {
           let allFrontendInfo = res['frontends']

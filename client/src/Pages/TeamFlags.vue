@@ -42,7 +42,7 @@
 <script>
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { API_ENDPOINT } from "../App";
+import { REST_API_ENDPOINT , REST_API_PORT } from "../App";
 
 export default {
   name: "FlagsAction",
@@ -68,7 +68,7 @@ export default {
         headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')}
       };
 
-      fetch(API_ENDPOINT+'/admin/team/'+this.$route.params.tag+'/'+this.$route.params.id+'/challenges', opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/team/'+this.$route.params.tag+'/'+this.$route.params.id+'/challenges', opts)
           .then (response => response.json())
           .then(response => {
             window.console.log('Team information' +JSON.stringify(response))
@@ -95,7 +95,7 @@ export default {
             'teamID': this.$route.params.id,
           })
         };
-        fetch(API_ENDPOINT+'/admin/challenge/solve', opts)
+        fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/challenge/solve', opts)
             .then(response => response.json())
             .then(response => {
               window.console.log('solve challenge response: '+ JSON.stringify(response))

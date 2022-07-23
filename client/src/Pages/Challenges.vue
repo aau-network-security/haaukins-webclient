@@ -478,9 +478,7 @@
 <script>
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {Empty, SaveProfileRequest} from "daemon_pb";
-import {daemonclient} from "../App";
-import { API_ENDPOINT } from "../App.vue";
+import { REST_API_ENDPOINT , REST_API_PORT  } from "../App.vue";
 
 export default {
   name: "Challenges",
@@ -537,7 +535,7 @@ export default {
           "token": localStorage.getItem("user")
         }
       }
-      fetch(API_ENDPOINT+"/admin/profiles/list", opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + "/admin/profiles/list", opts)
         .then(response => response.json())
         .then(response => {
           that.profiles = response['profiles'] 
@@ -550,36 +548,37 @@ export default {
     saveProfile: function () {
       //window.console.log("Saving profile")
       const that = this
+       const opts = {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json",
+            "token": localStorage.getItem("user")
+          },
+          
+        }
+      
       let index = this.profiles.findIndex(obj => obj['name'] === this.profile.name.trim())
       //window.console.log("Seing it profile exists:", index)
       if (index < 0) {
-        let getRequest = new SaveProfileRequest();
-        getRequest.setName(this.profile.name.trim())
-        getRequest.setSecret(this.profile.secret)
-        this.profile.selectedChallenges.forEach(function (chal) {
-          let challenge = new SaveProfileRequest.Challenge()
-          challenge.setTag(chal.tag)
-          challenge.setName(chal.name)
-          getRequest.addChallenges(challenge)
-        })
-        const call = daemonclient.saveProfile(getRequest, {Token: localStorage.getItem("user")});
+        let profileName  = this.profile.name.trim()
+        let secret = this.profile.secret
 
-        call.on('data', function (response) {
-          window.console.log("Data response: ", response)
-        });
-        call.on('error', function (response) {
-          that.alert = response.message
-          that.showAlert("danger")
-          //window.console.log("Error response: ", response)
-        });
-        call.on('status', function (response) {
-          //window.console.log("Status response: ", response)
-          if (response.details == "") {
+        let profile = {name: profileName, secret: secret, challenges: this.profile.selectedChallenges}
+        opts.body = JSON.stringify(profile)
+        fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + "/admin/profile/save", opts)
+          .then(response => response.json())
+          .then(response => {
+            if (response['status'] !== "") {
+              this.alert = response['status']
+              this.showAlert("success")
+            }
             that.getProfiles()
-            that.alert = "Profile successfully saved"
-            that.showAlert("success")
-          }
-        });
+          
+          })
+          .catch(error => {
+            window.console.log("challenges /admin/profiles/add error:", error)
+            that.error = error
+          })
       } else {
         this.alert = "Profile already exists, you can edit existing profiles from the profiles page"
         this.showAlert("danger")
@@ -651,36 +650,42 @@ export default {
     },
     getCategories: function () {
       // Getting categories first.
-      let getRequest = new Empty();
       const that = this
-      daemonclient.listCategories(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        that.error = err
-        let categoryListObj = response.getCategoriesList();
-        categoryListObj.forEach(function (element) {
-          let tag = element.getTag()
-          let name = element.getName()
 
-          let description = element.getCatdescription()
-          let category = {
-            tag: tag,
-            name: name,
-            catDesc: description,
-            challenges: [],
-            taglist: [],
-            filteredItems: [],
-            filterOn: false,
-            difficulties: [
+      const opts = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+      };
+       fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/categories/list', opts)
+      .then(response => response.json())
+      .then(response => {
+
+        response['categories'].forEach(function(element){
+            let tag = element['tag']
+            let name = element['name']
+            let description = element['catDescription']
+            let category = {
+              tag: tag,
+              name: name,
+              catDesc: description,
+              challenges: [],
+              taglist: [],
+              filteredItems: [],
+              filterOn: false,
+              difficulties: [
               {name: "Very Easy", tag: "veryeasy", enabled: false},
               {name: "Easy", tag: "easy", enabled: false},
               {name: "Medium", tag: "medium", enabled: false},
               {name: "Hard", tag: "hard", enabled: false},
               {name: "Very Hard", tag: "veryhard", enabled: false}
-            ]
-          }
-          //window.console.log(category)
-          that.categories.push(category)
-        })
-        // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
+              ]}
+            that.categories.push(category)
+          })
+
+       // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
         if (that.categories[0].tag != "ST") {
           that.categories.forEach(function (category, index) {
             if (category.tag == "ST") {
@@ -697,6 +702,9 @@ export default {
         //First category info always shown when modal is opened
         //Inserting exercises into categories list
         that.getExercises()
+      }).catch(error => {
+        window.console.log("profiles.vue /admin/categories/list error:", error)
+        that.error = error
       })
     },
     getExercises: function () {
@@ -709,7 +717,7 @@ export default {
         } 
       }
       this.secretChallenges = new Map()
-      fetch(API_ENDPOINT + "/admin/exercise/list", opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  + "/admin/exercise/list", opts)
       .then(res => res.json())
       .then(res => {
             

@@ -12,7 +12,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import {API_ENDPOINT} from "../App";
+    import {REST_API_ENDPOINT , REST_API_PORT } from "../App";
     import ApexCharts from 'apexcharts'
 
     export default {
@@ -121,7 +121,7 @@
                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
                  };
                 let status = 4; // all events
-                fetch(API_ENDPOINT+'/admin/event/list/'+status, opts).then(response => response.json())
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/event/list/'+status, opts).then(response => response.json())
                   .then(response => {
                     if (response.message !== undefined) {
                       window.console.log("Unable to fetch -", response.message);

@@ -205,7 +205,7 @@
 </template>
 
 <script>
-import {  API_ENDPOINT } from "../App";
+import {  REST_API_ENDPOINT , REST_API_PORT} from "../App";
 
 
 export default {
@@ -231,7 +231,6 @@ export default {
   methods: {
     getCategories: function(){
       // Getting categories first.
-      // let getRequest = new Empty();
     const that = this
      
     const opts = {
@@ -242,7 +241,7 @@ export default {
       },
     };
     
-    fetch(API_ENDPOINT+'/admin/categories/list', opts)
+    fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/categories/list', opts)
       .then(response => response.json())
       .then(response => {
         response['categories'].forEach(function(c){
@@ -287,7 +286,7 @@ export default {
         } 
       }
       this.secretChallenges = new Map()
-      fetch(API_ENDPOINT + "/admin/exercise/list", opts)
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +  + "/admin/exercise/list", opts)
       .then(res => res.json())
       .then(res => {
             
@@ -450,7 +449,7 @@ export default {
             })
           }
 
-          fetch(API_ENDPOINT + '/admin/event/get/exercises', opts)
+          fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +  + '/admin/event/get/exercises', opts)
           .then(response => response.json())
           .then(response =>  {
             response['exercises'].forEach(function (element){

@@ -124,7 +124,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import {  API_ENDPOINT, WEBSOCKET_ENDPOINT } from "../App";
+    import {  REST_API_ENDPOINT , REST_API_PORT , WEBSOCKET_PORT } from "../App";
     import EventModal from "../components/EventModal";
     import ChalModal from "../components/ChalModal";
     import AnnounceModal from "../components/AnnounceModal";
@@ -198,7 +198,7 @@
 
               };
             
-              fetch(API_ENDPOINT+'/admin/event/list/'+status, opts).then(response => response.json())
+              fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + '/admin/event/list/'+status, opts).then(response => response.json())
               .then(response => {
                 if (response.message !== undefined) {
                   window.console.log("Unable to fetch -", response.message);
@@ -218,7 +218,7 @@
                that.loader_status = "Adding challenges to event ... "
                this.$bvModal.hide('add-challenge-modal')
                window.console.log("addChallenge opts:" + JSON.stringify(opts))
-            await fetch(API_ENDPOINT+'/admin/challenge/add', opts)
+            await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/challenge/add', opts)
                 .then(response => response.json())
                 .then(response => {
                  window.console.log("addChallenge response:" + JSON.stringify(response))
@@ -234,7 +234,7 @@
              },
             addAnnouncement: function (opts) {
 
-            fetch(API_ENDPOINT+'/admin/manage/notification', opts)
+            fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/manage/notification', opts)
                 .then(response => response.json())
                 .then(response => {
                     if (response.response === undefined) {
@@ -256,7 +256,7 @@
                     this.$bvModal.hide('create-event-modal')
 
                     
-                     fetch(API_ENDPOINT+'/admin/event/create',opst)
+                     fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/event/create',opst)
                         .then(response => response.json())
                         .then(response => {
                             if (response['code'] !== undefined) {
@@ -300,7 +300,7 @@
                     opts['body'] = JSON.stringify(body)
                 }
 
-                fetch(API_ENDPOINT+'/admin/event/suspend', opts)
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/event/suspend', opts)
                     .then(response => response.json())
                     .then(response => {
                         this.success = response['status'];
@@ -325,7 +325,7 @@
                         "tag": tag
                     })
                 };
-                fetch(API_ENDPOINT+'/admin/event/stop', opts)
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/event/stop', opts)
                 .then(response => response.json())
                 .then(response=> {
                     this.listEvent(this.Running)
@@ -371,7 +371,7 @@
               }
               opts['body'] = JSON.stringify(body)
 
-              fetch(API_ENDPOINT+'/admin/invite', opts)
+              fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/invite', opts)
                   .then(response => response.json())
                   .then(response => {
                     window.console.log('invite response '+ JSON.stringify(response))
@@ -392,11 +392,11 @@
             monitorHost:  async function () {
                 const that = this;
                 const socketProtocol = (window.location.protocol === 'https:' ? 'wss:' : 'ws:')
-          
-                const socketURL = WEBSOCKET_ENDPOINT +  + '/admin/host/monitor';
+
+                const socketURL = socketProtocol + '//' + window.location.hostname + ":" +WEBSOCKET_PORT + '/admin/host/monitor';
 
                 // Define socket and attach it to our data object
-                this.socket = await new WebSocket(echoSocketUrl); 
+                this.socket = await new WebSocket(socketURL); 
                 
 
 

@@ -103,7 +103,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { API_ENDPOINT } from "../App.vue";
+    import { REST_API_ENDPOINT , REST_API_PORT  } from "../App.vue";
 
     export default {
         name: "Teams",
@@ -132,7 +132,7 @@
                     "token": localStorage.getItem("user")
                   }
                 }
-                fetch(API_ENDPOINT + "/admin/event/"+this.$route.params.tag+"/list/teams", opts)
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +  "/admin/event/"+this.$route.params.tag+"/list/teams", opts)
                 .then(response => response.json())
                 .then(response => {
                     this.teams = response["teams"];
@@ -161,7 +161,7 @@
               this.loader_msg = "Restarting Team " + teamID +" Lab...";
           
           
-            await fetch (API_ENDPOINT + "/admin/lab/restart", opts)
+            await fetch (REST_API_ENDPOINT + ":" + REST_API_PORT + "/admin/lab/restart", opts)
               .then(response => response.json())
               .then(response => {
                 if (response["status"] !== "") {
@@ -194,7 +194,7 @@
              if (x) {
               that.loaderIsActive = true;
               that.loader_msg = "Pruning " +teamId +" team's resources...."
-                await fetch(API_ENDPOINT+ "/admin/team/delete", opts)
+                await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + "/admin/team/delete", opts)
                 .then(response => response.json())
                 .then(response => {
                   if (response["code"] !== "") {
@@ -228,7 +228,7 @@
                 }
                 this.loaderIsActive = true
                 this.loader_msg = "Resetting frontends of teams " 
-                await fetch(API_ENDPOINT + "/admin/frontend/reset", opts)
+                await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +  "/admin/frontend/reset", opts)
                   .then(response => response.json())
                   .then(response => {
                       if (response["code"] !== "" ) {
@@ -272,7 +272,7 @@
                   "passwordRepeat": this.repeatPassword
                 })
               }
-              fetch(API_ENDPOINT+"/admin/team/update", opts)
+              fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +"/admin/team/update", opts)
                 .then(res => res.json())
                 .then(res => {
                   if (res["code"] !== "") {
@@ -317,7 +317,7 @@
               } else {
                 this.loader_msg = "Resuming Team " + teamID + " Lab...";
               }
-            await fetch(API_ENDPOINT + "/admin/team/suspend", opts)
+            await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  + "/admin/team/suspend", opts)
                   .then(res => res.json())
                   .then(res => {
                     if (Object.keys(res).length !== 0) {
