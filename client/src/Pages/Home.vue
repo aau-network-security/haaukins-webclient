@@ -124,7 +124,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import {  API_ENDPOINT } from "../App";
+    import {  API_ENDPOINT, WEBSOCKET_ENDPOINT } from "../App";
     import EventModal from "../components/EventModal";
     import ChalModal from "../components/ChalModal";
     import AnnounceModal from "../components/AnnounceModal";
@@ -392,8 +392,8 @@
             monitorHost:  async function () {
                 const that = this;
                 const socketProtocol = (window.location.protocol === 'https:' ? 'wss:' : 'ws:')
-                const port = ':8091';
-                const echoSocketUrl = socketProtocol + '//' + 'localhost' + port + '/admin/host/monitor';
+          
+                const socketURL = WEBSOCKET_ENDPOINT +  + '/admin/host/monitor';
 
                 // Define socket and attach it to our data object
                 this.socket = await new WebSocket(echoSocketUrl); 
@@ -421,7 +421,6 @@
                         that.cpu = cpu.toFixed(2)
                         that.memoryError = parsedMessage["memError"]
                         that.cpuError = parsedMessage["cpuError"]
-                        window.console.log('We have received a message from the server!')
                     }
                 }
                 
