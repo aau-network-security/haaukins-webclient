@@ -62,20 +62,20 @@
                         <th>Event Tag</th><th>Name</th><th>#_Team</th><th>#_Exercises</th><th>Availability</th><th>Capacity</th><th>Status</th><th>Action</th><th>Stop</th><th>Secret_Key</th><th>Created_By</th><th>Creation_Date</th><th>Finish_Date</th>
                     </thead>
                     <tbody v-if="events!=null">
-                        <tr v-for="event in events.eventsList" v-bind:key="event.tag">
+                        <tr v-for="event in events" v-bind:key="event.tag">
                             <td><strong><router-link :to="{name: 'event', params: {tag: event.tag}}" class="text-haaukins" >{{event.tag}}</router-link></strong></td>
                             <td>{{event.name}}</td>
-                            <td>{{event.teamcount}}</td>
+                            <td>{{event.teamCount}}</td>
                             <td>{{challenges_count(event.exercises)}}</td>
                             <td>{{event.availability}}</td>
                             <td>{{event.capacity}}</td>
                             <td>{{event_status(event.status)}}</td>
                             <td><button v-on:click="suspendResumeEvent(event.tag, event.status)" type="button" class="btn btn-warning btn-sm" :disabled="event.status == Booked">{{suspendResumeEventButton(event.status)}}</button></td>
                             <td><button v-on:click="stopEvent(event.tag)" type="button" class="btn btn-danger btn-sm">Stop</button></td>
-                            <td>{{event.secretevent}}</td>
-                            <td>{{event.createdby}}</td>
-                            <td>{{beaut_date(event.creationtime)}}</td>
-                            <td>{{beaut_date(event.finishtime)}}</td>
+                            <td>{{event.secretEvent}}</td>
+                            <td>{{event.createdBy}}</td>
+                            <td>{{beauty_date(event.creationTime)}}</td>
+                            <td>{{beauty_date(event.finishTime)}}</td>
                         </tr>
                     </tbody>
                     <tbody v-else>
@@ -124,12 +124,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { ListEventsRequest,
-      StopEventRequest,
-      SuspendEventRequest,
-      InviteUserRequest,
-      Empty } from "daemon_pb";
-    import { daemonclient } from "../App";
+    import {  REST_API_ENDPOINT , REST_API_PORT , WEBSOCKET_PORT } from "../App";
     import EventModal from "../components/EventModal";
     import ChalModal from "../components/ChalModal";
     import AnnounceModal from "../components/AnnounceModal";
@@ -197,88 +192,87 @@
             }
             ,
             listEvent: function (status) {
-                let getRequest = new ListEventsRequest();
-                getRequest.setStatus(status)
-                daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.events = response.toObject()
-                        this.events['eventsList'].sort(function (a, b) {
-                            return new Date(a.creationtime.replace(/\s/, 'T')) - new Date(b.creationtime.replace(/\s/, 'T'));
-                        })
-                    }else{
-                        this.error = err;
-                    }
-                });
+              const opts = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+
+              };
+            
+              fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + '/admin/event/list/'+status, opts).then(response => response.json())
+              .then(response => {
+                if (response.message !== undefined) {
+                  window.console.log("Unable to fetch -", response.message);
+                  this.error = response.message;
+                  return
+                }
+                this.events = response.events
+                this.events.sort(function (a, b) {
+                    return new Date(a.creationtime.replace(/\s/, 'T')) - new Date(b.creationtime.replace(/\s/, 'T'));
+                })
+              })
             },
 
-             addChallenge: function (request) {
+             addChallenge: async function (opts) {
                const that = this
                that.loaderIsActive = true
                that.loader_status = "Adding challenges to event ... "
                this.$bvModal.hide('add-challenge-modal')
-               const call = daemonclient.addChallenge(request, {Token: localStorage.getItem("user")});
-               call.on('data', function (response) {
-                 that.loader_status = response.getMessage()
-                 // window.console.log(response)
-               });
-               call.on('error', function (error) {
-                 that.loaderIsActive = false;
-                 that.error = error
-                 // window.console.log(error['message'])
-               });
-               call.on('end', function () {
-                 that.loaderIsActive = false
-                 if (that.error === null) {
-                    that.success = "Challenges are added to event successfully !"
-                 }
-                 window.console.log("enddd")
-               })
-               call.on('status', function () {
-                 that.loaderIsActive = false;
-               });
+               window.console.log("addChallenge opts:" + JSON.stringify(opts))
+            await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/challenge/add', opts)
+                .then(response => response.json())
+                .then(response => {
+                 window.console.log("addChallenge response:" + JSON.stringify(response))
+                  if (response['code'] !== undefined) {
+                    that.error = response['message'];
+                    that.loaderIsActive = false
+                    return
+                  }
+                  that.loaderIsActive = false
+                  that.success = response['message'];
+                  that.listEvent(that.Running)
+                })
              },
-            addAnnouncement: function (request) {
+            addAnnouncement: function (opts) {
+
+            fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/manage/notification', opts)
+                .then(response => response.json())
+                .then(response => {
+                    if (response.response === undefined) {
+                        window.console.log("Unable to fetch -", response.message);
+                        this.error = response['response'];
+                        return
+                    }
+                    this.success = response['response'];
+                })
               this.$bvModal.hide('add-announcement-modal')
-              daemonclient.addNotification(request,{Token: localStorage.getItem("user")}, (err, response) => {
-                if (err != null) {
-                  this.error = err
-                }
-                this.success = response.getResponse()
-              });
+          
             },
-            createEvent: function (request) {
+            createEvent: function (opst) {
                 const that = this
 
                 if (this.memory <= 95){
                     this.loaderIsActive = true;
-                    this.loader_status = "Creation Event in progress..."
+                    this.loader_status = "Creating event ... ";
                     this.$bvModal.hide('create-event-modal')
 
-                    const call = daemonclient.createEvent(request, {Token: localStorage.getItem("user")});
-
-                    call.on('data', function(response) {
-                        // daemon sends back to errorMessage
-                        that.error = response.array.toString().replace('/,/g', ' ')
-                        window.console.log(response)
-                    });
-                    call.on('error', function(e) {
-                         that.loaderIsActive = false;
-                        window.console.log(e['message'])
-                        that.error = e['message']
-                    });
-                    call.on('status', function(status) {
-                        that.loaderIsActive = false;
-                        if (!status['metadata']['grpc-message']) {
-                            that.success = "Event Successfully Created!"
-                            that.listEvent();
-                        }else{
-                            that.error = status['metadata']['grpc-message']
-                          if (status.details === 'token contains an invalid number of segments') {
-                            that.$router.push({ path: 'login' })
-                            window.localStorage.clear()
-                          }
-                        }
-                    });
+                    
+                     fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/event/create',opst)
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response['code'] !== undefined) {
+                                this.error = response['message'];
+                                this.loaderIsActive = false;
+                                return
+                            }
+                            this.listEvent(this.Running)
+                            this.loaderIsActive = false;
+                            this.success = response['Message']
+                        }) 
+                        .catch(error => {
+                            this.loaderIsActive = false;
+                            this.error = error
+                            window.console.log(error['message'])
+                        })  
                 }else{
                     that.$bvModal.hide('create-event-modal')
                     this.error = "Error! Not enough memory on the Server."
@@ -287,65 +281,65 @@
 
             },
             suspendResumeEvent: function (tag, status) {
-                const that = this
                 this.loaderIsActive = true
-
-                let getRequest = new SuspendEventRequest();
-                getRequest.setEventtag(tag)
-                if (status == this.Running){
-                    getRequest.setSuspend(true)
+                const opts = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                    
+                };
+                let body = {
+                    "eventTag": tag,
+                    "suspend": false
                 }
-                const call = daemonclient.suspendEvent(getRequest, {Token: localStorage.getItem("user")});
 
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function(status) {
-                    that.loaderIsActive = false
-                    if (!status['metadata']['grpc-message']) {
-                        that.success = "Action successfully completed!"
-                        that.listEvent()
-                    }else{
-                        that.error = status['metadata']['grpc-message']
-                       if (status.details === 'token contains an invalid number of segments') {
-                        that.$router.push({ path: 'login' })
-                        window.localStorage.clear()
-                      }
-                    }
-                });
+                if (status == this.Running){
+                    body['suspend'] = true
+                    opts['body'] = JSON.stringify(body)
+                }
+                else if (status == this.Suspended){
+                    opts['body'] = JSON.stringify(body)
+                }
 
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/event/suspend', opts)
+                    .then(response => response.json())
+                    .then(response => {
+                        this.success = response['status'];
+                        this.listEvent(this.Running)
+                    })
+                    .catch(error => {
+                        this.loaderIsActive = false;
+                        this.error = error
+                        window.console.log(error['message'])
+                    })
+                    .finally(() => {
+                        this.loaderIsActive = false
+                    }) 
             },
             stopEvent: function (tag) {
-                const that = this
                 this.loaderIsActive = true
                 this.loader_status = "Stopping " + tag + "..."
-
-                let getRequest = new StopEventRequest();
-                getRequest.setTag(tag)
-
-                const call = daemonclient.stopEvent(getRequest, {Token: localStorage.getItem("user")});
-
-
-                call.on('data', function(response) {
-                    //TODO nothign receive because cause the deamon dosen't send anything
-                    window.console.log(response)
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function(status) {
-                    that.loaderIsActive = false
-                    if (!status['metadata']['grpc-message']) {
-                        that.success = "Event Successfully Stopped!"
-                        that.listEvent()
-                    }else{
-                        that.error = status['metadata']['grpc-message']
-                      if (status.details === 'token contains an invalid number of segments') {
-                        that.$router.push({ path: 'login' })
-                        window.localStorage.clear()
-                      }
-                    }
-                });
+                const opts = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                    body: JSON.stringify({
+                        "tag": tag
+                    })
+                };
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/event/stop', opts)
+                .then(response => response.json())
+                .then(response=> {
+                    this.listEvent(this.Running)
+                    this.loaderIsActive = false
+                    this.success = response['status']
+                })
+                .catch(error => {
+                    this.loaderIsActive = false;
+                    this.error = error
+                })
+                .finally(() => {
+                    this.loaderIsActive = false
+                })
+                    
             },
             bookingValue: function (value){
                 if (value.ok) {
@@ -358,54 +352,86 @@
                 const challenges = challenges_string.split(",");
                 return challenges.length
             },
-            beaut_date: function (string_date){
+            beauty_date: function (string_date){
                 let date = new Date(string_date.replace(/\s/, 'T'));
                 return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
             },
             create_signup_key: function () {
-                let getRequest = new InviteUserRequest();
-                if (this.userSelected == 'super_user') {
-                    getRequest.setSuperUser(true)
-                }
-                if (this.userSelected == 'np_user') {
-                    getRequest.setNpUser(true)
-                }
 
-                daemonclient.inviteUser(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (response.getError() != null) {
-                        this.error = response.getError();
+              const opts = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+              }
+              let body = {}
+              if (this.userSelected == 'super_user') {
+                  body['super_user'] = true
+                }
+              if (this.userSelected == 'np_user') {
+                body['np_user'] = true
+              }
+              opts['body'] = JSON.stringify(body)
+
+              fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/invite', opts)
+                  .then(response => response.json())
+                  .then(response => {
+                    window.console.log('invite response '+ JSON.stringify(response))
+                    if (response['message'] !== "" ){
+                      // this is in case of token is invalidated
+                      this.error = response['message']
                     }
-                    this.success = response.getKey()
-                });
+                    if (response['error'] !== "") {
+                      this.error = response['error']
+                    }
+                    this.success = response['key']
+                  })
+                  .catch(error => {
+                      this.error = error
+                   })
+            
             },
-            monitorHost: function () {
+            monitorHost:  async function () {
                 const that = this;
-                let getRequest = new Empty();
+                const socketProtocol = (window.location.protocol === 'https:' ? 'wss:' : 'ws:')
 
-                const call = daemonclient.monitorHost(getRequest, {Token: localStorage.getItem("user")});
+                const socketURL = socketProtocol + '//' + window.location.hostname + ":" +WEBSOCKET_PORT + '/admin/host/monitor';
 
-                call.on('data', function(response) {
-                    //TODO nothign receive because cause the deamon dosen't send anything
-                    let memory = response.getMemorypercent()
-                    that.memory = memory.toFixed(2)
-                    let cpu = response.getCpupercent()
-                    that.cpu = cpu.toFixed(2)
-                    that.memoryError = response.getMemoryreaderror()
-                    that.cpuError = response.getCpureaderror()
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function(status) {
-                  if (status.details === 'token contains an invalid number of segments') {
-                     that.$router.push({ path: 'login' })
-                     window.localStorage.clear()
-                  }
-                    window.console.log(status)
-                });
+                // Define socket and attach it to our data object
+                this.socket = await new WebSocket(socketURL); 
+                
+
+
+                // When it opens, console log that it has opened. and send a message to the server to let it know we exist
+                this.socket.onopen = () => {
+                    
+                    window.console.log('Websocket connected.');
+                    this.connectedStatus = 'Connected';
+         
+                }
+
+                // When we receive a message from the server, we can capture it here in the onmessage event.
+               this.socket.onmessage = (event) => {
+                    // We can parse the data we know to be JSON, and then check it for data attributes
+                    let parsedMessage = JSON.parse(event.data);
+                    // If those data attributes exist, we can then console log or show data to the user on their web page.
+                   
+                    if(Object.keys(parsedMessage).length !== 0) {
+                        let memory = parseFloat(parsedMessage["memPercent"])
+                        that.memory = memory.toFixed(2)
+                        let cpu = parseFloat(parsedMessage["cpuPercent"])
+                        that.cpu = cpu.toFixed(2)
+                        that.memoryError = parsedMessage["memError"]
+                        that.cpuError = parsedMessage["cpuError"]
+                    }
+                }
+                
+                this.socket.onerror = (error) => {
+                    window.console.log('Websocket error: '+ JSON.stringify(error));
+                    this.error = error;
+                    this.connectedStatus = 'Disconnected';
+                }
             },
+         }
         }
-    }
 </script>
 <style>
     h3 {

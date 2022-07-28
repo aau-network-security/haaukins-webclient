@@ -1,17 +1,5 @@
 version: '3.4'
 services:
-  proxy:
-    image: envoyproxy/envoy:v1.16.0
-    container_name: webclient_envoy
-    ports:
-      - '8000:8000'
-    volumes:
-      - ${ENVOY_DEV_CONFIG}:/etc/envoy/envoy.yaml # absolute path to yaml file in ENVOY_CONFIG
-    networks:
-      - haaukins-webclient
-    env_file:
-      - .env
-
   webclient:
     build:
       context: ./client

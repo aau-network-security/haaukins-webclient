@@ -73,8 +73,6 @@
 
 <script>
 
-import {AddNotificationRequest} from "daemon_pb";
-
 export default {
   name: "AnnounceModal",
   data : function () {
@@ -112,14 +110,19 @@ export default {
   methods:  {
 
     addAnnouncement: function () {
-      let announceRequest = new AddNotificationRequest()
-      if (this.status == false){
-        this.announcement = ''
-        this.onlyLoggedInUsers = false
+      const opts = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+        body: JSON.stringify({
+          message: this.announcement,
+          loggedUsers: this.onlyLoggedInUsers
+        })
       }
-      announceRequest.setMessage(this.announcement)
-      announceRequest.setLoggedusers(this.onlyLoggedInUsers)
-      this.$emit('addAnnouncement', announceRequest)
+
+      this.$emit('addAnnouncement', opts)
     },
     handleSubmit: function (){
       this.submitted = true

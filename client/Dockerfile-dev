@@ -6,7 +6,6 @@ RUN npm install
 COPY src src
 # DO NOT FORGET TO SET VUE_APP_SLACK_API_KEY ENVIRONMENT VARIABLE IN .env file
 # in production, otherwise slack notification cannot reach
-COPY daemon*.js node_modules/
 COPY public public
 RUN NODE_ENV=production npm run build
 

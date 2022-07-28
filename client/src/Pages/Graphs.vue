@@ -12,8 +12,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { ListEventsRequest } from "daemon_pb";
-    import { daemonclient } from "../App";
+    import {REST_API_ENDPOINT , REST_API_PORT } from "../App";
     import ApexCharts from 'apexcharts'
 
     export default {
@@ -117,41 +116,47 @@
             },
             listEvent: function () {
                 let that = this;
-                let getRequest = new ListEventsRequest();
-                daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.events = response.toObject();
-                        let eventsList = response.getEventsList();
-                        that.eventGraphOption.series[0].data = [];
-                        eventsList.forEach(function (element) {
-                            let creationDate = new Date(element.getCreationtime().substring(0,10));
-                            let finishDate = new Date(element.getFinishtime().substring(0,10));
-
-                            //assign the earliest and the latest data
-                            if (creationDate < that.firstDate) {
-                                that.firstDate = creationDate
-                            }
-                            if (finishDate > that.lastDate) {
-                                that.lastDate = finishDate
-                            }
-
-                            //Fill in the Event graph option
-                            let eventLineChart =  {
-                                x: element.getTag(),
-                                y: [
-                                    creationDate.getTime(),
-                                    finishDate.getTime()
-                                ],
-                                fillColor: that.getRandomColor()
-                            };
-                            that.eventGraphOption.series[0].data.push(eventLineChart)
-                        })
-                    }else{
-                        this.error = err;
+                const opts = {
+                   method: 'GET',
+                   headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                 };
+                let status = 4; // all events
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/event/list/'+status, opts).then(response => response.json())
+                  .then(response => {
+                    if (response.message !== undefined) {
+                      window.console.log("Unable to fetch -", response.message);
+                      this.error = response.message;
                     }
+                    this.events = response.events
+                    this.events.forEach(function (element) {
+                      let createdTime = element['creationTime']
+                      let creationDate = new Date(createdTime.substring(0,10));
+                      let finishDate = new Date(element['finishTime'].substring(0,10));
+
+                      //assign the earliest and the latest data
+                      if (creationDate < that.firstDate) {
+                        that.firstDate = creationDate
+                      }
+                      if (finishDate > that.lastDate) {
+                        that.lastDate = finishDate
+                      }
+
+                      //Fill in the Event graph option
+                      let eventLineChart =  {
+                        x: element['tag'],
+                        y: [
+                          creationDate.getTime(),
+                          finishDate.getTime()
+                        ],
+                        fillColor: that.getRandomColor()
+                      };
+                      that.eventGraphOption.series[0].data.push(eventLineChart)
+                    })
                     this.showEventGraph();
                     this.createCapacityGraph()
-                });
+                  })
+
+
             },
             getRandomColor: function () {
                 const letters = '0123456789ABCDEF';
@@ -169,10 +174,11 @@
                     let datePlusDay = new Date(this.firstDate.setDate(this.firstDate.getDate() + 1));
                     let value = 0;
 
-                    const eventsList = this.events.eventsList
+                    const eventsList = this.events
                     for (let i=0; i < eventsList.length; i++){
-                        if (datePlusDay >= new Date(eventsList[i].creationtime.substring(0,10)) && datePlusDay <= new Date(eventsList[i].finishtime.substring(0,10))){
-                            value = value + eventsList[i].capacity
+                        let creationTime = eventsList[i]['creationTime']
+                        if (datePlusDay >= new Date(creationTime.substring(0,10)) && datePlusDay <= new Date(eventsList[i]['finishTime'].substring(0,10))){
+                            value = value + eventsList[i]['capacity']
                         }
                     }
                     this.capacityGraphOption.series[0].data.push(value);

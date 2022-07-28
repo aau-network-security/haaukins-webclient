@@ -25,9 +25,7 @@
 
 <script>
     import { router } from '../router';
-    import { daemonclient } from "../App";
-    import { LoginUserRequest } from "daemon_pb"
-
+    import { REST_API_ENDPOINT,  REST_API_PORT   } from '../App';
     export default {
         data () {
             return {
@@ -48,33 +46,32 @@
             this.returnUrl = this.$route.query.returnUrl || '/';
         },
         methods: {
-            login () {
-                this.submitted = true;
-                const { username, password } = this;
-                // stop here if form is invalid
-                if (!(username && password)) {
-                    return;
-                }else{
-                    this.loading = true;
-                    let getRequest = new LoginUserRequest();
-                    getRequest.setUsername(username);
-                    getRequest.setPassword(password);
-
-                    //router.push(this.returnUrl)
-
-                    daemonclient.loginUser(getRequest, {}, (err, response) => {
-                        if (err == null && response.getError() == '') {
-                            localStorage.setItem('user', response.getToken());
-                            localStorage.setItem('user-email', username);
-                            router.push(this.returnUrl)
-                        }else{
-                            this.error = err || response.getError();
-                            this.submitted = false;
-                            this.loading = false;
-                        }
-                    });
-                }
+          login() {
+            this.submitted = true;
+            const opts = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({"username":this.username, "password":this.password}),
+            };
+            if (!(this.username && this.password)) {
+              return;
             }
+            fetch(REST_API_ENDPOINT +":"+ REST_API_PORT +'/admin/login', opts)
+                .then(response => response.json())
+                .then(response => {
+                  if (response["error"] !== "") {
+                    this.error = response["error"];
+                    this.submitted = false;
+                    this.loading = false;
+                    window.console.log(response["error"])
+                    return
+                  }
+
+                  localStorage.setItem('user', response["token"]);
+                  localStorage.setItem('user-email', this.username);
+                  router.push(this.returnUrl)
+                })
+          },
         }
     };
 </script>

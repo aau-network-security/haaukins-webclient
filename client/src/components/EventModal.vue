@@ -416,8 +416,7 @@
 </template>
 
 <script>
-import { Empty, CreateEventRequest,GetExsByTagsReq } from "daemon_pb";
-import { daemonclient } from "../App";
+import { REST_API_ENDPOINT, REST_API_PORT  } from "../App";
 import Datepicker from "vuejs-datepicker"
 
 export default {
@@ -434,7 +433,7 @@ export default {
       return this.eventAvailability <= this.eventCapacity && this.eventCapacity >= 2 && this.eventAvailability <= 253 ? true : false
     },
     frontendState (){
-      return this.frontends.length <= 0  ? false : true
+      return this.selectedFrontends <= 0  ? false : true
     },
     tagState (){
       return this.eventTag == '' || this.eventTag.match(/^[a-zA-Z][A-Za-z0-9-]*[^-]$/g) == null || this.eventTag.length > 20 ? false : true
@@ -497,26 +496,24 @@ export default {
     },
     getProfiles: function() {
       const that = this
-      let getRequest = new Empty
-      daemonclient.listProfiles(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        window.console.log(err)
-        let profileListObj = response.getProfilesList();
-        profileListObj.forEach(function (element){
-          let name = element.getName()
-          let secret = element.getSecret()
-          let challengesListObj = element.getChallengesList()
-          let challenges = []
-          challengesListObj.forEach(function (element){
-            let tag = element.getTag()
-            let name = element.getName()
-            let challenge = {tag: tag, name: name}
-            challenges.push(challenge)
-          })
-          let profile = {name: name, secret: secret, challenges: challenges}
-          //window.console.log("Got profile", profile)
-          that.profiles.push(profile)
+  
+      const opts = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        }
+      }
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +"/admin/profiles/list", opts)
+        .then(response => response.json())
+        .then(response => {
+          that.profiles = response['profiles'] 
         })
-      })
+        .catch(error => {
+          window.console.log("/admin/profiles/list error:", error)
+          that.error = error
+        })
+      
     },
     resetDescriptionWindow: function() {
       // window.console.log("Resetting description window")  // Debugging
@@ -614,43 +611,49 @@ export default {
       }
     },
     createEvent: function () {
-      let getRequest = new CreateEventRequest();
-      getRequest.setName(this.eventName);
-      getRequest.setSecretevent(this.secretKey);
-      getRequest.setTag(this.eventTag.toLowerCase());
-      getRequest.setAvailable(this.eventAvailability);
-      getRequest.setCapacity(this.eventCapacity);
-      getRequest.setFinishtime(this.eventFinishTime);
-      getRequest.setStarttime(this.eventStartTime.toString());
-      this.selectedChallenges.forEach(function(challenge) {
-        getRequest.addExercises(challenge)
-      });
-      this.disableChallenges.forEach(function (challenge){
-        getRequest.addDisableexercises(challenge)
-      })
-      getRequest.addFrontends(this.selectedFrontends)
-      getRequest.setOnlyvpn(this.isVPNON)
 
-      this.$emit('createEvent', getRequest)
+       const opts = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+        body: JSON.stringify({
+          'name': this.eventName,
+          'tag': this.eventTag,
+          'available': this.eventAvailability,
+          'capacity': this.eventCapacity,
+          'startTime': this.eventStartTime.toString(),
+          'finishTime': this.eventFinishTime,
+          'onlyVPN': this.isVPNON,
+          'secretEvent': this.secretKey,
+          'disableExercises': this.disableChallenges,
+          'exercises' : this.selectedChallenges,
+          'frontends': this.frontends,
+        })
+      }
+      this.$emit('createEvent', opts)
 
     },
     getCategories: function(){
       // Getting categories first.
-      let getRequest = new Empty();
       const that = this
-      daemonclient.listCategories(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        let categoryListObj = response.getCategoriesList();
-        categoryListObj.forEach(function (element){
-          let tag = element.getTag()
-          let name = element.getName()
-          let description = element.getCatdescription()
+
+      const opts = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+      }
+
+     fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +'/admin/categories/list', opts)
+      .then(response => response.json())
+      .then(response => {
+        response['categories'].forEach(function(c){
+          let tag = c['tag']
+          let name = c['name']
+          let description = c['catDescription']
           let category = {tag: tag, name: name, catDesc: description, isInfoShown: false, challenges: [], taglist: []}
-          //window.console.log(category)
           that.categories.push(category)
         })
-        // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
-        if (that.categories[0].tag != "ST") {
-          that.categories.forEach(function(category, index){
+        if (that.categories[0].tag != "ST"){
+          // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
+           that.categories.forEach(function(category, index){
             if (category.tag == "ST") {
               let tempCat = that.categories[0]
               //window.console.log("Found Starters category. Rearranging array to display starters first") // Debugging
@@ -667,78 +670,91 @@ export default {
         //Inserting exercises into categories list
         that.getExercises()
       })
+      .catch(error => {
+        window.console.log('Error: ' + error)
+        this.error = error
+      })
     },
     getExercises: function(){
-      let getRequest = new Empty();
       const that = this
+        const opts = {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "token": localStorage.getItem("user")
+          } 
+        }
       this.secretChallenges = new Map()
-      daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        this.error = err;
-        let exercisesListObj = response.getExercisesList();
-        exercisesListObj.forEach(function (element) {
-          let childrenChallengesObj = element.getExerciseinfoList();
-          that.childrenChallenges = "   (";
-          let totalPoints = 0;
-          for (let i = 0; i < childrenChallengesObj.length; i++){
-            that.cat = childrenChallengesObj[i].getCategory();
-            that.childrenChallenges+= childrenChallengesObj[i].getName() + ", "
-            totalPoints += childrenChallengesObj[i].getPoints();
-          }
-          let averagePoints = totalPoints / childrenChallengesObj.length
-          let averageDifficulty = ''
-          let difficultytag = ''
-          if (averagePoints < 21) {
-            averageDifficulty = "Very Easy"
-            difficultytag = "veryeasy"
-            //window.console.log("Challenge was very easy")
-          } else if (averagePoints >= 21 && averagePoints < 41) {
-            averageDifficulty = "Easy"
-            difficultytag = "easy"
-            //window.console.log("Challenge was easy")
-          } else if (averagePoints >= 41 && averagePoints < 61) {
-            averageDifficulty = "Medium"
-            difficultytag = "medium"
-            //window.console.log("Challenge was Medium")
-          } else if (averagePoints >= 61 && averagePoints < 81) {
-            averageDifficulty = "Hard"
-            difficultytag = "hard"
-            //window.console.log("Challenge was Hard")
-          } else if (averagePoints >= 81 && averagePoints <= 100) {
-            averageDifficulty = "Very Hard"
-            difficultytag = "veryhard"
-            //window.console.log("Challenge was Very Hard")
-          }
 
-          that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2)
-          that.childrenChallenges+= ")";
-          if (childrenChallengesObj.length == 1){
-            that.childrenChallenges = '';
-          }
-          let taglist = element.getTagsList();
-          let name = element.getName();
-          let orgDesc = element.getOrgdescription()
-          let secret = element.getSecret()
-          let parentChallenge = {
-            text: name + that.childrenChallenges,
-            value: taglist[0],
-            orgDesc: orgDesc,
-            isInfoShown: false,
-            secret: secret,
-            difficulty:averageDifficulty,
-            difficultytag: difficultytag
-          };
-          if (secret) {
-            that.secretChallenges.set(taglist[0], true)
-          }
-          that.categories.forEach(function(category) {
-            if (that.cat == category.name) {
-              category.challenges.push(parentChallenge)
-              category.taglist.push(taglist[0])
-            }
-          })
-        })
-        //window.console.log(that.categories)
-      });
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT   + "/admin/exercise/list", opts)
+        .then(res => res.json())
+        .then(res => {
+              let exerciseList = res['exercises']
+              exerciseList.forEach(function (element) {
+              let tag = element['tags'][0]
+              let name = element['name']
+              let orgDesc = element['orgdescription'] 
+              let secret = element['secret']
+              let childrenChallengesObj = element['exerciseinfo']
+
+              that.childrenChallenges = "  (";
+              let totalPoints = 0; 
+              for (let i=0; i<childrenChallengesObj.length; i++){
+                that.cat = childrenChallengesObj[i]['category']
+                that.childrenChallenges += childrenChallengesObj[i]['name'] + ", ";
+                totalPoints += childrenChallengesObj[i]['points'];
+              }
+              let averagePoints = totalPoints / exerciseList.length;
+              let averageDifficulty = ''   
+              let difficultytag = '' 
+              if (averagePoints < 21){
+                averageDifficulty = 'Very Easy'
+                difficultytag = 'veryeasy'
+              } else if (averagePoints >= 21 && averagePoints < 41){
+                averageDifficulty = 'Easy'
+                difficultytag = 'easy'
+              } else if (averagePoints >= 41 && averagePoints < 61){
+                averageDifficulty = 'Medium'
+                difficultytag = 'medium'
+              } else if (averagePoints >= 61 && averagePoints < 81){
+                averageDifficulty = 'Hard'
+                difficultytag = 'hard'
+              } else if (averagePoints >= 81 && averagePoints <= 100) {
+                averageDifficulty = 'Very Hard'
+                difficultytag = 'veryhard'
+              }
+
+              that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2) + ")";
+              if (exerciseList.length == 1){
+                that.childrenChallenges='';
+              }
+
+              let parentChallenge = {
+                text: name+that.childrenChallenges, 
+                value: tag, 
+                name: name, 
+                orgDesc: orgDesc,
+                isInfoShown: false,
+                secret: secret,
+                difficulty: averageDifficulty,
+                difficultyTag: difficultytag
+              };
+              if (secret) {
+                that.secretChallenges.set(tag, true)
+              }
+
+              that.categories.forEach(function (category) {
+                if (that.cat == category.name) {
+                  category.challenges.push(parentChallenge)
+                  category.taglist.push(parentChallenge.tag)
+                }
+              })
+            });
+      })
+      .catch(err => {
+       this.error = err
+      }
+      )
     },
     handlePrev : function () {
       this.enableChallenges = []
@@ -746,17 +762,31 @@ export default {
       this.$refs.createEventCarousel.prev()
     },
     getExsByTags : function (tags) {
-      let getExsRequest = new GetExsByTagsReq()
       const that = this
-      getExsRequest.setTagsList(tags)
-      daemonclient.getExercisesByTags(getExsRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        this.error = err
-        let exercises  = response.getExercisesList()
-        exercises.forEach(function (element){
-          let challengeInfo = {text: element.getName(), value: element.getTag()}
+     
+      const opts = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+        body: JSON.stringify({
+          "tags": tags
+        })
+      }
+
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT   + '/admin/event/get/exercises', opts)
+      .then(response => response.json())
+      .then(response =>  {
+        response['exercises'].forEach(function (element){
+          let challengeInfo = {text: element['name'], value: element['tag']}
           that.enableChallenges.push(challengeInfo)
         })
-      });
+
+      }).catch(err => {
+        this.error = err
+        } 
+      )
 
       if (this.eventName == '' || this.eventTag == '') {
         this.enableChallenges = []
@@ -776,18 +806,30 @@ export default {
       }
     },
     getFrontends: function () {
-      let getRequest = new Empty();
-      daemonclient.listFrontends(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        this.error = err;
-        const that = this
-        let frontendsListObj = response.getFrontendsList()
-        frontendsListObj.forEach(function (element) {
-          if (!element.getImage().includes("vulnerability")){
-            that.frontends.push(element.getImage())
-          }
+ 
+      const that = this
+      const opts = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        }
+      }
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  + "/admin/frontends/list", opts)
+        .then(res => res.json())
+        .then(res => {
+          let allFrontendInfo = res['frontends']
+          allFrontendInfo.forEach(function (element) {
+            if (!element['image'].includes("vulnerability")) {
+              that.frontends.push(element['image'])
+            }
+          })
+          
         })
-      });
-
+        .catch(error => {
+          window.console.log('List Frontend Error: ' + error)
+          this.error = error
+        })
     },
     selectedVPNOption: function (isVPN) {
       this.isVPNON = isVPN

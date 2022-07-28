@@ -44,8 +44,7 @@
 </template>
 
 <script>
-    import { daemonclient } from "../App";
-    import { SignupUserRequest } from "daemon_pb"
+    import { REST_API_ENDPOINT , REST_API_PORT  } from "../App";
     import {router} from "../router";
 
     export default {
@@ -77,23 +76,32 @@
                     this.error = "Passwords don't match each other!"
                     return;
                 }
-                let getRequest = new SignupUserRequest();
-                getRequest.setKey(key);
-                getRequest.setName(name);
-                getRequest.setSurname(lastname);
-                getRequest.setEmail(email);
-                getRequest.setUsername(username);
-                getRequest.setPassword(password);
 
-                daemonclient.signupUser(getRequest, {}, (err, response) => {
-                    if (err == null && response.getError() == '') {
-                        localStorage.setItem('user', response.getToken());
-                        router.push(this.returnUrl)
-                    }else{
-                        this.error = err || response.getError();
-                        this.submitted = false;
+              const opts = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  "username":this.username,
+                  "password":this.password,
+                  "key": this.key,
+                  "name":this.name,
+                  "surname": this.lastname,
+                  "email": this.email
+                }),
+              };
+
+              fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  + '/admin/signup', opts)
+                  .then ( response => response.json())
+                  .then (response  => {
+                    if (response["error"] !== "") {
+                      this.error = response["error"]
+                      this.submitted = false;
+                      return
                     }
-                })
+                    localStorage.setItem('user', response['token'])
+                    router.push(this.returnUrl)
+                  })
+
             }
         }
     }

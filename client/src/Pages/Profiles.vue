@@ -376,8 +376,7 @@
 <script>
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {Empty, SaveProfileRequest, DeleteProfileRequest} from "daemon_pb";
-import {daemonclient} from "../App";
+import { REST_API_ENDPOINT, REST_API_PORT  } from "../App";
 
 export default {
   name: "Challenges",
@@ -431,73 +430,97 @@ export default {
       this.variant = variant
       this.dismissCountDown = this.dismissSecs
     },
-    deleteProfile: function() {
+    deleteProfile: async function() {
       //window.console.log("Deleting profile", this.profileForUpdate.name)
       const that = this
-      let getRequest = new DeleteProfileRequest()
-      getRequest.setName(this.profileForUpdate.name)
-
-      const call = daemonclient.deleteProfile(getRequest, {Token: localStorage.getItem("user")});
-
-      call.on('data', function(response){
-        window.console.log("Data response: ", response)
-      });
-      call.on('error', function(response){
-        that.alert = response.message
-        that.showAlert("danger")
-        //window.console.log("Error response: ", response)
-      });
-      call.on('status', function(response){
-        //window.console.log("Status response: ", response)
-        if (response.details == "") {
+      const opts = {
+        method : "POST", 
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+        body: JSON.stringify({
+          "name": this.profileForUpdate.name
+        })
+      }
+      await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT  +"/admin/profile/delete",opts)
+      .then(response => response.json())
+      .then(response => {
+        window.console.log("Response from server: " +JSON.stringify(response))
+        if (response['status'] !== "") {
           that.profiles = that.removeItem(that.profiles, 'name', that.profileForUpdate.name)
           that.areYouSure = false
-          that.alert = "Profile \"" + that.profileForUpdate.name + "\" successfully deleted"
+          that.alert = response['status']
           that.setProfileForUpdate(that.profiles[0])
           that.showAlert("success")
-          setTimeout(function (){
-            if(!that.profiles.length){
-              that.noProfiles = true
-            }
-          }.bind(that), 5000)
-        }
-      });
+          }
+      }).catch(error => {
+        that.alert = error
+        that.showAlert("danger")
+      })
     },
+    saveProfile: function(profile){
+        const opts = {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json",
+            "token": localStorage.getItem("user")
+          },
+          body: JSON.stringify(profile)
+        }
+        // window.console.log("Save profile called: " + JSON.stringify(profile))
+        fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + "/admin/profile/save",opts)
+        .then(response => response.json())
+        .then(response => {
+          window.console.log("Response from server: " +JSON.stringify(response))
+          if (response['status'] !== "") {
+            this.alert = response['status']
+            this.showAlert("success")
+          }
+        }).catch(error => {
+          this.alert = error
+          this.showAlert("danger")
+        })
+    },
+
     updateProfile: function() {
       //window.console.log("Updating profile", this.profileForUpdate.name)
       const that = this
-      let getRequest = new SaveProfileRequest()
-      getRequest.setName(this.profileForUpdate.name)
-      getRequest.setSecret(this.profileForUpdate.secret)
-      this.profileForUpdate.challenges.forEach(function(chal){
-        let challenge = new SaveProfileRequest.Challenge()
-        challenge.setTag(chal.tag)
-        challenge.setName(chal.name)
-        getRequest.addChallenges(challenge)
-      })
 
-      const call = daemonclient.editProfile(getRequest, {Token: localStorage.getItem("user")});
+      let profileToBeUpdated  = {
+        "name": this.profileForUpdate.name,
+        "challenges": this.profileForUpdate.challenges,
+        "secret": this.profileForUpdate.secret
+      }
 
-      call.on('data', function(response){
-        window.console.log("Data response: ", response)
-      });
-      call.on('error', function(response){
-        that.alert = response.message
-        that.showAlert("danger")
-        //window.console.log("Error response: ", response)
-      });
-      call.on('status', function(response){
-        //window.console.log("Status response: ", response)
-        if (response.details == "") {
+      const opts = {
+        method : "POST", 
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+        body: JSON.stringify(profileToBeUpdated)
+      }
+      window.console.log("Update profile called: " + JSON.stringify(profileToBeUpdated))
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT + "/admin/profile/edit",opts)
+      .then(response => response.json())
+      .then(response => {
+        // window.console.log("Response from server: " +JSON.stringify(response))
+        if (response['status'] !== "") {
+
           let index = that.profiles.findIndex(obj => obj['name'] === that.profileForUpdate.name)
           that.profiles[index].challenges = that.profileForUpdate.challenges
           that.profiles[index].secret = that.profileForUpdate.secret
           that.setProfileForUpdate(that.profiles[index])
           that.checkIfUpdateAvailable()
-          that.alert = "Profile successfully updated"
+          that.alert = response['status']
           that.showAlert("success")
+          that.saveProfile(that.profileForUpdate)
         }
-      });
+      }).catch(error => {
+        that.alert = error
+        that.showAlert("danger")
+      })
     },
     checkIfUpdateAvailable: function() {
       const that = this
@@ -573,79 +596,83 @@ export default {
         this.checkIfUpdateAvailable()
       }
     },
-    getProfiles: function () {
+    getProfiles: async function () {
       const that = this
       this.profiles = []
-      let getRequest = new Empty
-      daemonclient.listProfiles(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        //window.console.log(err)
-        let profileListObj = response.getProfilesList();
-        profileListObj.forEach(function (element) {
-          let name = element.getName()
-          let secret = element.getSecret()
-          let challengesListObj = element.getChallengesList()
-          let challenges = []
-          challengesListObj.forEach(function (element) {
-            let tag = element.getTag()
-            let name = element.getName()
-            let challenge = {tag: tag, secret: false, name: name}
-            challenges.push(challenge)
-          })
-          let profile = {name: name, secret: secret, challenges: challenges}
-          //window.console.log("Got profile", profile)
-          that.profiles.push(profile)
-        })
-        //window.console.log(that.categories)
-        that.profiles.forEach(function(profile){
-          profile.challenges.forEach(function(challenge){
-            let secret = that.secretChallenges.get(challenge.tag)
-            if (secret) {
-              challenge.secret = true
-            }
-          })
-        })
-        that.setProfileForUpdate(that.profiles[0])
-        if (!that.profiles.length) {
-          that.noProfiles = true
+      const opts = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
         }
-        setTimeout(function (){
+      }
+      await fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +"/admin/profiles/list", opts)
+        .then(response => response.json())
+        .then(response => {
+          that.profiles = response['profiles'] 
+          // window.console.log("Profiles: "+JSON.stringify(that.profiles))
+          that.profiles.forEach(function(profile){
+            profile['challenges'].forEach(function(chl){
+              let secret = that.secretChallenges.get(chl.tag)
+              if (secret) {
+                chl.secret = true
+              }
+            })
+          })
+          that.setProfileForUpdate(that.profiles[0])
+          if (!that.profiles.length) {
+            that.noProfiles = true
+          }
+          setTimeout(function (){
+            that.loaderIsActive = false
+          }.bind(that), 5000)
+        
+        })
+        .catch(error => {
+          window.console.log("/admin/profiles/list error:", error)
+          that.error = error
           that.loaderIsActive = false
-        }.bind(that), 1000)
-
-      })
+        })
     },
+   
     getCategories: function () {
       // Getting categories first.
-      let getRequest = new Empty();
       const that = this
-      daemonclient.listCategories(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        that.error = err
-        let categoryListObj = response.getCategoriesList();
-        categoryListObj.forEach(function (element) {
-          let tag = element.getTag()
-          let name = element.getName()
 
-          let description = element.getCatdescription()
-          let category = {
-            tag: tag,
-            name: name,
-            catDesc: description,
-            challenges: [],
-            taglist: [],
-            filteredItems: [],
-            filterOn: false,
-            difficulties: [
-              {name: "Very Easy", enabled: false},
-              {name: "Easy", enabled: false},
-              {name: "Medium", enabled: false},
-              {name: "Hard", enabled: false},
-              {name: "Very Hard", enabled: false}
-            ]
-          }
-          //window.console.log(category)
-          that.categories.push(category)
-        })
-        // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
+      const opts = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("user")
+        },
+      };
+       fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/categories/list', opts)
+      .then(response => response.json())
+      .then(response => {
+        
+        response['categories'].forEach(function(element){
+            let tag = element['tag']
+            let name = element['name']
+            let description = element['catDescription']
+            let category = {
+              tag: tag,
+              name: name,
+              catDesc: description,
+              challenges: [],
+              taglist: [],
+              filteredItems: [],
+              filterOn: false,
+              difficulties: [
+                {name: "Very Easy", enabled: false},
+                {name: "Easy", enabled: false},
+                {name: "Medium", enabled: false},
+                {name: "Hard", enabled: false},
+                {name: "Very Hard", enabled: false}
+              ]}
+            that.categories.push(category)
+          })
+          // window.console.log("Categories: "+JSON.stringify(this.categories))
+          // Rearranging so if starters cat is present and not index 0 it gets moved to index 0
         if (that.categories[0].tag != "ST") {
           that.categories.forEach(function (category, index) {
             if (category.tag == "ST") {
@@ -662,74 +689,92 @@ export default {
         //First category info always shown when modal is opened
         //Inserting exercises into categories list
         that.getExercises()
+      }).catch(error => {
+        window.console.log("profiles.vue /admin/categories/list error:", error)
+        that.error = error
       })
     },
-    getExercises: function () {
-      let getRequest = new Empty();
+    getExercises: function(){
       const that = this
+        const opts = {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "token": localStorage.getItem("user")
+          } 
+        }
       this.secretChallenges = new Map()
-      daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-        this.error = err;
-        let exercisesListObj = response.getExercisesList();
-        exercisesListObj.forEach(function (element) {
-          let childrenChallengesObj = element.getExerciseinfoList();
-          that.childrenChallenges = "   (";
-          let totalPoints = 0;
-          for (let i = 0; i < childrenChallengesObj.length; i++) {
-            that.cat = childrenChallengesObj[i].getCategory();
-            that.childrenChallenges += childrenChallengesObj[i].getName() + ", "
-            totalPoints += childrenChallengesObj[i].getPoints();
-          }
-          let averagePoints = totalPoints / childrenChallengesObj.length
-          let averageDifficulty = ''
-          if (averagePoints < 21) {
-            averageDifficulty = "Very Easy"
-            //window.console.log("Challenge was very easy")
-          } else if (averagePoints >= 21 && averagePoints < 41) {
-            averageDifficulty = "Easy"
-            //window.console.log("Challenge was easy")
-          } else if (averagePoints >= 41 && averagePoints < 61) {
-            averageDifficulty = "Medium"
-            //window.console.log("Challenge was Medium")
-          } else if (averagePoints >= 61 && averagePoints < 81) {
-            averageDifficulty = "Hard"
-            //window.console.log("Challenge was Hard")
-          } else if (averagePoints >= 81 && averagePoints <= 100) {
-            averageDifficulty = "Very Hard"
-            //window.console.log("Challenge was Very Hard")
-          }
-          //window.console.log("Average difficulty: ", averageDifficulty, averagePoints)
-          that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2)
-          that.childrenChallenges += ")";
-          if (childrenChallengesObj.length == 1) {
-            that.childrenChallenges = '';
-          }
-          let taglist = element.getTagsList();
-          let name = element.getName();
-          let orgDesc = element.getOrgdescription()
-          let secret = element.getSecret()
-          let parentChallenge = {
-            text: name + that.childrenChallenges,
-            value: taglist[0],
-            name: name,
-            orgDesc: orgDesc,
-            isInfoShown: false,
-            secret: secret,
-            difficulty: averageDifficulty
-          };
-          if (secret) {
-            that.secretChallenges.set(taglist[0], true)
-          }
-          that.categories.forEach(function (category) {
-            if (that.cat == category.name) {
-              category.challenges.push(parentChallenge)
-              category.taglist.push(taglist[0])
-            }
-          })
-        })
-        //window.console.log(that.categories)
-        that.getProfiles()
-      });
+
+      fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +  "/admin/exercise/list", opts)
+        .then(res => res.json())
+        .then(res => {
+              let exerciseList = res['exercises']
+              exerciseList.forEach(function (element) {
+              let tag = element['tags'][0]
+              let name = element['name']
+              let orgDesc = element['orgdescription'] 
+              let secret = element['secret']
+              let childrenChallengesObj = element['exerciseinfo']
+
+              that.childrenChallenges = "  (";
+              let totalPoints = 0; 
+              for (let i=0; i<childrenChallengesObj.length; i++){
+                that.cat = childrenChallengesObj[i]['category']
+                that.childrenChallenges += childrenChallengesObj[i]['name'] + ", ";
+                totalPoints += childrenChallengesObj[i]['points'];
+              }
+              let averagePoints = totalPoints / exerciseList.length;
+              let averageDifficulty = ''   
+              let difficultytag = '' 
+              if (averagePoints < 21){
+                averageDifficulty = 'Very Easy'
+                difficultytag = 'veryeasy'
+              } else if (averagePoints >= 21 && averagePoints < 41){
+                averageDifficulty = 'Easy'
+                difficultytag = 'easy'
+              } else if (averagePoints >= 41 && averagePoints < 61){
+                averageDifficulty = 'Medium'
+                difficultytag = 'medium'
+              } else if (averagePoints >= 61 && averagePoints < 81){
+                averageDifficulty = 'Hard'
+                difficultytag = 'hard'
+              } else if (averagePoints >= 81 && averagePoints <= 100) {
+                averageDifficulty = 'Very Hard'
+                difficultytag = 'veryhard'
+              }
+
+              that.childrenChallenges = that.childrenChallenges.substring(0, that.childrenChallenges.length - 2) + ")";
+              if (exerciseList.length == 1){
+                that.childrenChallenges='';
+              }
+
+              let parentChallenge = {
+                text: name+that.childrenChallenges, 
+                value: tag, 
+                name: name, 
+                orgDesc: orgDesc,
+                isInfoShown: false,
+                secret: secret,
+                difficulty: averageDifficulty,
+                difficultyTag: difficultytag
+              };
+              if (secret) {
+                that.secretChallenges.set(tag, true)
+              }
+
+              that.categories.forEach(function (category) {
+                if (that.cat == category.name) {
+                  category.challenges.push(parentChallenge)
+                  category.taglist.push(parentChallenge.tag)
+                }
+              })
+              that.getProfiles()
+            });
+      })
+      .catch(err => {
+       this.error = err
+      }
+      )
     },
   }
 }

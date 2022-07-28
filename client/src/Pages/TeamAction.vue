@@ -53,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody v-if="infos">
-                        <tr v-for="(info,count) in infos.instancesList" v-bind:key="info.id">
+                        <tr v-for="(info,count) in infos" v-bind:key="info.id">
                             <td>{{count + 1}}</td>
                             <td>{{info.image}}</td>
                             <td>{{info.type}}</td>
@@ -71,8 +71,7 @@
 <script>
     import Navbar from "../components/Navbar";
     import Footer from "../components/Footer";
-    import { daemonclient } from "../App";
-    import { GetTeamInfoRequest, ResetExerciseRequest, Team, ListEventsRequest, Empty } from "daemon_pb"
+    import { REST_API_ENDPOINT , REST_API_PORT   } from '../App.vue';
 
     export default {
         name: "TeamAction",
@@ -91,45 +90,62 @@
         },
         created() {
             this.getTeamInfo();
-            this.listEvent();
+            this.listEvent(0);
             this.listChallenges();
         },
         methods: {
             getTeamInfo () {
-                let getRequest = new GetTeamInfoRequest();
-                getRequest.setEventtag(this.$route.params.tag);
-                getRequest.setTeamid(this.$route.params.id)
 
-                daemonclient.getTeamInfo(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        this.infos = response.toObject()
-                    }else{
-                        this.error = err['metadata']['grpc-message'];
-                    }
-                });
+               const opts = {
+                   method: 'GET',
+                   headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                 };
+
+                 fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/team/'+this.$route.params.tag+'/'+this.$route.params.id+'/info', opts)
+                    .then(response => response.json())
+                    .then(response => {
+                        this.infos = response['instances'];
+                    })
+                    .catch(error => {
+                        this.error = error;
+                    });
+
             },
-            listEvent: function () {
-                let getRequest = new ListEventsRequest();
-                daemonclient.listEvents(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    if (err == null) {
-                        let response_obj = response.toObject()
-                        for(let i = 0; i < response_obj['eventsList'].length; i++){
-                            if(response_obj['eventsList'][i]['tag'] == this.$route.params.tag){
-                                this.challenges = response_obj['eventsList'][i]['exercises'];
-                                break;
-                            }
+            listEvent: function (status) {
+                const opts = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+
+                };
+            
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/event/list/'+status, opts).then(response => response.json())
+                .then(response => {
+                    this.events = response['events'];
+
+                    for (let i = 0; i < this.events.length; i++) {
+                        if (this.events[i]['tag'] == this.$route.params.tag) {
+                            this.challenges = this.events[i]['exercises'];
+                            break;
                         }
-                    }else{
-                        this.error = err;
                     }
+                })
+                .catch(error => {
+                    this.error = error;
                 });
             },
 
             listChallenges: function () {
-                let getRequest = new Empty();
-                daemonclient.listExercises(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-                    this.error = err;
-                    this.challengesList = response.toObject()
+                const opts = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                };
+
+                fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/exercise/list', opts).then(response => response.json())
+                .then(response => {
+                    this.challengesList = response['exercises'];
+                })
+                .catch(error => {
+                    this.error = error;
                 });
 
             },
@@ -138,11 +154,17 @@
                 if (this.challengesList == null) {
                     return
                 }
-                this.challengesList.exercisesList.forEach(function(challenge) {
-                    if (challenge.tagsList[0] == tag){
-                        chalName =  challenge.name
+
+
+
+
+            this.challengesList.forEach(function(challenge) {
+                    if (challenge['tags'][0] == tag){
+                        chalName =  challenge['name'];
                     }
                 }, chalName);
+
+
                 return chalName
             },
             getTeamInfoState: function (state) {
@@ -154,42 +176,32 @@
                     return "SUSPENDED"
                 }
             },
-            resetExercise: function (tag) {
-
-                const that = this
-                this.loaderIsActive = true
-
-                let getRequest = new ResetExerciseRequest();
-                let getTeam = new Team();
-
-                getTeam.setId(this.$route.params.id);
-
-                getRequest.setEventtag(this.$route.params.tag);
-                getRequest.setExercisetag(tag);
-
-                //todo if we do not set any teams, the challenge will be resetted for every team
-                getRequest.addTeams(getTeam);
-
-                const call = daemonclient.resetExercise(getRequest, {Token: localStorage.getItem("user")});
-
-                call.on('data', function(response) {
-                    //this.status = response.getErrormessage();
-                    window.console.log(response.getStatus())
-
-                    that.loader_msg = response.getStatus()
-                    that.loader_id = response.getTeamid()
-
-                });
-                call.on('error', function(e) {
-                    that.error = e
-                });
-                call.on('status', function() {
-                    setTimeout(function(){
-                        that.loaderIsActive = false
-                        that.success = "Exercises successfully reset!"
-                        that.getTeamInfo()
-                    }, 1000);
-                });
+            resetExercise: async function (tag) {
+                this.loaderIsActive = true;
+                this.loader_msg = "Resetting exercise "+tag+ " ...";
+                const opts = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+                    body: JSON.stringify({
+                        "eventTag": this.$route.params.tag,
+                        "teams": [{'Id':this.$route.params.id}],
+                        "exerciseTag": tag
+                    })
+                };
+            await  fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/event/reset/exercise', opts)
+                    .then(response => response.json())
+                    .then(response => {
+                        if (response['code'] !== undefined){
+                            this.error = response['message'];
+                            this.loaderIsActive = false; 
+                            return 
+                        }
+                        this.success = response['status'];
+                        this.loaderIsActive = false;
+                    }).catch(error => {
+                        this.error = error;
+                        this.loaderIsActive = false;
+                    });
             },
         }
     }

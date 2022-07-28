@@ -2,14 +2,14 @@
     <div>
       <Navbar/>
       <div class="container" style="margin-top: 40px">
-        <div v-if="error" class="alert alert-danger">{{error}}</div>
+        <div v-if="this.error" class="alert alert-danger">{{this.error}}</div>
         <div class="card text-center">
           <div class="card-header">
             Haaukins API Creds
           </div>
           <div class="card-body">
             <h5 class="card-title">Credentials to launch secret challenges on API</h5>
-            <p class="card-text"> <b style="font-size: x-large">username: {{ username }} </b><br> <b style="font-size: x-large">password:  {{ password }} </b>  </p>
+            <p class="card-text"> <b style="font-size: x-large">username: {{ this.username }} </b><br> <b style="font-size: x-large">password:  {{ this.password }} </b>  </p>
             <a href="https://api.haaukins.com:3333" class="card-link">API Link</a>
           </div>
         </div>
@@ -21,8 +21,7 @@
 <script>
   import Navbar from "../components/Navbar";
   import Footer from "../components/Footer";
-  import { Empty } from "daemon_pb";
-  import { daemonclient } from "../App";
+  import { REST_API_ENDPOINT , REST_API_PORT  } from "../App";
   export default {
     name: "APICreds",
     components:{Footer, Navbar},
@@ -38,12 +37,23 @@
     },
     methods: {
       getAPICreds: function () {
-        let getRequest = new Empty();
-        daemonclient.getAPICreds(getRequest, {Token: localStorage.getItem("user")}, (err, response) => {
-          this.error = err;
-          this.username = response.getUsername()
-          this.password = response.getPassword()
-        });
+        const opts = {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' , 'token': localStorage.getItem('user')},
+
+        };
+        fetch(REST_API_ENDPOINT + ":" + REST_API_PORT +'/admin/get/api/creds', opts)
+            .then(response => response.json())
+            .then(response => {
+              if (response['message'] !== ""){
+                this.error = response['message']
+              }
+              if (response['error'] !== ""){
+                this.error = response['error']
+              }
+              this.username = response['username']
+              this.password = response['password']
+            });
       }
     }
   }
