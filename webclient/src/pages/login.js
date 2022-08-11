@@ -35,21 +35,17 @@ export default function Home() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("trying to submit login with: ", reqData);
         loginUser.request(reqData);
     }
     
     useEffect(() => {
         if ( loginUser.data !== null) {
-            console.log(loginUser)
             if ( loginUser.data.status === "OK" ) {
-                console.log("login successful");
                 localStorage.setItem('token', loginUser.data.token);
                 setLoggedIn(true)
                 setIncorrectCreds(false)
                 setInternalServerError(false)
             } else if ( loginUser.data.status === "incorrect username or password") {
-                console.log("incorrect username or password");
                 setInternalServerError(false);
                 setIncorrectCreds(true);
             }

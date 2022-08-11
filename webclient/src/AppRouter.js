@@ -7,12 +7,10 @@ import Login from './pages/login';
 
 function AppRouter() {
     const isExpired = (token) => {
-        console.log("token", token)
         if (token === null) {
             return true
         }
         const decoded = JSON.parse(atob(token.split('.')[1]));
-        console.log(decoded);
         if (decoded.exp * 1000 < new Date().getTime()) {
             return true
         }
