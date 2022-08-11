@@ -17,6 +17,7 @@ const NavBar = (props) => {
     <NavBarContainer {...props}>
       <Logo
         className="nav-bar-logo"
+        white="true"
         w="50px"
       />
       <MenuToggle toggle={toggle} isOpen={isOpen} />
@@ -43,7 +44,7 @@ const MenuLinks = ({ isOpen }) => {
         <MenuItem to="/profiles">Profiles </MenuItem> */}
         <MenuItem to="/users">Users </MenuItem>
         <MenuItem to="/events">Events </MenuItem>
-        <MenuItem to="/logout" isLast>
+        <MenuItem to="/login" isLast onClick={Logout}>
           <Icon icon={faRightFromBracket} />
         </MenuItem>
       </Stack>
@@ -70,6 +71,9 @@ const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
   );
 };
 
+const Logout = () => {
+  localStorage.removeItem('token');
+}
 
 
 const NavBarContainer = ({ children, ...props }) => {
