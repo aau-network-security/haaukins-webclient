@@ -5,7 +5,7 @@ const apiClient = axios.create({
   headers: {
     Authorization: sessionStorage.getItem('token')
   },
-  baseURL: "http://localhost:8080/api/v1/admin"
+  baseURL: "http://localhost:8080/v1/admin"
 });
 
 export default apiClient;
