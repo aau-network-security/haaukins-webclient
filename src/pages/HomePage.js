@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../components/header/NavBar";
-import OrganizationsTable from "../components/tables/OrganizationsTable";
+//import OrganizationsTable from "../components/organizations/OrganizationsTable";
 export default function HomePage() {
     
     return (

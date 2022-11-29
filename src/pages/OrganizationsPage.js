@@ -1,5 +1,5 @@
 import React from 'react'
-import OrganizationsTable from '../components/tables/OrganizationsTable'
+import OrganizationsTable from '../components/organizations/OrganizationsTable'
 import Header from "../components/header/NavBar";
 function OrganizationsPage() {
   return (
