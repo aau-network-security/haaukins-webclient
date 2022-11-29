@@ -16,14 +16,14 @@ import {
     AlertDescription
   } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
-import Logo from "../components/logo"
+import Logo from "../components/Logo"
 import { useSelector, useDispatch } from "react-redux";
 import { loginUser } from "../features/user/userSlice";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
-export default function Home() {
+export default function LoginPage() {
   const dispatch = useDispatch()
   const loggedIn = useSelector((state) => state.user.loggedIn)
   const error = useSelector((state) => state.user.error)
@@ -46,10 +46,10 @@ export default function Home() {
   const changeHandler = (e) => {
       setData({...reqData, [e.target.name]: e.target.value})
   }
-
+  
   if (loggedIn) {
     return (
-      <Navigate to="/" />
+      <Navigate to="/" replace />
     )
   }
   return (

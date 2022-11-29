@@ -1,18 +1,25 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
-import Home from './pages/home'
-import EventsPage from './pages/events'
-import Users from './pages/users'
-import Login from './pages/login'
+import HomePage from './pages/HomePage'
+import EventsPage from './pages/EventsPage'
+import Users from './pages/UsersPage'
+import LoginPage from './pages/LoginPage'
+import OrganizationsPage from './pages/OrganizationsPage'
 import { useSelector, useDispatch } from "react-redux";
-import { validateToken } from "./features/user/userSlice";
+import { getLoggedInUser } from "./features/user/userSlice";
+import PlatformSettingsPage from './pages/PlatformSettingsPage'
+import ProfilePage from './pages/ProfilePage'
+import AgentsPage from './pages/AgentsPage'
+import ChallengesPage from './pages/ChallengesPage'
 
 function AppRouter() {
     const loggedIn = useSelector((state) => state.user.loggedIn)
     const dispatch = useDispatch()
 
+    // Whenever a route is reaquested, the users JWT is validated in the api.
+    // If validation fails, loggedIn will be set to false and the user will be redirected to the login page
     useEffect(() => {
-        dispatch(validateToken())
+        dispatch(getLoggedInUser())
     }, [dispatch]) 
 
     const AuthWrapper = () => {        
@@ -23,11 +30,16 @@ function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path='login' element={<Login />} />
+                <Route path='login' element={<LoginPage />} />
                 <Route element={<AuthWrapper />}>
-                    <Route path="" element={<Home />} />
+                    <Route path="" element={<HomePage />} />
                     <Route path="users" element={<Users />} />
                     <Route path="events" element={<EventsPage />} />
+                    <Route path="organizations" element={<OrganizationsPage />} />
+                    <Route path="settings" element={<PlatformSettingsPage />} />
+                    <Route path="profile" element={<ProfilePage />} />
+                    <Route path="agents" element={<AgentsPage />} />
+                    <Route path="challenges" element={<ChallengesPage />} />
                 </Route>  
             </Routes>
         </BrowserRouter>

@@ -1,5 +1,5 @@
 import React from "react"
-import Logo from "../logo"
+import Logo from "../Logo"
 import { Link } from "@chakra-ui/react";
 import MenuLinks from "./MenuLinks"
 import MenuToggle from "./MenuToggle"

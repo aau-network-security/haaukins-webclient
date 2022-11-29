@@ -12,7 +12,6 @@ const MenuLinks = ({ isOpen }) => {
   const Icon = chakra(FontAwesomeIcon);
   const logout = () => {
     dispatch(logoutUser())
-    localStorage.removeItem('token');
   }
     return (
       <Box
@@ -29,9 +28,10 @@ const MenuLinks = ({ isOpen }) => {
           {/*<MenuItem to="/">Home</MenuItem>*/}
           {/* <MenuItem to="/challenges">Challenges </MenuItem>
           <MenuItem to="/profiles">Profiles </MenuItem> */}
+          <MenuItem to="/events">Events </MenuItem>
+          <MenuItem to="/challenges">Challenges</MenuItem>
           <MenuItem to="/organizations">Organizations </MenuItem>
           <MenuItem to="/agents">Agents </MenuItem>
-          <MenuItem to="/events">Events </MenuItem>
           <MenuItem to="/settings">Platform Settings</MenuItem>
           <MenuItem to="/profile">Profile</MenuItem>
           <MenuItem to="/login" isLast onClick={logout}>
