@@ -4,7 +4,7 @@ import apiClient from "../../api/client"
 const initialState = {
     loading: false,
     users: [],
-    loggedIn: false,
+    loggedIn: true,
     error: ''
 }
 
@@ -14,7 +14,6 @@ export const fetchUsers = createAsyncThunk('user/fetchUsers', () => {
 })
 
 export const loginUser = createAsyncThunk('user/loginUser', (reqData) => {
-    console.log("trying to login user", reqData)
     return apiClient.post('users/login', reqData)
     .then(
         (response) => response.data

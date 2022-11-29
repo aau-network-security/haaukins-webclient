@@ -12,9 +12,7 @@ function AppRouter() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (localStorage.getItem('token') !== '') {
-            dispatch(validateToken())
-        }
+        dispatch(validateToken())
     }, [dispatch]) 
 
     const AuthWrapper = () => {        
