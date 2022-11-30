@@ -14,7 +14,6 @@ function OrganizationsTable() {
   const [orgNameState, setOrgNameState] = useState('')
   const onClose = () => setIsOpen(false)
   const cancelRef = React.useRef()
-  console.log(isOpen, onClose)
 
   const loading = useSelector((state) => state.org.loading)
   const orgs = useSelector((state) => state.org.organizations)
@@ -28,10 +27,8 @@ function OrganizationsTable() {
   }
   
   useEffect(() => {
-    if (loading === 'idle') {
       dispatch(fetchOrgs())
-    }
-  })
+  }, [])
 
   const openAlertDialog = (orgName) => {
     setOrgNameState(orgName)

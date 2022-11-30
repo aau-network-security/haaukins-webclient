@@ -10,7 +10,6 @@ import {
 
 
 export default function AlertDialogDelete(props) {
-    console.log(props)
     const onClickDelete = () => {
         props.deleteOrg(props.orgName)
         props.onClose()

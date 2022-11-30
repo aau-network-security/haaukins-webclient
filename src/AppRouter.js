@@ -11,6 +11,8 @@ import PlatformSettingsPage from './pages/PlatformSettingsPage'
 import ProfilePage from './pages/ProfilePage'
 import AgentsPage from './pages/AgentsPage'
 import ChallengesPage from './pages/ChallengesPage'
+import Sidebar from './components/sidebar/Sidebar'
+import { Flex } from '@chakra-ui/react'
 
 function AppRouter() {
     const loggedIn = useSelector((state) => state.user.loggedIn)
@@ -20,7 +22,7 @@ function AppRouter() {
     // If validation fails, loggedIn will be set to false and the user will be redirected to the login page
     useEffect(() => {
         dispatch(getLoggedInUser())
-    }, [dispatch]) 
+    }, []) 
 
     const AuthWrapper = () => {        
         return !loggedIn
@@ -31,16 +33,28 @@ function AppRouter() {
         <BrowserRouter>
             <Routes>
                 <Route path='login' element={<LoginPage />} />
-                <Route element={<AuthWrapper />}>
-                    <Route path="" element={<HomePage />} />
-                    <Route path="users" element={<Users />} />
-                    <Route path="events" element={<EventsPage />} />
-                    <Route path="organizations" element={<OrganizationsPage />} />
-                    <Route path="settings" element={<PlatformSettingsPage />} />
-                    <Route path="profile" element={<ProfilePage />} />
-                    <Route path="agents" element={<AgentsPage />} />
-                    <Route path="challenges" element={<ChallengesPage />} />
-                </Route>  
+                <Route element= {
+                    <>
+                        <Flex w="100%">
+                            <Sidebar/>
+                            <Flex w="100%">
+                                <Outlet/>
+                            </Flex>
+                        </Flex>
+                    </>
+                }>
+                    <Route element={<AuthWrapper />}>
+                        
+                            <Route path="" element={<HomePage />} />
+                            <Route path="users" element={<Users />} />
+                            <Route path="events" element={<EventsPage />} />
+                            <Route path="organizations" element={<OrganizationsPage />} />
+                            <Route path="settings" element={<PlatformSettingsPage />} />
+                            <Route path="profile" element={<ProfilePage />} />
+                            <Route path="agents" element={<AgentsPage />} />
+                            <Route path="challenges" element={<ChallengesPage />} />
+                        </Route>                        
+                    </Route>  
             </Routes>
         </BrowserRouter>
     )

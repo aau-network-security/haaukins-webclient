@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../api/client"
+import {Buffer} from 'buffer';
 
 const initialState = {
     loading: false,
@@ -11,6 +12,7 @@ const initialState = {
 
 // Get users api request
 export const fetchUsers = createAsyncThunk('user/fetchUsers', () => {
+    apiClient.defaults.headers.Authorization = localStorage.getItem('token')
     return apiClient.get('users')
     .then((response) => response.json())
 })
@@ -24,11 +26,14 @@ export const loginUser = createAsyncThunk('user/loginUser', (reqData) => {
 })
 
 // Token validation api request
-export const getLoggedInUser = createAsyncThunk('user/validateToken', () => {
+export const getLoggedInUser = createAsyncThunk('user/getLoggedInUser', () => {
     let token = localStorage.getItem('token')
-    const decoded = JSON.parse(atob(token.split('.')[1]));
+    // Thunk will return error if it cannot pass the value as json
+    let tokenPayload = token.split('.')[1]
+    const decoded = JSON.parse(Buffer.from(tokenPayload, 'base64'));
     let endpoint = "users/" + decoded.sub
     
+    apiClient.defaults.headers.Authorization = localStorage.getItem('token')
     return apiClient.get(endpoint)
     .then(
         (response) => response.data
@@ -106,6 +111,7 @@ const userSlice = createSlice({
         builder.addCase(getLoggedInUser.rejected, (state, action) => {
             state.loading = false
             state.loggedIn = false
+            localStorage.removeItem('token')
             state.error = ''
         })
 

@@ -8,6 +8,7 @@ const initialState = {
 }
 
 export const fetchOrgs = createAsyncThunk('org/fetchOrgs', () => {
+    apiClient.defaults.headers.Authorization = localStorage.getItem('token')
     return apiClient.get('orgs')
     .then((response) => response.data)
 })

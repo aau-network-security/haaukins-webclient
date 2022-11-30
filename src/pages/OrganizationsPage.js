@@ -1,13 +1,14 @@
 import React from 'react'
 import OrganizationsTable from '../components/organizations/OrganizationsTable'
-import Header from "../components/header/NavBar";
-function OrganizationsPage() {
+function OrganizationsPage(props) {
   return (
-    <div>
-      <Header className="Header"/>
-      <h2>Organizations</h2>
-      <OrganizationsTable/>
+    <>
+    <div className='table-container'>
+      <OrganizationsTable refresh="false"/>
     </div>
+      
+    </>
+          
   )
 }
 

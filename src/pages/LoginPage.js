@@ -49,7 +49,7 @@ export default function LoginPage() {
   
   if (loggedIn) {
     return (
-      <Navigate to="/" replace />
+      <Navigate to="/" replace/>
     )
   }
   return (
