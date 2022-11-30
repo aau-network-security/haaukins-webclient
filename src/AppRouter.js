@@ -35,9 +35,9 @@ function AppRouter() {
                 <Route path='login' element={<LoginPage />} />
                 <Route element= {
                     <>
-                        <Flex w="100%">
+                        <Flex w="100vw">
                             <Sidebar/>
-                            <Flex w="100%">
+                            <Flex w="100%" overflowX={"auto"}>
                                 <Outlet/>
                             </Flex>
                         </Flex>

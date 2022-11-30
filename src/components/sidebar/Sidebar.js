@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fi'
 import { IoPawOutline } from 'react-icons/io5'
 import NavItem from './NavItem'
+import Logo from '../Logo'
 
 // TODO new logos
 export default function Sidebar() {
@@ -24,7 +25,6 @@ export default function Sidebar() {
     return (
         <Flex
             pos="sticky"
-            left="5"
             h="95vh"
             marginTop="2.5vh"
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
@@ -39,7 +39,8 @@ export default function Sidebar() {
                 w="100%"
                 alignItems={navSize === "small" ? "center" : "flex-start"}
                 as="nav"
-            >
+            >   
+                <Logo white="false"></Logo>
                 <IconButton
                     background="none"
                     mt={5}
