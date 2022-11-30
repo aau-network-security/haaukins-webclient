@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Tfoot, chakra, IconButton } from "@chakra-ui/react";
+import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, chakra, IconButton } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrgs } from '../../features/organizations/organizationSlice';
 import LoadingSpin from 'react-loading-spin';
@@ -28,7 +28,7 @@ function OrganizationsTable() {
   
   useEffect(() => {
       dispatch(fetchOrgs())
-  }, [])
+  }, [dispatch])
 
   const openAlertDialog = (orgName) => {
     setOrgNameState(orgName)

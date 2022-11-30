@@ -22,7 +22,7 @@ function AppRouter() {
     // If validation fails, loggedIn will be set to false and the user will be redirected to the login page
     useEffect(() => {
         dispatch(getLoggedInUser())
-    }, []) 
+    }, [dispatch]) 
 
     const AuthWrapper = () => {        
         return !loggedIn
