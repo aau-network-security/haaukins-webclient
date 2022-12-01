@@ -16,6 +16,8 @@ function OrganizationsTable() {
   const cancelRef = React.useRef()
 
   const loading = useSelector((state) => state.org.loading)
+  const error = useSelector((state) => state.org.error)
+  const statusCode = useSelector((state) => state.org.statusCode)
   const orgs = useSelector((state) => state.org.organizations)
   const dispatch = useDispatch()
   
