@@ -5,23 +5,31 @@ import {
     IconButton,
     Divider,
     Avatar,
-    Heading
+    Heading,
+    Icon,
+    MenuButton,
+    Menu
 } from '@chakra-ui/react'
 import {
-    FiMenu,
-    FiHome,
     FiCalendar,
-    FiUser,
-    FiDollarSign,
+    FiLogOut,
     FiSettings
 } from 'react-icons/fi'
-import { IoPawOutline } from 'react-icons/io5'
+import { FaRegBuilding, FaFlagCheckered, FaNetworkWired, FaUsers } from 'react-icons/fa'
+import { RiDashboardLine, RiUserSettingsLine } from 'react-icons/ri'
 import NavItem from './NavItem'
 import Logo from '../Logo'
+import { useDispatch } from 'react-redux'
+import { logoutUser } from '../../features/users/userSlice'
 
 // TODO new logos
 export default function Sidebar() {
-    const [navSize, changeNavSize] = useState("large")
+    const [navSize, changeNavSize] = useState("small") // Used for the menu buttom which is also commented out below
+    const dispatch = useDispatch()
+    const logout = () => {
+        dispatch(logoutUser())
+    }
+
     return (
         <Flex
             pos="sticky"
@@ -41,7 +49,7 @@ export default function Sidebar() {
                 as="nav"
             >   
                 <Logo white="false"></Logo>
-                <IconButton
+                {/* <IconButton
                     background="none"
                     mt={5}
                     _hover={{ background: 'none' }}
@@ -52,12 +60,14 @@ export default function Sidebar() {
                         else
                             changeNavSize("small")
                     }}
-                />
-                <NavItem navSize={navSize} icon={FiHome} title="Dashboard" to="/" description="This is the description for the dashboard." active/>
+                /> */}
+                <NavItem navSize={navSize} icon={RiDashboardLine} title="Dashboard" to="/" />
                 <NavItem navSize={navSize} icon={FiCalendar} title="Events" to="/events" />
-                <NavItem navSize={navSize} icon={FiUser} title="Challenges" to="/challenges" />
-                <NavItem navSize={navSize} icon={IoPawOutline} title="Organizations" to="/organizations" />
-                <NavItem navSize={navSize} icon={FiDollarSign} title="Agents" to="/agents"/>
+                <NavItem navSize={navSize} icon={FaFlagCheckered} title="Challenges" to="/challenges" />
+                <NavItem navSize={navSize} icon={FaRegBuilding} title="Organizations" to="/organizations" />
+                <NavItem navSize={navSize} icon={FaUsers} title="Users" to="/users" />
+                <NavItem navSize={navSize} icon={FaNetworkWired} title="Agents" to="/agents"/>
+                <NavItem navSize={navSize} icon={RiUserSettingsLine} title="Profile" to="/profile" />
                 <NavItem navSize={navSize} icon={FiSettings} title="Settings" to="/settings"/>
             </Flex>
 
@@ -70,11 +80,15 @@ export default function Sidebar() {
             >
                 <Divider display={navSize === "small" ? "none" : "flex"} />
                 <Flex mt={4} align="center">
-                    <Avatar size="sm" src="avatar-1.jpg" />
-                    <Flex flexDir="column" ml={4} display={navSize === "small" ? "none" : "flex"}>
-                        <Heading as="h3" size="sm">Sylwia Weller</Heading>
-                        <Text color="gray">Admin</Text>
-                    </Flex>
+                <NavItem navSize={navSize} icon={FiLogOut} title="Logout" to="/login" customClickEvent={logout}/>
+                {/* <Menu placement="right" p={"12px 12px 5px 12px"} _hover={{ textDecor: 'none', backgroundColor: "#211a52", color: "#FFF"}} >
+                    <MenuButton w="100%" lineHeight={1.35} >
+                        <Flex>
+                            <Icon as={FiLogOut} fontSize="xl" />
+                            <Text ml={5} display={navSize === "small" ? "none" : "flex"}>Logout</Text>
+                        </Flex>
+                    </MenuButton>
+                </Menu> */}
                 </Flex>
             </Flex>
         </Flex>
