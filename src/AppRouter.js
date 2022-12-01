@@ -1,34 +1,58 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import EventsPage from './pages/EventsPage'
 import Users from './pages/UsersPage'
 import LoginPage from './pages/LoginPage'
 import OrganizationsPage from './pages/OrganizationsPage'
-import { useSelector, useDispatch } from "react-redux";
-import { getLoggedInUser } from "./features/user/userSlice";
+import { useDispatch } from "react-redux";
+import { setLoggedInUser } from "./features/users/userSlice";
 import PlatformSettingsPage from './pages/PlatformSettingsPage'
 import ProfilePage from './pages/ProfilePage'
 import AgentsPage from './pages/AgentsPage'
 import ChallengesPage from './pages/ChallengesPage'
 import Sidebar from './components/sidebar/Sidebar'
 import { Flex } from '@chakra-ui/react'
-
+import { BASE_URL } from './api/client'
+import { useFetch } from 'react-async'
+import { Buffer } from 'buffer'
 function AppRouter() {
-    const loggedIn = useSelector((state) => state.user.loggedIn)
     const dispatch = useDispatch()
 
-    // Whenever a route is reaquested, the users JWT is validated in the api.
-    // If validation fails, loggedIn will be set to false and the user will be redirected to the login page
-    useEffect(() => {
-        dispatch(getLoggedInUser())
-    }, [dispatch]) 
+    const getUsernameFromToken = (token) => {
+        try {            
+            let tokenPayload = token.split('.')[1]         
+            
+            const decoded = JSON.parse(Buffer.from(tokenPayload, 'base64'))
+            return decoded.sub
+        }
+        catch (error) {
+            return
+        }
+    }
 
-    const AuthWrapper = () => {        
-        return !loggedIn
-          ? <Navigate to="/login" replace />
-          : <Outlet />;
-      };
+    const AuthWrapper = () => {    
+        let token = localStorage.getItem('token')
+        // Thunk will return error if it cannot pass the value as json
+        let user = getUsernameFromToken(token)
+        let endpoint = "users/" + user
+
+        const { data, error } = useFetch(BASE_URL + endpoint, {
+            headers: {
+                Authorization: token
+            }
+        })
+        if (error) {
+            return <Navigate to="/login" replace />
+        }
+        if (data) {
+            data.json().then(data => {
+                dispatch(setLoggedInUser(data))
+            })
+            return <Outlet />
+        }
+    }
+
     return (
         <BrowserRouter>
             <Routes>
@@ -44,7 +68,6 @@ function AppRouter() {
                     </>
                 }>
                     <Route element={<AuthWrapper />}>
-                        
                             <Route path="" element={<HomePage />} />
                             <Route path="users" element={<Users />} />
                             <Route path="events" element={<EventsPage />} />
