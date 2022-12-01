@@ -1,6 +1,6 @@
 import React from 'react'
 import OrganizationsTable from '../components/organizations/OrganizationsTable'
-function OrganizationsPage(props) {
+export default function OrganizationsPage() {
   return (
     <>
     <div className='table-container'>
@@ -12,4 +12,4 @@ function OrganizationsPage(props) {
   )
 }
 
-export default OrganizationsPage
+

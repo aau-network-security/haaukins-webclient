@@ -1,6 +1,6 @@
 import React from 'react'
 
-function PlatformSettingsPage() {
+export default function PlatformSettingsPage() {
   return (
     <>
     
@@ -8,4 +8,3 @@ function PlatformSettingsPage() {
   )
 }
 
-export default PlatformSettingsPage

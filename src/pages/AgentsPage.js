@@ -1,11 +1,9 @@
 import React from 'react'
 
-function AgentsPage() {
+export default function AgentsPage() {
   return (
     <>
     
     </>
   )
 }
-
-export default AgentsPage

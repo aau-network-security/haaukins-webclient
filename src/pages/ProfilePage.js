@@ -1,11 +1,9 @@
 import React from 'react'
 
-function ProfilePage() {
+export default function ProfilePage() {
   return (
     <>
     
     </>
   )
 }
-
-export default ProfilePage

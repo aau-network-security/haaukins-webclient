@@ -1,5 +1,6 @@
 import React from 'react'
-function ChallengesPage() {
+
+export default function ChallengesPage() {
   return (
     <>
     
@@ -7,4 +8,3 @@ function ChallengesPage() {
   )
 }
 
-export default ChallengesPage
