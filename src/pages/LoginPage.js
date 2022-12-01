@@ -71,11 +71,20 @@ export default function LoginPage() {
         alignItems="center"
       >
           <Logo white="false" marginBottom={10}></Logo>
-          {error &&
+          {(error.apiStatusCode === 401) 
+          ?
             <Alert status='error'>
               <AlertIcon />
               <AlertDescription>Incorrect username or password</AlertDescription>
             </Alert>
+          : (error.axiosCode === "ERR_NETWORK") 
+          ?
+            <Alert status='error'>
+              <AlertIcon />
+              <AlertDescription>Error connecting to daemon. Please contact an administrator</AlertDescription>
+            </Alert>
+          : 
+            null
           }
           <Box minW={{ base: "90%", md: "468px" }}>
           <form onSubmit={handleSubmit}>

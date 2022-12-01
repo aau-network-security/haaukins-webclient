@@ -21,7 +21,8 @@ export const fetchUsers = createAsyncThunk('user/fetchUsers', async(obj, {reject
         if (!err.response) {
             throw err
         }
-        return rejectWithValue(err.response)
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
     }
 })
 
@@ -35,7 +36,8 @@ export const loginUser = createAsyncThunk('user/loginUser', async (reqData, { re
         if (!err.response) {
             throw err
         }
-        return rejectWithValue(err.response)
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
     }
 })
 
@@ -80,7 +82,7 @@ const userSlice = createSlice({
             localStorage.removeItem('token');
         },
         setLoggedInUser: (state, action) => {
-            state.loggedInUser = action.payload.user
+            state.loggedInUser = action.payload.userinfo
             state.loggedIn = true
         }
     },
@@ -97,8 +99,7 @@ const userSlice = createSlice({
         builder.addCase(fetchUsers.rejected, (state, action) => {
             state.loading = false
             state.users = []
-            state.error = action.payload.data.status
-            state.statusCode = action.payload.status
+            state.error = action.payload
         })
         // Login
         builder.addCase(loginUser.pending, (state) => {
@@ -107,15 +108,14 @@ const userSlice = createSlice({
         builder.addCase(loginUser.fulfilled, (state, action) => {
             state.loading = false
             state.loggedIn = true
-            state.loggedInUser = action.payload.user
+            state.loggedInUser = action.payload.userinfo
             localStorage.setItem('token', action.payload.token)
             state.error = ''
         })
         builder.addCase(loginUser.rejected, (state, action) => {
             state.loading = false
             state.loggedIn = false
-            state.error = action.payload.data.status
-            state.statusCode = action.payload.status
+            state.error = action.payload
         })
 
         // validateToken

@@ -8,9 +8,19 @@ const initialState = {
     error: ''
 }
 // TODO: change to async like other reducers
-export const fetchChallenges = createAsyncThunk('challenge/fetchChallenges', () => {
-    return apiClient.get('challenges')
-    .then((response) => response.json())
+export const fetchChallenges = createAsyncThunk('challenge/fetchChallenges', async (obj, {rejectWithValue}) => {
+    try {
+        apiClient.defaults.headers.Authorization = localStorage.getItem('token')
+        const response = await apiClient.get('challenges')
+        return response.data
+    }
+    catch (err) {
+        if (!err.response) {
+            throw err
+        }
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
+    }
 })
 
 const challengeSlice = createSlice({

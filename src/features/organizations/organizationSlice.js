@@ -5,10 +5,10 @@ const initialState = {
     loading: 'idle',
     organizations: [],
     statusCode: 200,
-    error: ''
+    error: {}
 }
 
-export const fetchOrgs = createAsyncThunk('org/fetchOrgs', async (req, { rejectWithValue }) => {
+export const fetchOrgs = createAsyncThunk('org/fetchOrgs', async (obj, { rejectWithValue }) => {
     try {
         apiClient.defaults.headers.Authorization = localStorage.getItem('token')
         const response = await apiClient.get('orgs')
@@ -18,7 +18,8 @@ export const fetchOrgs = createAsyncThunk('org/fetchOrgs', async (req, { rejectW
         if (!err.response) {
             throw err
         }
-        return rejectWithValue(err.response)
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
     }
 })
 
@@ -45,8 +46,7 @@ const orgSlice = createSlice({
         builder.addCase(fetchOrgs.rejected, (state, action) => {
             state.loading = false
             state.organizations = []
-            state.error = action.payload.data.status;
-            state.statusCode = action.payload.status
+            state.error = action.payload
         })
     }
 })
