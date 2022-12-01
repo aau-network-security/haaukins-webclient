@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from '../features/user/userSlice'
+import userReducer from '../features/users/userSlice'
 import challengeReducer from '../features/challenges/challengeSlice'
 import orgReducer from '../features/organizations/organizationSlice'
 
@@ -9,7 +9,8 @@ const store = configureStore({
         user: userReducer,
         challenge: challengeReducer,
         org: orgReducer
-    }
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}),
 })
 
 export default store
