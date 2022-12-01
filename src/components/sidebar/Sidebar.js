@@ -19,7 +19,7 @@ import { FaRegBuilding, FaFlagCheckered, FaNetworkWired, FaUsers } from 'react-i
 import { RiDashboardLine, RiUserSettingsLine } from 'react-icons/ri'
 import NavItem from './NavItem'
 import Logo from '../Logo'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser } from '../../features/users/userSlice'
 
 // TODO new logos
@@ -29,6 +29,7 @@ export default function Sidebar() {
     const logout = () => {
         dispatch(logoutUser())
     }
+    const perms = useSelector((state) => state.user.loggedInUser.perms)
 
     return (
         <Flex
@@ -64,11 +65,31 @@ export default function Sidebar() {
                 <NavItem navSize={navSize} icon={RiDashboardLine} title="Dashboard" to="/" />
                 <NavItem navSize={navSize} icon={FiCalendar} title="Events" to="/events" />
                 <NavItem navSize={navSize} icon={FaFlagCheckered} title="Challenges" to="/challenges" />
-                <NavItem navSize={navSize} icon={FaRegBuilding} title="Organizations" to="/organizations" />
-                <NavItem navSize={navSize} icon={FaUsers} title="Users" to="/users" />
-                <NavItem navSize={navSize} icon={FaNetworkWired} title="Agents" to="/agents"/>
+                {typeof perms !== "undefined" 
+                &&
+                    <>
+                        {typeof perms.organizations !== "undefined" && <NavItem navSize={navSize} icon={FaRegBuilding} title="Organizations" to="/organizations" />}
+                    </>
+                }
+                {typeof perms !== "undefined" 
+                &&
+                    <>
+                        {typeof perms.agents !== "undefined" && <NavItem navSize={navSize} icon={FaNetworkWired} title="Agents" to="/agents"/>}
+                    </>
+                }
+                {typeof perms !== "undefined" 
+                &&
+                    <>
+                        {typeof perms.users !== "undefined" && <NavItem navSize={navSize} icon={FaUsers} title="Users" to="/users" />}
+                    </>
+                }
                 <NavItem navSize={navSize} icon={RiUserSettingsLine} title="Profile" to="/profile" />
-                <NavItem navSize={navSize} icon={FiSettings} title="Settings" to="/settings"/>
+                {typeof perms !== "undefined" 
+                &&
+                    <>
+                        {typeof perms.settings !== "undefined" && <NavItem navSize={navSize} icon={FiSettings} title="Settings" to="/settings"/>}
+                    </>
+                }     
             </Flex>
 
             <Flex
