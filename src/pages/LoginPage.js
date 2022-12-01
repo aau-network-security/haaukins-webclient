@@ -18,7 +18,7 @@ import {
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import Logo from "../components/Logo"
 import { useSelector, useDispatch } from "react-redux";
-import { loginUser } from "../features/user/userSlice";
+import { loginUser } from "../features/users/userSlice";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -36,7 +36,6 @@ export default function LoginPage() {
       e.preventDefault();
       dispatch(loginUser(reqData))
   }
-  
 
   const [reqData, setData] = useState({
       username: '',
@@ -44,12 +43,16 @@ export default function LoginPage() {
   });
   
   const changeHandler = (e) => {
-      setData({...reqData, [e.target.name]: e.target.value})
+      if (e.target.name === 'username'){
+        setData({...reqData, [e.target.name]: e.target.value.trim()})
+      } else {
+        setData({...reqData, [e.target.name]: e.target.value})
+      }    
   }
   
   if (loggedIn) {
     return (
-      <Navigate to="/" replace/>
+      <Navigate to="/"/>
     )
   }
   return (
