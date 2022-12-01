@@ -10,7 +10,7 @@ const store = configureStore({
         challenge: challengeReducer,
         org: orgReducer
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: {ignoredActionPaths: ['payload.config', 'payload.request']}}),
 })
 
 export default store
