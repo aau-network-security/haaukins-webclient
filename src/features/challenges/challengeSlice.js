@@ -7,7 +7,7 @@ const initialState = {
     allChallenges: [],
     error: ''
 }
-
+// TODO: change to async like other reducers
 export const fetchChallenges = createAsyncThunk('challenge/fetchChallenges', () => {
     return apiClient.get('challenges')
     .then((response) => response.json())
@@ -30,7 +30,8 @@ const challengeSlice = createSlice({
             state.loading = false
             state.categories = []
             state.allChallenges = []
-            state.error = action.error.message;
+            state.error = action.payload.data.status
+            state.statusCode = action.payload.status
         })
     }
 })
