@@ -1,6 +1,5 @@
 .App {
   font-family: sans-serif;
-  text-align: center;
 }
 
 .Header {
@@ -14,3 +13,15 @@
   width: 100%;
 }
 
+.table-header {
+  font-weight: bold;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.table-header-text {
+  line-height: 2.5;
+}
+
+.agent-table-item:hover{
+  background-color: #211a52;
+}

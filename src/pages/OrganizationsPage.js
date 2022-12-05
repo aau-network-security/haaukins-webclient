@@ -15,7 +15,7 @@ export default function OrganizationsPage() {
   return (
     <>
     <div className='table-container'>
-      <OrganizationsTable refresh="false"/>
+      <OrganizationsTable />
     </div>
       
     </>

@@ -5,7 +5,7 @@ import { fetchOrgs } from '../../features/organizations/organizationSlice';
 import LoadingSpin from 'react-loading-spin';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import AlertDialogDelete from './AlertDialogDelete';
+import OrgDialogDelete from './OrgDialogDelete';
 
 function OrganizationsTable() {
   const Icon = chakra(FontAwesomeIcon)
@@ -84,13 +84,13 @@ function OrganizationsTable() {
               </Tfoot> */}
             </Table>
           </TableContainer>
-          <AlertDialogDelete 
+          <OrgDialogDelete 
             orgName={orgNameState}
             isOpen={isOpen}
             onClose={onClose}
             cancelRef={cancelRef}
             deleteOrg={deleteOrg}
-          ></AlertDialogDelete>
+          ></OrgDialogDelete>
         </>      
       }
     </div>

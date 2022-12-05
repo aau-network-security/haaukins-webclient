@@ -9,9 +9,9 @@ import {
   } from '@chakra-ui/react'
 
 
-export default function AlertDialogDelete(props) {
+export default function AgentDialogDelete(props) {
     const onClickDelete = () => {
-        props.deleteOrg(props.orgName)
+        props.deleteAgent(props.agentName)
         props.onClose()
     }
     return (
@@ -24,12 +24,11 @@ export default function AlertDialogDelete(props) {
           <AlertDialogOverlay>
             <AlertDialogContent>
               <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                Delete Organization
+                Delete Agent
               </AlertDialogHeader>
   
               <AlertDialogBody>
-                Are you sure you want to delete <b>{props.orgName}</b>? <br></br>It will delete all users, and close all related events connected to the organization.
-                You can't undo this action afterwards.
+                Are you sure you want to delete <b>{props.agentName}</b>?
               </AlertDialogBody>
   
               <AlertDialogFooter>
