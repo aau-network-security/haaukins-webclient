@@ -32,7 +32,7 @@ function AgentsTable() {
   const statusCode = useSelector((state) => state.agent.statusCode)
   const agents = useSelector((state) => state.agent.agents)
   const dispatch = useDispatch()
-  
+  console.log(agents)
   //Callback for alertDialog 
   // TODO write deleteOrg action, reducer, etc.
   const deleteAgent = (agentName) => {
@@ -72,7 +72,6 @@ function AgentsTable() {
     <Flex 
       w="100%" 
       h="400px"
-      boxShadow="0 0 12px 5px rgba(0, 0, 0, 0.05)"
       borderRadius="30px"
     >
         <div className='table-container'>
@@ -92,31 +91,40 @@ function AgentsTable() {
             <ReactTooltip />
           </Flex>
       
-          
-            {loading === true 
-            ? 
-              <LoadingSpin
-                primaryColor="#211a52"
-              />
+            {/* TODO check if there are any agents at all or render nothing */}
+            {loading 
+            ?
+              <Center
+                position="relative"
+                transform="translateY(100%)"
+              >
+                <LoadingSpin
+                  primaryColor="#211a52"
+                  size="100px"
+                />
+              </Center>
+                          
+            : Object.keys(agents).length === 0 
+            ?
+            <Center>
+              <h2>No agents registered</h2>
+            </Center>
             :
               <>
-                <TableContainer>
+                <TableContainer  overflowY="unset" height="325px">
                   <Table variant='simple'>
-                    <Thead>
+                    <Thead position="sticky" top={0} zIndex="docked" backgroundColor="white">
                       <Tr>
                         <Th textAlign="center">Reconnect</Th>
                         <Th textAlign="center">Name</Th>
                         <Th textAlign="center">Connected</Th>
-                        
                         <Th textAlign="center">Url</Th>
                         <Th textAlign="center">Sign-key</Th>
                         <Th textAlign="center">Auth-key</Th>
                         <Th textAlign="center">TLS</Th>
                         <Th textAlign="center">State locked</Th>
                         <Th textAlign="center">Active labs</Th>
-                        <Th textAlign="center">Delete</Th>
-                        
-                        
+                        <Th textAlign="center">Delete</Th>                        
                       </Tr>
                     </Thead>
                     <Tbody>

@@ -33,9 +33,10 @@ export default function Sidebar() {
 
     return (
         <Flex
+            backgroundColor="white"
             pos="sticky"
-            h="95vh"
-            marginTop="2.5vh"
+            h="98vh"
+            marginTop="1vh"
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
             borderRadius={navSize === "small" ? "15px" : "30px"}
             w={navSize === "small" ? "75px" : "250px"}

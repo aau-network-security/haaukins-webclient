@@ -3,7 +3,7 @@ import apiClient from "../../api/client"
 
 const initialState = {
     loading: 'idle',
-    agents: [],
+    agents: {},
     statusCode: 200,
     error: {}
 }
@@ -15,6 +15,25 @@ export const fetchAgents = createAsyncThunk('agent/fetchAgents', async (obj, { r
         for (const agent in response.data.agents) {
             response.data.agents[agent].loading = false
         }
+        if (typeof response.data.agents === "undefined") {
+            response.data.agents = {}
+        }
+        return response.data
+    }
+    catch (err) {
+        if (!err.response) {
+            throw err
+        }
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
+    }
+})
+
+export const deleteAgent = createAsyncThunk('agent/deleteAgent', async (agent, { rejectWithValue }) => {
+    try {
+        apiClient.defaults.headers.Authorization = localStorage.getItem('token')
+        const response = await apiClient.delete('agents', agent)
+        
         return response.data
     }
     catch (err) {
@@ -30,21 +49,9 @@ export const reconnectAgent = createAsyncThunk('agent/reconnectAgent', async (ag
     try {
         const { agent: {agents} } = getState()
         apiClient.defaults.headers.Authorization = localStorage.getItem('token')
-        console.log(agentObj.name)
         const response = await apiClient.get('agents/reconnect/'+agentObj.name)
-        let index = 0
-        for (const agent in agents) {
-            if (agents[agent].name === agentObj.name) {
-                index = agent
-            }
-        }
         
-        console.log(agents)
-        let resp = {
-            status: response.data.status,
-            agent: index
-        }
-        return resp
+        return response.data
     }
     catch (err) {
         if (!err.response) {
@@ -69,7 +76,7 @@ const agentSlice = createSlice({
         })
         builder.addCase(fetchAgents.rejected, (state, action) => {
             state.loading = false
-            state.agents = []
+            state.agents = {}
             state.error = action.payload
         })
 
@@ -81,7 +88,7 @@ const agentSlice = createSlice({
         builder.addCase(reconnectAgent.fulfilled, (state, action) => {
             console.log("agent to update", action.payload.agent)
             state.agents[action.meta.arg.id].loading = false
-            state.agents[action.payload.agent].connected = true
+            state.agents[action.meta.arg.id].connected = true
             state.error = ''
         })
         builder.addCase(reconnectAgent.rejected, (state, action) => {
@@ -89,6 +96,9 @@ const agentSlice = createSlice({
             state.agents[action.meta.arg.id].connected = false
             state.error = action.payload
         })
+
+        // Delete
+
     }
 })
 

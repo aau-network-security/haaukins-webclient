@@ -18,7 +18,10 @@ export default function AgentsPage() {
   }
   return (
     <Box w="100%">
-      <Flex p="10px 10px 10px 10px">
+      <Flex 
+        p="0px 15px 0px 15px" 
+        marginTop="1vh"
+      >
         <AgentsTable />
       </Flex>
       
