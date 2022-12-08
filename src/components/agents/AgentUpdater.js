@@ -1,26 +1,22 @@
-import { Box, Flex, Spacer } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-function AgentEvents() {
+function AgentUpdater() {
   const selectedAgent = useSelector((state) => state.agent.selectedAgent)
   return (
     <Flex 
       w="100%" 
-      minWidth="500px"
-      h="650px"
+      h="400px"
       borderRadius="30px"
       className='container'
-      marginLeft="20px"
     >
        <Flex className='container-header'>
-        <h2 className='container-header-text'>Events</h2> 
-        <Spacer />
         {selectedAgent !== null
         ?
-        <h2 className='container-header-text'>Agent: {selectedAgent.name}</h2>
+        <h2 className='container-header-text'>Update {selectedAgent.name}</h2>
         :
-        null
+        <h2 className='container-header-text'>Update</h2>
         }
         
       </Flex>
@@ -28,4 +24,4 @@ function AgentEvents() {
   )
 }
 
-export default AgentEvents
+export default AgentUpdater

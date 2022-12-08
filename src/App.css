@@ -41,7 +41,7 @@ body{
   height: 100%;
 }
 
-.table-container {
+.container {
   padding: 16px 16px 16px 16px;
   width: 100%;
   background-color: white;
@@ -49,13 +49,23 @@ body{
   box-shadow:rgb(0 0 0 / 2%) 0px 3.5px 5.5px;
 }
 
-.table-header {
-  font-weight: bold;
+.container-header {
+  width: 100%;
   padding-left: 10px;
   padding-right: 10px;
 }
-.table-header-text {
+.container-header-text {
   line-height: 2.5;
+  font-weight: bold;
+}
+
+.metric-title {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.metric-value {
+  font-size: 1.3em;
 }
 
 .agent-table-item:hover{

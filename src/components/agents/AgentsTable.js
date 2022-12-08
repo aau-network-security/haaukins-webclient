@@ -14,7 +14,7 @@ import LoadingSpin from 'react-loading-spin'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAgents, reconnectAgent } from '../../features/agents/agentSlice'
+import { deleteAgent, fetchAgents, reconnectAgent, selectAgent } from '../../features/agents/agentSlice'
 import AgentDialogDelete from './AgentDialogDelete'
 import ReactTooltip from 'react-tooltip'
 
@@ -23,6 +23,7 @@ function AgentsTable() {
 
   const [isOpen, setIsOpen] = useState(false)
   const [agentNameState, setAgentNameState] = useState('')
+  const [indexState, setIndexState] = useState(0)
   const onClose = () => setIsOpen(false)
   const cancelRef = React.useRef()
 
@@ -31,13 +32,22 @@ function AgentsTable() {
   const error = useSelector((state) => state.agent.error)
   const statusCode = useSelector((state) => state.agent.statusCode)
   const agents = useSelector((state) => state.agent.agents)
+  const selectedAgent = useSelector((state) => state.agent.selectedAgent)
   const dispatch = useDispatch()
-  console.log(agents)
   //Callback for alertDialog 
   // TODO write deleteOrg action, reducer, etc.
-  const deleteAgent = (agentName) => {
+  const doDeleteAgent = (agentName, index) => {
     console.log("deleting agent", agentName)
-    dispatch(fetchAgents())
+    let agent = {
+      id: index,
+      name: agentName
+    }
+    dispatch(deleteAgent(agent))
+  }
+
+  const setSelectedAgent = (agent) => {
+    console.log("setting selected agent", agent)
+    dispatch(selectAgent(agent))
   }
 
   const reconnectToAgent = async (id ,agentName) => {
@@ -61,9 +71,10 @@ function AgentsTable() {
       dispatch(fetchAgents())
   }, [dispatch])
 
-  const openAlertDialog = (agentName) => {
+  const openAlertDialog = (agentName, index) => {
     console.log(agentName)
     setAgentNameState(agentName)
+    setIndexState(index)
     setIsOpen(true)
   }
 
@@ -74,12 +85,12 @@ function AgentsTable() {
       h="400px"
       borderRadius="30px"
     >
-        <div className='table-container'>
-          <Flex className='table-header'>
-            <h2 className='table-header-text'>Agents</h2>
+        <div className='container'>
+          <Flex className='container-header'>
+            <h2 className='container-header-text'>Agents</h2>
             <Spacer />
             <IconButton 
-              className='table-header-button'
+              className='container-header-button'
               colorScheme='green'
               variant='outline'
               icon={<Icon as={IoMdAdd}/>}
@@ -90,8 +101,6 @@ function AgentsTable() {
             />
             <ReactTooltip />
           </Flex>
-      
-            {/* TODO check if there are any agents at all or render nothing */}
             {loading 
             ?
               <Center
@@ -123,20 +132,31 @@ function AgentsTable() {
                         <Th textAlign="center">Auth-key</Th>
                         <Th textAlign="center">TLS</Th>
                         <Th textAlign="center">State locked</Th>
-                        <Th textAlign="center">Active labs</Th>
                         <Th textAlign="center">Delete</Th>                        
                       </Tr>
                     </Thead>
                     <Tbody>
                       {Object.entries(agents).map(([key, agent]) => (
-                        <Tr key={agent.name} _hover={{backgroundColor: "#211a525c"}}>
-                          <Td alignContent={"center"}>
-                            <Center>
+                        <Tr 
+                          key={agent.name} 
+                          _hover={{backgroundColor: "#211a525c", cursor: "pointer"}} 
+                          onClick={() => setSelectedAgent(agent)}
+                          backgroundColor={!selectedAgent ? "" : selectedAgent.name === agent.name ? "#211a525c" : ""  }
+                        >
+                          <Td 
+                            alignContent={"center"}
+                            position="relative"
+                            zIndex="10"
+                          >
+                            <Center
+                              
+                            >
                               {/* TODO return a loading statement from daemon */}
                               {agent.loading
                               ?
                               
                               <IconButton
+                                
                                 aria-label='Reconnect to agent'
                                 variant='outline'
                                 icon={<LoadingSpin
@@ -180,14 +200,13 @@ function AgentsTable() {
                               color={agent.stateLock ? "green" : "#b32525"}
                             />
                           </Td>
-                          <Td textAlign="center">{agent.activeLabs}</Td>
                           <Td textAlign="center">
                             <IconButton
                               aria-label='Delete organization'
                               colorScheme='red'
                               variant='outline'
                               icon={<IconFa icon={faTrash} color={"#b32525"}></IconFa>}
-                              onClick={() => openAlertDialog(agent.name)}                  
+                              onClick={() => openAlertDialog(agent.name, key)}                  
                             />                         
                           </Td>
                         </Tr>
@@ -197,10 +216,11 @@ function AgentsTable() {
                 </TableContainer>
                 <AgentDialogDelete 
                   agentName={agentNameState}
+                  index={indexState}
                   isOpen={isOpen}
                   onClose={onClose}
                   cancelRef={cancelRef}
-                  deleteAgent={deleteAgent}
+                  deleteAgent={doDeleteAgent}
                 ></AgentDialogDelete>
               </>      
             }

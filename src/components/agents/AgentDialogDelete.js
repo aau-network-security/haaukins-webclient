@@ -11,7 +11,8 @@ import {
 
 export default function AgentDialogDelete(props) {
     const onClickDelete = () => {
-        props.deleteAgent(props.agentName)
+      console.log(props.agentName, props.index)
+        props.deleteAgent(props.agentName, props.index)
         props.onClose()
     }
     return (

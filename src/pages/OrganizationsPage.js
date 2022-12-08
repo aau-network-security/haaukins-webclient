@@ -14,7 +14,7 @@ export default function OrganizationsPage() {
   }
   return (
     <>
-    <div className='table-container'>
+    <div className='container'>
       <OrganizationsTable />
     </div>
       
