@@ -1,11 +1,11 @@
-import { Box, Flex, Spacer } from '@chakra-ui/react'
+import { Box, Center, Flex, Spacer } from '@chakra-ui/react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
 function AgentEvents() {
   const selectedAgent = useSelector((state) => state.agent.selectedAgent)
   return (
-    <Flex 
+    <Box 
       w="100%" 
       minWidth="500px"
       h="650px"
@@ -13,18 +13,21 @@ function AgentEvents() {
       className='container'
       marginLeft="20px"
     >
-       <Flex className='container-header'>
-        <h2 className='container-header-text'>Events</h2> 
-        <Spacer />
-        {selectedAgent !== null
-        ?
-        <h2 className='container-header-text'>Agent: {selectedAgent.name}</h2>
-        :
-        null
-        }
-        
-      </Flex>
-    </Flex>
+        <Flex className='container-header'>
+          <h2 className='container-header-text'>Events</h2> 
+          <Spacer />
+          {selectedAgent !== null
+          ?
+          <h2 className='container-header-text'>Agent: {selectedAgent.name}</h2>
+          :
+          null
+          }
+          
+        </Flex>
+        <Center>
+          <h2 className='container-header-text'>To be implemented</h2>
+        </Center>
+    </Box>
   )
 }
 

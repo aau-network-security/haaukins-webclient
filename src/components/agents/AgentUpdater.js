@@ -1,11 +1,11 @@
-import { Flex } from '@chakra-ui/react'
+import { Box, Center, Flex } from '@chakra-ui/react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
 function AgentUpdater() {
   const selectedAgent = useSelector((state) => state.agent.selectedAgent)
   return (
-    <Flex 
+    <Box 
       w="100%" 
       h="400px"
       borderRadius="30px"
@@ -20,7 +20,10 @@ function AgentUpdater() {
         }
         
       </Flex>
-    </Flex>
+      <Center>
+          <h2 className='container-header-text'>To be implemented</h2>
+      </Center>
+    </Box>
   )
 }
 
