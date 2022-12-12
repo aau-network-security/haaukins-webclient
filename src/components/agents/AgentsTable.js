@@ -17,18 +17,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import { deleteAgent, fetchAgents, reconnectAgent, selectAgent } from '../../features/agents/agentSlice'
 import AgentDialogDelete from './AgentDialogDelete'
 import ReactTooltip from 'react-tooltip'
+import NewAgentModal from './NewAgentModal'
 
 function AgentsTable() {
   const IconFa = chakra(FontAwesomeIcon)
+  
+  const [isAlertOpen, setIsAlertOpen] = useState(false)
+  const onAlertClose = () => setIsAlertOpen(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const onModalClose = () => setIsModalOpen(false)
 
-  const [isOpen, setIsOpen] = useState(false)
   const [agentNameState, setAgentNameState] = useState('')
   const [indexState, setIndexState] = useState(0)
-  const onClose = () => setIsOpen(false)
+  
   const cancelRef = React.useRef()
 
-  const loading = useSelector((state) => state.agent.loading)
-  const reconnectLoading = useSelector((state) => state.agent.reconnectLoading)
+  const status = useSelector((state) => state.agent.status)
   const error = useSelector((state) => state.agent.error)
   const statusCode = useSelector((state) => state.agent.statusCode)
   const agents = useSelector((state) => state.agent.agents)
@@ -75,7 +79,11 @@ function AgentsTable() {
     console.log(agentName)
     setAgentNameState(agentName)
     setIndexState(index)
-    setIsOpen(true)
+    setIsAlertOpen(true)
+  }
+
+  const openModal = () => {
+    setIsModalOpen(true)
   }
 
   return (
@@ -98,10 +106,11 @@ function AgentsTable() {
               data-place="left"
               data-effect="solid"
               data-background-color="#211a52"
+              onClick={openModal}
             />
             <ReactTooltip />
           </Flex>
-            {loading 
+            {status === 'fetching'
             ?
               <Center
                 position="relative"
@@ -128,8 +137,6 @@ function AgentsTable() {
                         <Th textAlign="center">Name</Th>
                         <Th textAlign="center">Connected</Th>
                         <Th textAlign="center">Url</Th>
-                        <Th textAlign="center">Sign-key</Th>
-                        <Th textAlign="center">Auth-key</Th>
                         <Th textAlign="center">TLS</Th>
                         <Th textAlign="center">State locked</Th>
                         <Th textAlign="center">Delete</Th>                        
@@ -184,8 +191,6 @@ function AgentsTable() {
                             />                          
                           </Td>
                           <Td textAlign="center">{agent.url}</Td>
-                          <Td textAlign="center">{agent.signKey}</Td>
-                          <Td textAlign="center">{agent.authKey}</Td>
                           <Td textAlign="center">
                             <Icon
                               as={agent.tls ? TiTick : RxCross2}
@@ -217,13 +222,15 @@ function AgentsTable() {
                 <AgentDialogDelete 
                   agentName={agentNameState}
                   index={indexState}
-                  isOpen={isOpen}
-                  onClose={onClose}
+                  isOpen={isAlertOpen}
+                  onClose={onAlertClose}
                   cancelRef={cancelRef}
                   deleteAgent={doDeleteAgent}
                 ></AgentDialogDelete>
+                
               </>      
             }
+            <NewAgentModal isOpen={isModalOpen} onClose={onModalClose}/>
         </div>
     </Flex>
       

@@ -2,12 +2,31 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../api/client"
 
 const initialState = {
-    loading: 'idle',
-    agents: {},
+    status: 'idle',
+    agents: [],
     selectedAgent: null,
     statusCode: 200,
     error: {}
 }
+
+export const addAgent = createAsyncThunk('agent/addAgent', async (agent, { rejectWithValue }) => {
+    try {
+        apiClient.defaults.headers.Authorization = localStorage.getItem('token')
+        console.log("adding agent: ", agent)
+        const response = await apiClient.post('agents', agent)
+        agent.loading = false
+        agent.connected = true
+        
+        return agent
+    }
+    catch (err) {
+        if (!err.response) {
+            throw err
+        }
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
+    }
+})
 
 // Fetches all agents from the database and receives their general status (Connected, statelock etc...)
 export const fetchAgents = createAsyncThunk('agent/fetchAgents', async (obj, { rejectWithValue }) => {
@@ -17,11 +36,9 @@ export const fetchAgents = createAsyncThunk('agent/fetchAgents', async (obj, { r
         // Populate some extra variables into the agents array
         for (const agent in response.data.agents) {
             response.data.agents[agent].loading = false
-            response.data.agents[agent].cpu = 0
-            response.data.agents[agent].memory = 0
         }
         if (typeof response.data.agents === "undefined") {
-            response.data.agents = {}
+            response.data.agents = []
         }
         return response.data
     }
@@ -80,16 +97,16 @@ const agentSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchAgents.pending, (state) => {
-            state.loading = true
+            state.status = 'fetching'
         })
         builder.addCase(fetchAgents.fulfilled, (state, action) => {
-            state.loading = false
+            state.status = ''
             state.agents = action.payload.agents
             state.error = ''
         })
         builder.addCase(fetchAgents.rejected, (state, action) => {
-            state.loading = false
-            state.agents = {}
+            state.status = ''
+            state.agents = []
             state.error = action.payload
         })
 
@@ -124,6 +141,20 @@ const agentSlice = createSlice({
         builder.addCase(deleteAgent.rejected, (state, action) => {
             state.error = action.payload
             state.agents[action.meta.arg.id].loading = false
+        })
+
+        // Add agent
+        builder.addCase(addAgent.pending, (state) => {
+            state.status = 'adding'
+        })
+        builder.addCase(addAgent.fulfilled, (state, action) => {
+            state.status = ''
+            state.agents.push(action.payload)
+            state.error = ''
+        })
+        builder.addCase(addAgent.rejected, (state, action) => {
+            state.error = action.payload
+            state.status = ''
         })
     }
 })
