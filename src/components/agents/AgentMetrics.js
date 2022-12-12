@@ -34,7 +34,7 @@ function AgentMetrics(websocket) {
         setLabCount(0)
         setContainerCount(0)
         setVmCount(0)
-        setWebSocket(new WebSocket(baseWsUrl + selectedAgent.name + "?token=" + localStorage.getItem('token')))
+        setWebSocket(new WebSocket(baseWsUrl + selectedAgent.name))
         console.log("setting previous websocket")
         setPreviousSelected(selectedAgent.name)
       }
@@ -48,7 +48,10 @@ function AgentMetrics(websocket) {
   useEffect(() => {
     if (webSocket !== null) {
       webSocket.onopen = (event) => {
-        console.log("opened websocket")
+        let tokenObject = {
+          token: localStorage.getItem("token"),
+        }
+        webSocket.send(JSON.stringify(tokenObject))
       };
   
       webSocket.onmessage = function (event) {
@@ -254,7 +257,7 @@ function AgentMetrics(websocket) {
         </>
       :
        <Center>
-        <h2 classname="container-header-text">Select an agent from the list above</h2>
+        <h2 className="container-header-text">Select an agent from the list above</h2>
        </Center>
       }
       
