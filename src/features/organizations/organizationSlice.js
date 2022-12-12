@@ -2,8 +2,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../api/client"
 
 const initialState = {
-    loading: 'idle',
+    status: 'idle',
     organizations: [],
+    selectedOrg: null,
     statusCode: 200,
     error: {}
 }
@@ -28,23 +29,26 @@ const orgSlice = createSlice({
     initialState,
     reducers: {
         resetOrgState: (state) => {
-            state.loading = 'idle'
+            state.status = 'idle'
             state.organizations = []
             state.statusCode = 200
             state.error = ''
+        },
+        selectOrg: (state, action) => {
+            state.selectedOrg = action.payload
         }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchOrgs.pending, (state) => {
-            state.loading = true
+            state.status = 'fetchin'
         })
         builder.addCase(fetchOrgs.fulfilled, (state, action) => {
-            state.loading = false
+            state.status = ''
             state.organizations = action.payload.orgs
             state.error = ''
         })
         builder.addCase(fetchOrgs.rejected, (state, action) => {
-            state.loading = false
+            state.status = ''
             state.organizations = []
             state.error = action.payload
         })
@@ -52,4 +56,4 @@ const orgSlice = createSlice({
 })
 
 export default orgSlice.reducer
-export const { resetOrgState } = orgSlice.actions
+export const { resetOrgState, selectOrg } = orgSlice.actions
