@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertIcon, Button, Center, Checkbox, CheckboxGroup, FormControl, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, RadioGroup, Spacer, Stack, Text } from '@chakra-ui/react'
+import { Alert, AlertDescription, AlertIcon, Button, Center, Checkbox, CheckboxGroup, FormControl, FormLabel, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, RadioGroup, Spacer, Stack, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import LoadingSpin from 'react-loading-spin'
 import { useDispatch, useSelector } from 'react-redux'
@@ -112,6 +112,7 @@ function NewAgentModal({ isOpen, onClose }) {
                             }
                                 
                                 <FormControl>
+                                    <FormLabel>Agent name</FormLabel>
                                     <InputGroup>
                                     <InputLeftElement
                                         pointerEvents="none"
@@ -120,6 +121,7 @@ function NewAgentModal({ isOpen, onClose }) {
                                     </InputGroup>
                                 </FormControl>
                                 <FormControl>
+                                    <FormLabel>Agent url</FormLabel>
                                     <InputGroup>
                                     <InputLeftElement
                                         pointerEvents="none"
@@ -128,6 +130,7 @@ function NewAgentModal({ isOpen, onClose }) {
                                     </InputGroup>
                                 </FormControl>
                                 <FormControl>
+                                    <FormLabel>Agent signkey</FormLabel>
                                     <InputGroup>
                                     <InputLeftElement
                                         pointerEvents="none"
@@ -136,6 +139,7 @@ function NewAgentModal({ isOpen, onClose }) {
                                     </InputGroup>
                                 </FormControl>
                                 <FormControl>
+                                    <FormLabel>Agent authkey</FormLabel>
                                     <InputGroup>
                                     <InputLeftElement
                                         pointerEvents="none"
