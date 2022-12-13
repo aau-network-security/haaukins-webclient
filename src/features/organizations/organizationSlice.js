@@ -9,6 +9,42 @@ const initialState = {
     error: {}
 }
 
+export const addOrg = createAsyncThunk('org/addOrg', async (org, { rejectWithValue }) => {
+    try {
+        apiClient.defaults.headers.Authorization = localStorage.getItem('token')
+        const response = await apiClient.post('orgs', org)
+        let newOrg = {
+            Name: org.orgName,
+            OwnerUser: org.orgOwner.username,
+            OwnerEmail: org.orgOwner.email
+        }
+        return newOrg
+    }
+    catch (err) {
+        if (!err.response) {
+            throw err
+        }
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
+    }
+})
+
+export const deleteOrg = createAsyncThunk('org/deleteOrg', async (org, { rejectWithValue }) => {
+    try {
+        apiClient.defaults.headers.Authorization = localStorage.getItem('token')
+        const response = await apiClient.delete('orgs/' + org.name)
+        console.log(response.data)
+        return response.data
+    }
+    catch (err) {
+        if (!err.response) {
+            throw err
+        }
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
+    }
+})
+
 export const fetchOrgs = createAsyncThunk('org/fetchOrgs', async (obj, { rejectWithValue }) => {
     try {
         apiClient.defaults.headers.Authorization = localStorage.getItem('token')
@@ -39,6 +75,38 @@ const orgSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
+        // Add org
+        builder.addCase(addOrg.pending, (state) => {
+            state.status = 'adding'
+        })
+        builder.addCase(addOrg.fulfilled, (state, action) => {
+            state.status = ''
+            state.organizations.push(action.payload)
+            state.error = ''
+        })
+        builder.addCase(addOrg.rejected, (state, action) => {
+            state.status = ''
+            state.error = action.payload
+        })
+
+        // Delete org
+        builder.addCase(deleteOrg.pending, (state) => {
+            state.status = 'deleting'
+        })
+        builder.addCase(deleteOrg.fulfilled, (state, action) => {
+            state.status = ''
+            state.organizations.splice(action.meta.arg.id, 1)
+            state.selectedOrg = null
+            state.error = ''
+        })
+        builder.addCase(deleteOrg.rejected, (state, action) => {
+            state.status = ''
+            state.error = action.payload
+        })
+
+
+
+        // Fetch
         builder.addCase(fetchOrgs.pending, (state) => {
             state.status = 'fetchin'
         })

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../api/client"
 
 const initialState = {
-    loading: false,
+    status: 'idle',
     users: [],
     loggedInUser: {},
     loggedIn: false,
@@ -10,11 +10,65 @@ const initialState = {
     error: ''
 }
 
-// Get users api request
-export const fetchUsers = createAsyncThunk('user/fetchUsers', async(obj, {rejectWithValue}) => {
+export const addUser = createAsyncThunk('user/addUser', async (user, { rejectWithValue, getState }) => {
     try {
         apiClient.defaults.headers.Authorization = localStorage.getItem('token')
-        const response = await apiClient.get('users')
+        const { org } = getState()
+        console.log("adding user: ", user)
+        const response = await apiClient.post('users', user)
+        let userResp = {
+            user: {
+                Username: user.username,
+                FullName: user.fullName,
+                Email: user.email,
+                Role: "role::" + user.role,
+                Organization: user.organization,
+            }
+        }
+        console.log("state: ", org.selectedOrg)
+        if (org.selectedOrg !== null) {
+            if (org.selectedOrg.Name !== user.organization) {
+                return null
+            }
+        }
+        console.log(userResp)
+        return userResp
+    }
+    catch (err) {
+        if (!err.response) {
+            throw err
+        }
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
+    }
+})
+
+// Delete user api request
+export const deleteUser = createAsyncThunk('user/deleteUser', async (user, { rejectWithValue }) => {
+    try {
+        apiClient.defaults.headers.Authorization = localStorage.getItem('token')
+        const response = await apiClient.delete('users/' + user.name)
+        console.log(response.data)
+        return response.data
+    }
+    catch (err) {
+        if (!err.response) {
+            throw err
+        }
+        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
+        return rejectWithValue(error)
+    }
+})
+
+// Get users api request
+export const fetchUsers = createAsyncThunk('user/fetchUsers', async(orgName, {rejectWithValue}) => {
+    try {
+        apiClient.defaults.headers.Authorization = localStorage.getItem('token')
+        const response = await apiClient.get('users?organization=' + orgName)
+        console.log(response)
+        if (typeof response.data.users === "undefined") {
+            response.data.agents = []
+        }
         return response.data
     }
     catch (err) {
@@ -87,33 +141,65 @@ const userSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
+        // Delete user
+        builder.addCase(addUser.pending, (state) => {
+            state.status = 'adding'
+        })
+        builder.addCase(addUser.fulfilled, (state, action) => {
+            state.status = ''
+            if (action.payload !== null) {
+                state.users.push(action.payload)
+            }            
+            state.error = ''
+        })
+        builder.addCase(addUser.rejected, (state, action) => {
+            state.status = ''
+            state.error = action.payload
+        })
+
         // fetchUsers
         builder.addCase(fetchUsers.pending, (state) => {
-            state.loading = true
+            state.status = 'fetching'
         })
         builder.addCase(fetchUsers.fulfilled, (state, action) => {
-            state.loading = false
-            state.users = action.payload
+            state.status = ''
+            state.users = action.payload.users
             state.error = ''
         })
         builder.addCase(fetchUsers.rejected, (state, action) => {
-            state.loading = false
+            state.status = ''
             state.users = []
             state.error = action.payload
         })
+
+        // Delete user
+        builder.addCase(deleteUser.pending, (state) => {
+            state.status = 'deleting'
+        })
+        builder.addCase(deleteUser.fulfilled, (state, action) => {
+            state.status = ''
+            state.users.splice(action.meta.arg.id, 1)
+            state.selectedOrg = null
+            state.error = ''
+        })
+        builder.addCase(deleteUser.rejected, (state, action) => {
+            state.status = ''
+            state.error = action.payload
+        })
+
         // Login
         builder.addCase(loginUser.pending, (state) => {
-            state.loading = true
+            state.status = 'logging in'
         })
         builder.addCase(loginUser.fulfilled, (state, action) => {
-            state.loading = false
+            state.status = ''
             state.loggedIn = true
             state.loggedInUser = action.payload.userinfo
             localStorage.setItem('token', action.payload.token)
             state.error = ''
         })
         builder.addCase(loginUser.rejected, (state, action) => {
-            state.loading = false
+            state.status = ''
             state.loggedIn = false
             state.error = action.payload
         })

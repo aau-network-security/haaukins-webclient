@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, chakra, IconButton, Flex, Spacer, Center, Icon } from "@chakra-ui/react";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrgs, selectOrg } from '../../features/organizations/organizationSlice';
+import { deleteOrg, fetchOrgs, selectOrg } from '../../features/organizations/organizationSlice';
 import LoadingSpin from 'react-loading-spin';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -17,6 +17,7 @@ import {
 import {
   RxCross2
 } from 'react-icons/rx'
+import NewOrgModal from './NewOrgModal';
 
 function OrganizationsTable() {
   const IconFa = chakra(FontAwesomeIcon)
@@ -24,6 +25,10 @@ function OrganizationsTable() {
   const [isAlertOpen, setIsAlertOpen] = useState(false)
   const [orgNameState, setOrgNameState] = useState('')
   const onAlertClose = () => setIsAlertOpen(false)
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const onModalClose = () => setIsModalOpen(false)
+
   const cancelRef = React.useRef()
   const [indexState, setIndexState] = useState(0)
 
@@ -36,9 +41,13 @@ function OrganizationsTable() {
   
   //Callback for alertDialog 
   // TODO write deleteOrg action, reducer, etc.
-  const doDeleteOrg = (orgName) => {
+  const doDeleteOrg = (orgName, index) => {
     console.log("deleting org", orgName)
-    dispatch(fetchOrgs())
+    let org = {
+      id: index,
+      name: orgName
+    }
+    dispatch(deleteOrg(org))
   }
   
   useEffect(() => {
@@ -54,6 +63,10 @@ function OrganizationsTable() {
     setOrgNameState(orgName)
     setIndexState(index)
     setIsAlertOpen(true)
+  }
+
+  const openModal = () => {
+    setIsModalOpen(true)
   }
 
   return (
@@ -76,6 +89,7 @@ function OrganizationsTable() {
                 data-place="left"
                 data-effect="solid"
                 data-background-color="#211a52"
+                onClick={openModal}
               />
               <ReactTooltip />
             </Flex>
@@ -104,7 +118,8 @@ function OrganizationsTable() {
                         <Tr>
                           <Th textAlign="center">Name</Th>
                           <Th textAlign="center">Owner</Th>
-                          <Th textAlign="center">Owner Email</Th>                      
+                          <Th textAlign="center">Owner Email</Th>    
+                          <Th textAlign="center">Delete</Th>                  
                         </Tr>
                       </Thead>
                       <Tbody>
@@ -143,7 +158,7 @@ function OrganizationsTable() {
                   
                 </>      
               }
-              {/* <NewAgentModal isOpen={isModalOpen} onClose={onModalClose}/> */}
+              <NewOrgModal isOpen={isModalOpen} onClose={onModalClose}/>
           </div>
       </Flex>
     </>
