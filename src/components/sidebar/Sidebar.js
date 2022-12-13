@@ -29,7 +29,7 @@ export default function Sidebar() {
     const logout = () => {
         dispatch(logoutUser())
     }
-    const perms = useSelector((state) => state.user.loggedInUser.perms)
+    const loggedInUser = useSelector((state) => state.user.loggedInUser)
 
     return (
         <Flex
@@ -66,29 +66,29 @@ export default function Sidebar() {
                 <NavItem navSize={navSize} icon={RiDashboardLine} title="Dashboard" to="/" />
                 <NavItem navSize={navSize} icon={FiCalendar} title="Events" to="/events" />
                 <NavItem navSize={navSize} icon={FaFlagCheckered} title="Challenges" to="/challenges" />
-                {typeof perms !== "undefined" 
+                {typeof loggedInUser.perms !== "undefined" 
                 &&
                     <>
-                        {typeof perms.organizations !== "undefined" && <NavItem navSize={navSize} icon={FaRegBuilding} title="Organizations" to="/organizations" />}
+                        {typeof loggedInUser.perms.organizations !== "undefined" && <NavItem navSize={navSize} icon={FaRegBuilding} title="Organizations" to="/organizations" />}
                     </>
                 }
-                {typeof perms !== "undefined" 
+                {typeof loggedInUser.perms !== "undefined" 
                 &&
                     <>
-                        {typeof perms.agents !== "undefined" && <NavItem navSize={navSize} icon={FaNetworkWired} title="Agents" to="/agents"/>}
+                        {typeof loggedInUser.perms.agents !== "undefined" && <NavItem navSize={navSize} icon={FaNetworkWired} title="Agents" to="/agents"/>}
                     </>
                 }
-                {typeof perms !== "undefined" 
+                {typeof loggedInUser.perms !== "undefined" 
                 &&
                     <>
-                        {typeof perms.users !== "undefined" && <NavItem navSize={navSize} icon={FaUsers} title="Users" to="/users" />}
+                        {(typeof loggedInUser.perms.users !== "undefined" && loggedInUser.user.Role !== 'role::superadmin') && <NavItem navSize={navSize} icon={FaUsers} title="Users" to="/users" />}
                     </>
                 }
                 <NavItem navSize={navSize} icon={RiUserSettingsLine} title="Profile" to="/profile" />
-                {typeof perms !== "undefined" 
+                {typeof loggedInUser.perms !== "undefined" 
                 &&
                     <>
-                        {typeof perms.settings !== "undefined" && <NavItem navSize={navSize} icon={FiSettings} title="Settings" to="/settings"/>}
+                        {typeof loggedInUser.perms.settings !== "undefined" && <NavItem navSize={navSize} icon={FiSettings} title="Settings" to="/settings"/>}
                     </>
                 }     
             </Flex>
