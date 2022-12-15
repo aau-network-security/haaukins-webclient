@@ -1,8 +1,9 @@
-import { Box, Center, Flex, Spacer } from '@chakra-ui/react'
+import { Box, Center, Flex, IconButton, Spacer } from '@chakra-ui/react'
 import Chart from "react-apexcharts"
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { BASE_URL } from '../../api/client';
+import { IoMdRefresh } from 'react-icons/io';
 
 function AgentMetrics(websocket) {
   var httpProtocol = 'http://'
@@ -44,6 +45,28 @@ function AgentMetrics(websocket) {
     }
   }  
 
+  const reconnectToMetrics = () => {
+    try {
+      console.log("creating new websocket")
+      console.log("old websocket: ", webSocket)
+      if (webSocket != null) {
+        console.log("closing previous websocket")
+        webSocket.close()
+      }
+      setCpuState(0)
+      setMemoryState(0)
+      setLabCount(0)
+      setContainerCount(0)
+      setVmCount(0)
+      setWebSocket(new WebSocket(baseWsUrl + selectedAgent.name))
+      console.log("setting previous selected agent")
+      setPreviousSelected(selectedAgent.name)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
 
   useEffect(() => {
     if (webSocket !== null) {
@@ -55,13 +78,19 @@ function AgentMetrics(websocket) {
       };
   
       webSocket.onmessage = function (event) {
-        let data = JSON.parse(event.data)
-        console.log(typeof data.Cpu);
-        setCpuState(data.Cpu.toFixed(2))
-        setMemoryState(data.Memory.toFixed(2))
-        setLabCount(data.LabCount)
-        setVmCount(data.VmCount)
-        setContainerCount(data.ContainerCount)
+        try {
+          let data = JSON.parse(event.data)
+          console.log(typeof data.Cpu);
+          setCpuState(data.Cpu.toFixed(2))
+          setMemoryState(data.Memory.toFixed(2))
+          setLabCount(data.LabCount)
+          setVmCount(data.VmCount)
+          setContainerCount(data.ContainerCount)
+        }
+        catch(e) {
+          console.log("could not pass websocket message as JSON. Got message: ", event.data)
+        }
+        
       };
   
       webSocket.onclose = function (event) {
@@ -181,7 +210,12 @@ function AgentMetrics(websocket) {
         <Spacer />
         {selectedAgent !== null
         ?
-        <h2 className='container-header-text'>Agent: {selectedAgent.name}</h2>
+          <IconButton
+            aria-label='Reconnect to agent'
+            variant='outline'
+            icon={<IoMdRefresh />}
+            onClick={reconnectToMetrics}                  
+          />
         :
         null
         }
