@@ -40,6 +40,7 @@ function AgentsTable() {
   const dispatch = useDispatch()
   //Callback for alertDialog 
   // TODO write deleteOrg action, reducer, etc.
+  // TODO Add weight to table
   const doDeleteAgent = (agentName, index) => {
     console.log("deleting agent", agentName)
     let agent = {
