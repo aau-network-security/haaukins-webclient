@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertIcon, Button, Center, Checkbox, CheckboxGroup, FormControl, FormLabel, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, RadioGroup, Spacer, Stack, Text } from '@chakra-ui/react'
+import { Alert, AlertDescription, AlertIcon, Button, Center, Checkbox, CheckboxGroup, FormControl, FormLabel, HStack, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, RadioGroup, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spacer, Stack, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import LoadingSpin from 'react-loading-spin'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +13,7 @@ function NewAgentModal({ isOpen, onClose }) {
         url: '',
         signKey: '',
         authKey: '',
+        weight: 1,
         tls: true
     })
     const submitForm = async (e) => {
@@ -32,6 +33,11 @@ function NewAgentModal({ isOpen, onClose }) {
         
     }
     const changeHandler = (e) => {
+        if (typeof(e) == 'number' ) {
+            setReqData({...reqData, ['weight']: e})
+            console.log(reqData)
+            return
+        }
         if (e.target.name === 'name'){
             setReqData({...reqData, [e.target.name]: e.target.value.trim()})
         } else if (e.target.name === 'url') {
@@ -110,16 +116,39 @@ function NewAgentModal({ isOpen, onClose }) {
                             :
                                 null
                             }
-                                
+                                <HStack spacing='25px'>
                                 <FormControl>
                                     <FormLabel>Agent name</FormLabel>
                                     <InputGroup>
-                                    <InputLeftElement
-                                        pointerEvents="none"
-                                    />
-                                    <Input type="text" name="name" placeholder="Agent name" onChange={changeHandler} />
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                        />
+                                        <Input type="text" name="name" placeholder="Agent name" onChange={changeHandler} />
                                     </InputGroup>
                                 </FormControl>
+                                <FormControl>
+                                <FormLabel>Weight</FormLabel>
+                                    <InputGroup>
+                                        <InputLeftElement pointerEvents="none"/>                                    
+                                        <Slider
+                                            flex='1'
+                                            focusThumbOnChange={false}
+                                            defaultValue={1}
+                                            min={1}
+                                            max={10}
+                                            value={reqData.weight}
+                                            onChange={changeHandler}
+                                        >
+                                            <SliderTrack>
+                                                <SliderFilledTrack />
+                                            </SliderTrack>
+                                            <SliderThumb fontSize='sm' boxSize='32px' children={reqData.weight}/>
+                                        </Slider>
+                                       
+                                    </InputGroup>
+                                </FormControl>
+                                </HStack>
+                                
                                 <FormControl>
                                     <FormLabel>Agent url</FormLabel>
                                     <InputGroup>

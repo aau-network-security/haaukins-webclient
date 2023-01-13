@@ -137,6 +137,7 @@ function AgentsTable() {
                         <Th textAlign="center">Reconnect</Th>
                         <Th textAlign="center">Name</Th>
                         <Th textAlign="center">Connected</Th>
+                        <Th textAlign="center">Weight</Th>
                         <Th textAlign="center">Url</Th>
                         <Th textAlign="center">TLS</Th>
                         <Th textAlign="center">State locked</Th>
@@ -191,6 +192,8 @@ function AgentsTable() {
                               color={agent.connected ? "green" : "#b32525"}
                             />                          
                           </Td>
+                          <Td textAlign="center">{agent.weight}</Td>
+
                           <Td textAlign="center">{agent.url}</Td>
                           <Td textAlign="center">
                             <Icon
