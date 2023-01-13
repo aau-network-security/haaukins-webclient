@@ -59,7 +59,7 @@ function AppRouter() {
                 <Route path='login' element={<LoginPage />} />
                 <Route element= {
                     <>
-                        <Flex w="100vw">
+                        <Flex w="100vw" height='100%'>
                             <Sidebar/>
                             <Flex w="100%" overflowX={"auto"}>
                                 <Outlet/>

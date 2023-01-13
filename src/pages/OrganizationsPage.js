@@ -17,7 +17,7 @@ export default function OrganizationsPage() {
   }
   return (
     <>
-      <Box w="100%">
+      <Box w="100%" overflow='auto'>
         <Flex 
           p="0px 15px 0px 15px" 
           marginTop="1vh"
