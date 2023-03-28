@@ -25,7 +25,7 @@ function OrgEventsTable() {
                 }
                 
             </Flex>
-            <EventsTable />
+            {/* <EventsTable /> */}
         </Box>
     )
 }
