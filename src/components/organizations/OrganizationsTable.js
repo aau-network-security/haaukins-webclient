@@ -6,7 +6,7 @@ import LoadingSpin from 'react-loading-spin';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import OrgDialogDelete from './OrgDialogDelete';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import {
   IoMdAdd,
   IoMdRefresh,
@@ -85,13 +85,18 @@ function OrganizationsTable() {
                 colorScheme='green'
                 variant='outline'
                 icon={<Icon as={IoMdAdd}/>}
-                data-tip="Add Organization"
-                data-place="left"
-                data-effect="solid"
-                data-background-color="#211a52"
+                data-tooltip-content="Add Organization"
+                data-tooltip-place="left"
+                data-tooltip-effect="solid"
+                data-tooltip-id="tooltip-add-org"
                 onClick={openModal}
               />
-              <ReactTooltip />
+              <Tooltip 
+                id={"tooltip-add-org"}
+                style={{
+                    backgroundColor: "#211a52"
+                }}
+              />
             </Flex>
               {status === 'fetching'
               ?

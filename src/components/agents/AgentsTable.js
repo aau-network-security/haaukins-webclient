@@ -16,7 +16,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteAgent, fetchAgents, reconnectAgent, selectAgent } from '../../features/agents/agentSlice'
 import AgentDialogDelete from './AgentDialogDelete'
-import ReactTooltip from 'react-tooltip'
+import { Tooltip } from 'react-tooltip'
 import NewAgentModal from './NewAgentModal'
 
 function AgentsTable() {
@@ -103,13 +103,18 @@ function AgentsTable() {
               colorScheme='green'
               variant='outline'
               icon={<Icon as={IoMdAdd}/>}
-              data-tip="Add Agent"
-              data-place="left"
-              data-effect="solid"
-              data-background-color="#211a52"
+              data-tooltip-content="Add Agent"
+              data-tooltip-place="left"
+              data-tooltip-effect="solid"
+              data-tooltip-id='tooltip-add-agent'
               onClick={openModal}
             />
-            <ReactTooltip />
+            <Tooltip 
+              id={"tooltip-add-agent"}
+              style={{
+                  backgroundColor: "#211a52"
+              }}
+            />
           </Flex>
             {status === 'fetching'
             ?

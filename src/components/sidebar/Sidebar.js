@@ -15,7 +15,8 @@ import {
     FiLogOut,
     FiSettings
 } from 'react-icons/fi'
-import { FaRegBuilding, FaFlagCheckered, FaNetworkWired, FaUsers } from 'react-icons/fa'
+import { FaRegBuilding, FaNetworkWired, FaUsers } from 'react-icons/fa'
+import { MdOutlinedFlag } from 'react-icons/md'
 import { RiDashboardLine, RiUserSettingsLine } from 'react-icons/ri'
 import NavItem from './NavItem'
 import Logo from '../Logo'
@@ -65,7 +66,7 @@ export default function Sidebar() {
                 /> */}
                 <NavItem navSize={navSize} icon={RiDashboardLine} title="Dashboard" to="/" />
                 <NavItem navSize={navSize} icon={FiCalendar} title="Events" to="/events" />
-                <NavItem navSize={navSize} icon={FaFlagCheckered} title="Challenges" to="/challenges" />
+                <NavItem navSize={navSize} icon={MdOutlinedFlag} title="Challenges" to="/challenges" />
                 {typeof loggedInUser.perms !== "undefined" 
                 &&
                     <>

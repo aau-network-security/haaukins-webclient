@@ -8,7 +8,7 @@ import {
     MenuButton,
 } from '@chakra-ui/react'
 import { NavLink as ReactLink } from 'react-router-dom'
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 
 export default function NavItem({ icon, title, navSize, to, customClickEvent }) {
     return (
@@ -27,10 +27,10 @@ export default function NavItem({ icon, title, navSize, to, customClickEvent }) 
                         _hover={{ textDecor: 'none', backgroundColor: "#211a52", color: "#FFF"}}
                         w={navSize === "large" && "100%"}
                         to={to}
-                        data-tip={title}
-                        data-place="right"
-                        data-effect="solid"
-                        data-background-color="#211a52"
+                        data-tooltip-content={title}
+                        data-tooltip-id={"tooltip" + title}
+                        data-tooltip-place="right"
+                        data-tooltip-effect="solid"
                         onClick={customClickEvent}
                     >                        
                             <MenuButton w="100%" lineHeight={1.35} >
@@ -40,7 +40,12 @@ export default function NavItem({ icon, title, navSize, to, customClickEvent }) 
                                 </Flex>
                             </MenuButton>
                     </Link>
-                    <ReactTooltip/>
+                    <Tooltip 
+                        id={"tooltip" + title}
+                        style={{
+                            backgroundColor: "#211a52"
+                        }}
+                    />
                 {/* <MenuList
                     py={0}
                     border="none"

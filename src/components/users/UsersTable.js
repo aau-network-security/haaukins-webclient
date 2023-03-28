@@ -6,7 +6,7 @@ import LoadingSpin from 'react-loading-spin';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import UserDialogDelete from './UserDialogDelete';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import {
   IoMdAdd,
   IoMdRefresh,
@@ -94,13 +94,18 @@ function UsersTable({ byRole }) {
                 colorScheme='green'
                 variant='outline'
                 icon={<Icon as={IoMdAdd}/>}
-                data-tip="Add User"
-                data-place="left"
-                data-effect="solid"
-                data-background-color="#211a52"
+                data-tooltip-content="Add User"
+                data-tooltip-place="left"
+                data-tooltip-effect="solid"
+                data-tooltip-id="tooltip-add-user"
                 onClick={openModal}
               />
-              <ReactTooltip />
+              <Tooltip 
+                id={"tooltip-add-user"}
+                style={{
+                    backgroundColor: "#211a52"
+                }}
+              />
               
             </Flex>
               {status === 'fetching'
