@@ -137,7 +137,7 @@ function AgentsTable() {
               <>
                 <TableContainer  overflowY="unset" height="325px">
                   <Table variant='simple'>
-                    <Thead position="sticky" top={0} zIndex="docked" backgroundColor="white">
+                    <Thead position="sticky" top={0} zIndex="100" backgroundColor="white">
                       <Tr>
                         <Th textAlign="center">Reconnect</Th>
                         <Th textAlign="center">Name</Th>

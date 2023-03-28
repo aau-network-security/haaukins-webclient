@@ -33,10 +33,10 @@ export default function EventsPage() {
             <Box
                 backgroundColor="white"
                 w="100%"
-                minHeight="600px"
+                h="500px"
                 marginTop="50px"
                 borderRadius="10px"
-                p="0px 15px 0px 15px"
+                p="0px 15px 15px 15px"
             >
                 <EventsTable />
             </Box>
