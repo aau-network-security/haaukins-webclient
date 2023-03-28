@@ -17,6 +17,7 @@ export default function NavItem({ icon, title, navSize, to, customClickEvent }) 
             flexDir="column"
             w="100%"
             alignItems={navSize === "small" ? "center" : "flex-start"}
+            zIndex="1000"
         >
             <Menu placement="right">
                     <Link
@@ -40,12 +41,7 @@ export default function NavItem({ icon, title, navSize, to, customClickEvent }) 
                                 </Flex>
                             </MenuButton>
                     </Link>
-                    <Tooltip 
-                        id={"tooltip" + title}
-                        style={{
-                            backgroundColor: "#211a52"
-                        }}
-                    />
+                    
                 {/* <MenuList
                     py={0}
                     border="none"
@@ -56,6 +52,13 @@ export default function NavItem({ icon, title, navSize, to, customClickEvent }) 
                     <NavHoverBox title={title} icon={icon} description={description} />
                 </MenuList> */}
             </Menu>
+            <Tooltip 
+                id={"tooltip" + title}
+                className="custom-tooltip"
+                style={{
+                    backgroundColor: "#211a52",        
+                }}
+            />
         </Flex>
     )
 }

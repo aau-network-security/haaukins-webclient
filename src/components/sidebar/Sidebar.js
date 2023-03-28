@@ -43,6 +43,7 @@ export default function Sidebar() {
             w={navSize === "small" ? "75px" : "250px"}
             flexDir="column"
             justifyContent="space-between"
+            zIndex="1000"
         >
             <Flex
                 p="5%"
