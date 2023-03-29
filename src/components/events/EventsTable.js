@@ -26,6 +26,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -39,6 +40,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -52,6 +54,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -65,6 +68,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -78,6 +82,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -91,6 +96,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -104,6 +110,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -117,6 +124,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -130,6 +138,7 @@ function EventsTable() {
             type: "Advanced",
             status: "Running",
             labsRunning: 10,
+            exercises: 35,
             teams: 20,
             maxLabs: 20,
             secretKey: "someSecret",
@@ -157,7 +166,7 @@ function EventsTable() {
                     <option value="finished">Finished</option>
                 </Select>
             </Flex>
-            <TableContainer overflowY="unset" h="425px">
+            <TableContainer overflowY="unset" h="88%">
                 <Table variant="simple">
                     <Thead
                         position="sticky"
@@ -168,9 +177,11 @@ function EventsTable() {
                         <Tr>
                             <Th textAlign="center">Restart/Stop</Th>
                             <Th textAlign="center">Name</Th>
+                            <Th textAlign="center">Type</Th>
                             <Th textAlign="center">Goto</Th>
                             <Th textAlign="center">Status</Th>
                             <Th textAlign="center">Teams</Th>
+                            <Th textAlign="center">Exercises</Th>
                             <Th textAlign="center">Labs running</Th>
                             <Th textAlign="center">Max labs</Th>
                             <Th textAlign="center">Secret key</Th>
@@ -199,6 +210,7 @@ function EventsTable() {
                                     <IconButton icon={<FaStop />} />
                                 </Td>
                                 <Td textAlign="center">{event.name}</Td>
+                                <Td textAlign="center">{event.type}</Td>
                                 <Td textAlign="center">
                                     <Link
                                         href={event.url}
@@ -220,7 +232,7 @@ function EventsTable() {
                                     </Text>
                                 </Td>
                                 <Td textAlign="center">{event.teams}</Td>
-
+                                <Td textAlign="center">{event.exercises}</Td>
                                 <Td textAlign="center">{event.labsRunning}</Td>
                                 <Td textAlign="center">{event.maxLabs}</Td>
                                 <Td textAlign="center">{event.secretKey}</Td>

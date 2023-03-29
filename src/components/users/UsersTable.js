@@ -81,8 +81,8 @@ function UsersTable({ byRole }) {
   return (
     <>
       <Flex 
-        w="100%" 
-        h="95%"
+        w="50%" 
+        h="650px"
         borderRadius="30px"
       >
           <div className='container'>
@@ -127,7 +127,7 @@ function UsersTable({ byRole }) {
               </Center>
               :
                 <>
-                  <TableContainer  overflowY="unset" height="100%">
+                  <TableContainer  overflowY="unset" height="95%">
                     <Table variant='simple'>
                       <Thead position="sticky" top={0} zIndex="docked" backgroundColor="white">
                         <Tr>

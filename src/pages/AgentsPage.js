@@ -2,7 +2,7 @@ import { Box, Flex, Spacer } from '@chakra-ui/react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
-import AgentEvents from '../components/agents/AgentEvents'
+import AgentEnvironments from '../components/agents/AgentEnvironments'
 import AgentMetrics from '../components/agents/AgentMetrics'
 import AgentsTable from '../components/agents/AgentsTable'
 import AgentUpdater from '../components/agents/AgentUpdater'
@@ -33,7 +33,7 @@ export default function AgentsPage() {
       >
         <AgentMetrics />
         <Spacer />
-        <AgentEvents />
+        <AgentEnvironments />
       </Flex>
       <Flex
         p="0px 15px 0px 15px" 

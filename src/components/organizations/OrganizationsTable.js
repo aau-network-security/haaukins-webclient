@@ -73,7 +73,7 @@ function OrganizationsTable() {
     <>
       <Flex 
         w="100%" 
-        h="400px"
+        h="590px"
         borderRadius="30px"
       >
           <div className='container'>
@@ -117,7 +117,7 @@ function OrganizationsTable() {
               </Center>
               :
                 <>
-                  <TableContainer  overflowY="unset" height="325px">
+                  <TableContainer  overflowY="unset" height="95%">
                     <Table variant='simple'>
                       <Thead position="sticky" top={0} zIndex="docked" backgroundColor="white">
                         <Tr>

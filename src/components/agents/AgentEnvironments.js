@@ -2,7 +2,7 @@ import { Box, Center, Flex, Spacer } from '@chakra-ui/react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-function AgentEvents() {
+function AgentEnvironments() {
   const selectedAgent = useSelector((state) => state.agent.selectedAgent)
   return (
     <Box 
@@ -14,7 +14,7 @@ function AgentEvents() {
       marginLeft="20px"
     >
         <Flex className='container-header'>
-          <h2 className='container-header-text'>Events</h2> 
+          <h2 className='container-header-text'>Environments</h2> 
           <Spacer />
           {selectedAgent !== null
           ?
@@ -31,4 +31,4 @@ function AgentEvents() {
   )
 }
 
-export default AgentEvents
+export default AgentEnvironments

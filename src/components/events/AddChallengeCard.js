@@ -10,6 +10,8 @@ function AddChallengeCard() {
             minWidth="400px"
             height="85px"
             borderRadius="10px"
+            className="container"
+            padding="0"
         >
             <HStack h="100%">
                 <Flex flexDir="row" w="80%">

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import OrganizationsTable from '../components/organizations/OrganizationsTable'
 import OrgEventsTable from '../components/organizations/OrgEventsTable'
-import OrgUsersTable from '../components/organizations/OrgUsersTable'
+import UsersTable from '../components/users/UsersTable'
 export default function OrganizationsPage() {
   const perms = useSelector((state) => state.user.loggedInUser.perms)
   console.log(perms)
@@ -30,7 +30,7 @@ export default function OrganizationsPage() {
           marginTop="1vh"
           overflowX="auto"
         >
-          <OrgUsersTable />
+          <UsersTable />
           <Spacer />
           <OrgEventsTable />
         </Flex>

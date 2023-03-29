@@ -15,6 +15,8 @@ function CreateEventCard({...props}) {
             height="85px"
             borderRadius="10px"
             zIndex="1000"
+            className="container"
+            padding="0"
         >
             <HStack h="100%">
                 <Flex flexDir="row" w="60%">
