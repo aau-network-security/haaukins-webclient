@@ -13,6 +13,7 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FaStop, FaPlay } from "react-icons/fa";
@@ -20,11 +21,12 @@ import { MdDelete } from "react-icons/md";
 import LoadingSpin from "react-loading-spin";
 import { useDispatch, useSelector } from "react-redux";
 import { Tooltip } from "react-tooltip";
-import { fetchEvents, selectEvent } from "../../features/events/eventSlice";
+import { fetchEvents, selectEvent, stopEvent } from "../../features/events/eventSlice";
 
 function EventsTable() {
   const eventState = useSelector((state) => state.event);
   const selectedEvent = useSelector((state) => state.event.selectedEvent);
+  const eventsStopping = useSelector((state) => state.event.eventsStopping);
   const [eventStatusSelector, setEventStatusSelector] = useState(0);
   const dispatch = useDispatch();
 
@@ -37,6 +39,36 @@ function EventsTable() {
     console.log("setting selected event", event);
     dispatch(selectEvent(event));
   };
+
+  const toast = useToast()
+  const toastIdRef = React.useRef()
+
+  const eventStop = async (eventTag) => {
+    console.log("stopping event: ", eventTag)
+    let request = {
+      tag: eventTag,
+    }
+    try {
+      const response = await dispatch(stopEvent(request)).unwrap()
+      toastIdRef.current = toast({
+        title: 'Event successfully stopped',
+        description: "The event stop request was successfully processed",
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      })
+      dispatch(fetchEvents({ status: eventStatusSelector }))
+    } catch (err) {
+      console.log("got error starting exercise", err)
+      toastIdRef.current = toast({
+        title: 'Error stopping event',
+        description: err.apiError.status,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
+  }
 
   useEffect(() => {
     if (eventStatusSelector != "all") {
@@ -91,6 +123,7 @@ function EventsTable() {
                 <Th textAlign="center">Labs running</Th>
                 <Th textAlign="center">Max labs</Th>
                 <Th textAlign="center">Created by</Th>
+                <Th textAlign="center">Organization</Th>
                 <Th textAlign="center">Created at</Th>
                 <Th textAlign="center">Finishes/Finished at</Th>
               </Tr>
@@ -122,6 +155,8 @@ function EventsTable() {
                         data-tooltip-place="right"
                         data-tooltip-effect="solid"
                         data-tooltip-id="tooltip-stop-event"
+                        onClick={() => eventStop(event.tag)}
+                        isLoading={typeof eventsStopping[event.tag] !== "undefined" ? true : false}
                       />
                     ) : (
                       <>
@@ -166,6 +201,7 @@ function EventsTable() {
                   <Td textAlign="center">{event.labsRunning}</Td>
                   <Td textAlign="center">{event.maxLabs}</Td>
                   <Td textAlign="center">{event.createdBy}</Td>
+                  <Td textAlign="center">{event.organization}</Td>
                   <Td textAlign="center">{event.createdAt}</Td>
                   <Td textAlign="center">
                     {event.status === "running"

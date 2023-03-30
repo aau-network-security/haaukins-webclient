@@ -6,6 +6,7 @@ const initialState = {
     events: [],
     selectedEvent: null,
     eventTeams: [],
+    eventsStopping: {},
     statusCode: 200,
     error: {}
 }
@@ -77,11 +78,11 @@ export const fetchEventTeams = createAsyncThunk('event/fetchEventTeams', async (
 })
 
 
-export const stopEvent = createAsyncThunk('event/stopEvent', async (agent, { rejectWithValue }) => {
+export const stopEvent = createAsyncThunk('event/stopEvent', async (event, { rejectWithValue }) => {
     try {
         apiClient.defaults.headers.Authorization = localStorage.getItem('token')
-        console.log("deleting agent: ", agent)
-        const response = await apiClient.delete('agents/' + agent.name)
+        console.log("stopping event: ", event)
+        const response = await apiClient.put('events/close/' + event.tag)
         
         return response.data
     }
@@ -167,14 +168,17 @@ const eventSlice = createSlice({
         // Stop event
         builder.addCase(stopEvent.pending, (state, action) => {
             state.status = 'stoppingEvent'
+            state.eventsStopping[action.meta.arg.tag] = 'stopping'
         })
         builder.addCase(stopEvent.fulfilled, (state, action) => {
             state.status = ''
             state.error = ''
+            delete state.eventsStopping[action.meta.arg.tag]
         })
         builder.addCase(stopEvent.rejected, (state, action) => {
             state.error = action.payload
             state.status = ''
+            delete state.eventsStopping[action.meta.arg.tag]
         })
 
         // Delete event
