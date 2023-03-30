@@ -18,6 +18,7 @@ import {
   RxCross2
 } from 'react-icons/rx'
 import NewOrgModal from './NewOrgModal';
+import { MdDelete } from 'react-icons/md';
 
 function OrganizationsTable() {
   const IconFa = chakra(FontAwesomeIcon)
@@ -143,7 +144,8 @@ function OrganizationsTable() {
                                 aria-label='Delete organization'
                                 colorScheme='red'
                                 variant='outline'
-                                icon={<IconFa icon={faTrash} color={"#b32525"}></IconFa>}
+                                fontSize="20px"
+                                icon={<MdDelete />}
                                 onClick={() => openAlertDialog(org.Name, key)}                  
                               />                         
                             </Td>

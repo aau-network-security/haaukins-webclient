@@ -20,6 +20,7 @@ import {
 import { RiEditLine } from 'react-icons/ri'
 import NewUserModal from './NewUserModal';
 import { deleteUser, fetchUsers } from '../../features/users/userSlice';
+import { MdDelete } from 'react-icons/md';
 
 function UsersTable({ byRole }) {
   const IconFa = chakra(FontAwesomeIcon)
@@ -163,7 +164,8 @@ function UsersTable({ byRole }) {
                                 aria-label='Delete organization'
                                 colorScheme='red'
                                 variant='outline'
-                                icon={<IconFa icon={faTrash} color={"#b32525"}></IconFa>}
+                                fontSize="20px"
+                                icon={<MdDelete />}
                                 onClick={() => openAlertDialog(user.user.Username, key)}                  
                               />                         
                             </Td>

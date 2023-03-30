@@ -18,6 +18,7 @@ import { deleteAgent, fetchAgents, reconnectAgent, selectAgent } from '../../fea
 import AgentDialogDelete from './AgentDialogDelete'
 import { Tooltip } from 'react-tooltip'
 import NewAgentModal from './NewAgentModal'
+import { MdDelete } from 'react-icons/md'
 
 function AgentsTable() {
   const IconFa = chakra(FontAwesomeIcon)
@@ -219,7 +220,8 @@ function AgentsTable() {
                               aria-label='Delete organization'
                               colorScheme='red'
                               variant='outline'
-                              icon={<IconFa icon={faTrash} color={"#b32525"}></IconFa>}
+                              fontSize="20px"
+                              icon={<MdDelete />}
                               onClick={() => openAlertDialog(agent.name, key)}                  
                             />                         
                           </Td>
