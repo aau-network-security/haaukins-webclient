@@ -52,6 +52,7 @@ function NewEventPage() {
     });
 
     const changeHandler = (e) => {
+        console.log(e);
         console.log(reqDataState);
         if (e.target.name === "eventName") {
             setReqDataState({ ...reqDataState, ["name"]: e.target.value.trim() });
@@ -59,11 +60,6 @@ function NewEventPage() {
             setReqDataState({ ...reqDataState, ["tag"]: e.target.value.trim() });
         } else if (e.target.name === "secretKey") {
             setReqDataState({ ...reqDataState, ["secretKey"]: e.target.value.trim() });
-        } else if (e.target.name === "expectedFinishDate") {
-            setReqDataState({
-                ...reqDataState,
-                ["expectedFinishDate"]: e.target.value.trim(),
-            });
         } else if (e.target.name === "dynamicScoring") {
             setReqDataState({ ...reqDataState, ["dynamicScoring"]: e.target.checked });
         } else if (e.target.name === "vmName") {
@@ -75,10 +71,20 @@ function NewEventPage() {
         e.preventDefault();
         console.log("reqDataState: ", reqDataState)
         var reqData = reqDataState
+
+        // Convert type to number that daemon understands
         if (reqData.type == "advanced") {
             reqData.type = 1
         } else {
             reqData.type = 0
+        }
+
+        // Convert date object to ISO string
+        try {
+            reqData.expectedFinishDate = reqData.expectedFinishDate.toISOString()
+        }
+        catch (e) {
+            console.log("date probably already a string")
         }
         console.log("Starting event with reqData: ", reqData)
     };

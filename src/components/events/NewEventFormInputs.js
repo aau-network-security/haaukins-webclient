@@ -23,7 +23,8 @@ import {
     chakra,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { FaRegQuestionCircle } from "react-icons/fa";
+import ReactDatePicker, { DatePicker } from "react-datepicker";
+import { FaCalendar, FaRegQuestionCircle } from "react-icons/fa";
 import { useSearchParams } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 
@@ -243,15 +244,30 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                     />
                 </FormLabel>
                 <InputGroup>
+                    <InputLeftElement 
+                        children={<FaCalendar />}
+                    />
                     <Input
+                        as={ReactDatePicker}
                         type="datetime-local"
                         name="expectedFinishDate"
-                        placeholder="End date"
+                        placeholderText="Finish date, click to select"
                         backgroundColor="#f7fafc"
                         borderColor="#edf3f8"
                         focusBorderColor="#c8dcea"
                         maxLength="10"
-                        onChange={(event) => changeHandler(event)}
+                        dateFormat="MMMM d, yyyy HH:mm"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={10}
+                        autoComplete={"off"}
+                        selected={reqData.expectedFinishDate}
+                        onChange={(date) => setReqDataState({
+                            ...reqData,
+                            ["expectedFinishDate"]:
+                                date,
+                        })}
+                        
                     />
                 </InputGroup>
             </FormControl>
