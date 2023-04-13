@@ -116,7 +116,7 @@ function NewEventPage() {
                         <Button
                             backgroundColor="#211a52"
                             _hover={{ backgroundColor: "#18123a" }}
-                            color="#dfdfe3"
+                            color="white"
                             as={ReactLink}
                             to="/events"
                             marginRight="30px"
@@ -124,7 +124,7 @@ function NewEventPage() {
                         <Button
                             backgroundColor="#5caf8d"
                             _hover={{ backgroundColor: "#4c9a79" }}
-                            color="#dfdfe3"
+                            color="white"
                             type="submit"
                         >
                             Create event
