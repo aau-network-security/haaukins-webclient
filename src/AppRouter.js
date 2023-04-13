@@ -16,6 +16,7 @@ import { Flex } from '@chakra-ui/react'
 import { BASE_URL } from './api/client'
 import { useFetch } from 'react-async'
 import { Buffer } from 'buffer'
+import NewEventPage from './pages/NewEventPage'
 function AppRouter() {
     const dispatch = useDispatch()
 
@@ -76,6 +77,7 @@ function AppRouter() {
                             <Route path="profile" element={<ProfilePage />} />
                             <Route path="agents" element={<AgentsPage />} />
                             <Route path="challenges" element={<ChallengesPage />} />
+                            <Route path="events/new" element={<NewEventPage />} />
                         </Route>                        
                     </Route>  
             </Routes>

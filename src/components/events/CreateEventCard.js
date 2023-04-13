@@ -1,9 +1,19 @@
-import { Box, Button, Center, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Center,
+    Flex,
+    HStack,
+    Icon,
+    Text,
+    Link,
+} from "@chakra-ui/react";
 import React from "react";
 import { FaRegCalendarPlus, FaRegQuestionCircle } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
+import { NavLink as ReactLink } from "react-router-dom";
 
-function CreateEventCard({...props}) {
+function CreateEventCard({ ...props }) {
     const simpleDescription =
         "A simple event has less customization than advanced events. <br> Simple events are great for highschools and other similar events <br> that are not aimed at hardcore CTFers <br> NOTE. Only browser labs are available for this kind of event";
     const advancedDescription =
@@ -41,23 +51,24 @@ function CreateEventCard({...props}) {
                         borderRadius="0px 10px 0px 5px"
                         marginBottom="1px"
                         h="50%"
+                        as={ReactLink}
+                        to={"/events/new?type=simple"}
                     >
-                        <Text position="absolute" left="20px">
-                            Simple
-                        </Text>
-                        <Icon
-                            position="absolute"
-                            right="10px"
-                            top="7px"
-                            as={FaRegQuestionCircle}
-                            fontSize="13px"
-                            data-tooltip-html={simpleDescription}
-                            data-tooltip-place="right"
-                            data-tooltip-effect="solid"
-                            data-tooltip-id="tooltip-add-simple"
-                            data-tooltip-offset={15}
-                        />
-                        
+                            <Text position="absolute" left="20px">
+                                Simple
+                            </Text>
+                            <Icon
+                                position="absolute"
+                                right="10px"
+                                top="7px"
+                                as={FaRegQuestionCircle}
+                                fontSize="13px"
+                                data-tooltip-html={simpleDescription}
+                                data-tooltip-place="right"
+                                data-tooltip-effect="solid"
+                                data-tooltip-id="tooltip-add-simple"
+                                data-tooltip-offset={15}
+                            />
                     </Button>
                     <Button
                         backgroundColor="#211a52"
@@ -66,6 +77,8 @@ function CreateEventCard({...props}) {
                         borderRadius="5px 0px 10px 0px"
                         marginTop="1px"
                         h="50%"
+                        as={ReactLink}
+                        to={"/events/new?type=advanced"}
                     >
                         <Text position="absolute" left="20px">
                             Advanced
@@ -83,7 +96,6 @@ function CreateEventCard({...props}) {
                             data-tooltip-id="tooltip-add-advanced"
                             data-tooltip-offset={15}
                         />
-                        
                     </Button>
                 </Flex>
             </HStack>
