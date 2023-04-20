@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from '../features/users/userSlice'
-import challengeReducer from '../features/challenges/challengeSlice'
+import exerciseReducer from '../features/exercises/exerciseSlice'
 import orgReducer from '../features/organizations/organizationSlice'
 import agentReducer from '../features/agents/agentSlice'
 import eventReducer from '../features/events/eventSlice'
@@ -9,7 +9,7 @@ import eventReducer from '../features/events/eventSlice'
 const store = configureStore({
     reducer: {
         user: userReducer,
-        challenge: challengeReducer,
+        exercise: exerciseReducer,
         org: orgReducer,
         agent: agentReducer,
         event: eventReducer

@@ -5,11 +5,11 @@ import logoBlue from '../assets/bluelogo.png'
 
 export default function Logo(props) {
   return (
-    <Box {...props}>
+    <Box size={props.size}>
       {props.white === "true" ? 
-        <img src={logoWhite} alt="Logo" />
+        <img className={props.className} src={logoWhite} alt="Logo" />
         :
-        <img src={logoBlue} alt="Logo" />
+        <img className={props.className} src={logoBlue} alt="Logo" />
       }
     </Box>
   )

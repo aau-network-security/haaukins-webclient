@@ -1,9 +1,5 @@
 import {
-    Alert,
-    AlertDescription,
-    AlertIcon,
     Box,
-    Button,
     Checkbox,
     Flex,
     FormControl,
@@ -18,15 +14,12 @@ import {
     NumberInputField,
     NumberInputStepper,
     Select,
-    Stack,
     Text,
-    chakra,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import ReactDatePicker, { DatePicker } from "react-datepicker";
+import React from "react";
+import ReactDatePicker from "react-datepicker";
 import { FaCalendar, FaRegQuestionCircle } from "react-icons/fa";
 import { useSearchParams } from "react-router-dom";
-import { Tooltip } from "react-tooltip";
 
 function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -53,6 +46,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                 <FormLabel fontSize="17px" color="#211a52">
                     Event tag (Max: 15)
                     <Icon
+                        color="grey"
                         position="relative"
                         top="-5px"
                         marginLeft={1}
@@ -88,6 +82,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                 <FormLabel fontSize="17px" color="#211a52">
                     Secret key
                     <Icon
+                        color="grey"
                         position="relative"
                         top="-5px"
                         marginLeft={1}
@@ -122,6 +117,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                             <>
                                 Max labs
                                 <Icon
+                                    color="grey"
                                     position="relative"
                                     top="-5px"
                                     marginLeft={1}
@@ -166,6 +162,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                         <FormLabel fontSize="17px" color="#211a52">
                             Team size
                             <Icon
+                                color="grey"
                                 position="relative"
                                 top="-5px"
                                 marginLeft={1}
@@ -229,6 +226,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                 <FormLabel fontSize="17px" color="#211a52">
                     Finish date
                     <Icon
+                        color="grey"
                         position="relative"
                         top="-5px"
                         marginLeft={1}
@@ -290,6 +288,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                         >
                             Enable dynamic scoring
                             <Icon
+                                color="grey"
                                 position="relative"
                                 top="-5px"
                                 marginLeft={1}
@@ -310,6 +309,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                                     <FormLabel fontSize="17px" color="#211a52">
                                         Max score
                                         <Icon
+                                            color="grey"
                                             position="relative"
                                             top="-5px"
                                             marginLeft={1}
@@ -350,6 +350,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                                     <FormLabel fontSize="17px" color="#211a52">
                                         Min score
                                         <Icon
+                                            color="grey"
                                             position="relative"
                                             top="-5px"
                                             marginLeft={1}
@@ -390,6 +391,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                                     <FormLabel fontSize="17px" color="#211a52">
                                         Solve Threshold
                                         <Icon
+                                            color="grey"
                                             position="relative"
                                             top="-5px"
                                             marginLeft={1}

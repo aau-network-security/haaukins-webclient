@@ -11,15 +11,13 @@ const initialState = {
     error: {}
 }
 
-export const addEvent = createAsyncThunk('event/addEvent', async (agent, { rejectWithValue }) => {
+export const createEvent = createAsyncThunk('event/createEvent', async (reqData, { rejectWithValue }) => {
     try {
         apiClient.defaults.headers.Authorization = localStorage.getItem('token')
-        console.log("adding agent: ", agent)
-        const response = await apiClient.post('agents', agent)
-        agent.loading = false
-        agent.connected = true
+        console.log("creating event: ", reqData)
+        const response = await apiClient.post('events', reqData)
         
-        return agent
+        return response.data
     }
     catch (err) {
         if (!err.response) {
@@ -96,7 +94,7 @@ export const stopEvent = createAsyncThunk('event/stopEvent', async (event, { rej
 })
 
 // Tells the demon to reconnect, object holds agent array index to update the connected state of a specific agent
-export const deleteEvent = createAsyncThunk('event/deleteAgent', async (agentObj, { rejectWithValue, getState }) => {
+export const deleteEvent = createAsyncThunk('event/deleteEvent', async (agentObj, { rejectWithValue, getState }) => {
     try {
         const { agent: {agents} } = getState()
         apiClient.defaults.headers.Authorization = localStorage.getItem('token')
@@ -153,14 +151,14 @@ const eventSlice = createSlice({
         })
 
         // Add event
-        builder.addCase(addEvent.pending, (state, action) => {
-            state.status = 'addingEvent'
+        builder.addCase(createEvent.pending, (state, action) => {
+            state.status = 'creatingEvent'
         })
-        builder.addCase(addEvent.fulfilled, (state, action) => {
+        builder.addCase(createEvent.fulfilled, (state, action) => {
             state.status = ''
             state.error = ''
         })
-        builder.addCase(addEvent.rejected, (state, action) => {
+        builder.addCase(createEvent.rejected, (state, action) => {
             state.status = ''
             state.error = action.payload
         })
