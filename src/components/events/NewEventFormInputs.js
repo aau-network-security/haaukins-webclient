@@ -241,7 +241,7 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                         data-tooltip-offset={15}
                     />
                 </FormLabel>
-                <InputGroup>
+                <InputGroup zIndex="999">
                     <InputLeftElement 
                         children={<FaCalendar />}
                     />
@@ -265,7 +265,6 @@ function NewEventFormInputs({ reqData, changeHandler, setReqDataState }) {
                             ["expectedFinishDate"]:
                                 date,
                         })}
-                        
                     />
                 </InputGroup>
             </FormControl>
