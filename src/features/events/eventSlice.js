@@ -5,7 +5,6 @@ const initialState = {
     status: 'idle',
     events: [],
     selectedEvent: null,
-    eventTeams: [],
     eventsStopping: {},
     statusCode: 200,
     error: {}
@@ -40,29 +39,6 @@ export const fetchEvents = createAsyncThunk('event/fetchEvents', async (obj, { r
         // Populate some extra variables into the agents array
         if (typeof response.data.events === "undefined") {
             response.data.events = []
-        }
-        return response.data
-    }
-    catch (err) {
-        if (!err.response) {
-            throw err
-        }
-        let error = { axiosMessage: err.message, axiosCode: err.code, apiError: err.response.data, apiStatusCode: err.response.status}
-        return rejectWithValue(error)
-    }
-})
-
-
-export const fetchEventTeams = createAsyncThunk('event/fetchEventTeams', async (obj, { rejectWithValue }) => {
-    try {
-        apiClient.defaults.headers.Authorization = localStorage.getItem('token')
-        const response = await apiClient.get('agents')
-        // Populate some extra variables into the agents array
-        for (const agent in response.data.agents) {
-            response.data.agents[agent].loading = false
-        }
-        if (typeof response.data.agents === "undefined") {
-            response.data.agents = []
         }
         return response.data
     }
@@ -132,21 +108,6 @@ const eventSlice = createSlice({
         builder.addCase(fetchEvents.rejected, (state, action) => {
             state.status = ''
             state.events = []
-            state.error = action.payload
-        })
-
-        // Fetch eventTeams
-        builder.addCase(fetchEventTeams.pending, (state) => {
-            state.status = 'fetchingEventsTeams'
-        })
-        builder.addCase(fetchEventTeams.fulfilled, (state, action) => {
-            state.status = ''
-            state.eventTeams = action.payload.teams
-            state.error = ''
-        })
-        builder.addCase(fetchEventTeams.rejected, (state, action) => {
-            state.status = ''
-            state.eventTeams = []
             state.error = action.payload
         })
 

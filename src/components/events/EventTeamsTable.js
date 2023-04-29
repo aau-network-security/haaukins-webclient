@@ -13,64 +13,25 @@ import {
     Thead,
     Tr,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaStop } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
 import { Tooltip } from "react-tooltip";
+import { fetchEventTeams } from "../../features/teams/teamSlice";
 
 function EventTeamsTable() {
-    const teams = [
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-        {
-            name: "someName",
-            email: "someEmail",
-            status: "In queue",
-        },
-    ];
+    const teams = useSelector((state) => state.team.teams)
+    const selectedEvent = useSelector((state) => state.event.selectedEvent)
+    const dispatch = useDispatch()
+    useEffect(() => {
+        if (selectedEvent) {
+            var req = {
+                eventTag: selectedEvent.tag
+            }
+            dispatch(fetchEventTeams(req))
+        }
+    },[selectedEvent])
     return (
         <>
             <Flex className="container-header" height="60px">
@@ -102,7 +63,7 @@ function EventTeamsTable() {
                             <Tr
                                 key={key}
                             >
-                                <Td textAlign="center">{team.name}</Td>
+                                <Td textAlign="center">{team.username}</Td>
                                 <Td textAlign="center">
                                     {/*Make link */}
                                     {team.email}
