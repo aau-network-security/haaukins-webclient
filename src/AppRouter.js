@@ -62,7 +62,13 @@ function AppRouter() {
                     <>
                         <Flex w="100vw" height='100%'>
                             <Sidebar/>
-                            <Flex w="100%" overflowX={"auto"}>
+                            <Flex 
+                                w="100%" 
+                                height="100vh" 
+                                overflowX={"auto"}
+                                id="page-container"
+                                padding="100px 50px 100px 50px"
+                            >
                                 <Outlet/>
                             </Flex>
                         </Flex>

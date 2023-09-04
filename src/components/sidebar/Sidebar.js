@@ -35,6 +35,7 @@ export default function Sidebar() {
     return (
         <Flex
             backgroundColor="white"
+            id="sidebar"
             pos="sticky"
             h="98vh"
             marginTop="1vh"
